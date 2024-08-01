@@ -1,13 +1,12 @@
 <template>
   <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
+    <p>Hello world</p>
   </div>
 </template>
 
 <script setup>
 definePageMeta({
-  title: '',
+  title: 'Home',
   description: '',
   layout: 'default',
 });

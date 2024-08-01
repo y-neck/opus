@@ -50,11 +50,12 @@
 
     html {
         font-family: "Pretendard Regular", system-ui, sans-serif;
+        background-color: var(--background);
     }
 
     :root {
         --text: 0 0% 2%;
-        --background: 0 0% 96%;
+        --background: #fff;
         --primary: 2 12% 50%;
         --secondary: 30 12% 71%;
         --accent: 35 12% 64%;
