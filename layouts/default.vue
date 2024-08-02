@@ -1,9 +1,21 @@
 <template>
-  <div class="bg-white text-black px-4 pt-[25px] pb-[18px] min-h-screen flex">
+  <div>
     <slot />
   </div>
 </template>
 
 <script setup></script>
 
-<style scoped></style>
+<style scoped>
+/* :root {
+  --white: #fff;
+  --text: #000;
+}
+
+div {
+  background-color: --white;
+  color: var(--text);
+  padding: 16px;
+  height: 100vh;
+} */
+</style>
