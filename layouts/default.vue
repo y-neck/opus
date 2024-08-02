@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4">
+  <div class="bg-white text-grey-700 p-4 h-screen">
     <slot />
   </div>
 </template>
