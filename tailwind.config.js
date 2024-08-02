@@ -1,10 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './index.vue',
-    './layouts/**/*.vue',
-    './pages/**/*.vue',
-    './components/**/*.vue',
+    './pages/**/*.{vue,js,jsx,html}',
+    './layouts/**/*.{vue,js,jsx,html}',
+    './components/**/*.{vue,js,jsx,html}',
+    './src/**/*.{vue,js,jsx,html}',
+    './public/**/*.{vue,js,jsx,html}',
   ],
   theme: {
     colors: {
@@ -46,10 +47,7 @@ module.exports = {
       'sans': ['"Pretendard"', 'sans-serif'],
     },
     extend: {
-
     },
   },
-
-  prefix: 'tw-',
 };
 

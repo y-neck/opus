@@ -24,6 +24,10 @@ export default defineNuxtConfig({
         },
         { charset: 'utf-8' },
       ],
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: './public/favicon.ico' },
+        { rel: 'stylesheet', href: './src/styles.css' },
+      ],
     },
   },
 });
