@@ -1,11 +1,11 @@
-<template>
+  <template>
     <Auth />
   </template>
   
   <script setup>
   
   definePageMeta({
-    title: 'Home',
+    title: 'Login',
     description: '',
     layout: false,
   });
