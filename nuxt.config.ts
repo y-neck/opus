@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   components: {
     global: true,
-    dirs: ['~/components/icons']
+    dirs: ['~/components/icons', '~/components'],
   },
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
