@@ -5,7 +5,7 @@
     >
       <div id="main-nav" class="hidden md:flex flex-col">
         <NuxtLink to="/inbox" class="nav-item">
-          <img src="" alt="icn" />
+        <InboxIcon />   <!-- Test if components work properly -->
           <p class="nav-item-text">Inbox</p></NuxtLink
         >
         <NuxtLink to="/task-overview" class="nav-item">
