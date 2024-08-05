@@ -21,18 +21,19 @@ const handleLogin = async () => {
 <template>
   <form class="row flex-center flex" @submit.prevent="handleLogin">
     <div class="col-6 form-widget">
-      <h1 class="header">Supabase + Nuxt 3</h1>
-      <p class="description">Sign in via magic link with your email below</p>
-      <div>
-        <input class="inputField" type="email" placeholder="Your email" v-model="email" />
+      <div class="flex flex-col ">
+        <label class="text-sm text-grey-500" for="email">Email</label>
+        <input class="h-11 w-[29rem] border border-grey-100 rounded-lg" type="email" placeholder="name@domain.com" v-model="email" />
       </div>
       <div>
-        <input
-          type="submit"
-          class="button block"
-          :value="loading ? 'Loading' : 'Send magic link'"
-          :disabled="loading"
-        />
+        <button
+        class="h-11 w-[29rem] bg-grey-100 text-grey-700 rounded-lg"
+        type="submit"
+        :value="loading ? 'Loading' : 'Send magic link'"
+        :disabled="loading"
+        >
+        Send me a magic link
+        </button>
       </div>
     </div>
   </form>
