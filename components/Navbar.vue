@@ -22,11 +22,11 @@
           <p class="nav-item-text">Inbox</p></NuxtLink
         >
         <NuxtLink to="/task-overview" class="nav-item">
-          <img src="" alt="icn" />
+          <NotepadIcon />
           <p class="nav-item-text">Task Overview</p></NuxtLink
         >
         <NuxtLink to="/settings" class="nav-item">
-          <img src="" alt="icn" />
+          <SettingsIcon />
           <p class="nav-item-text">Settings</p></NuxtLink
         >
       </div>
@@ -35,15 +35,15 @@
           [Team Name]
         </p>
         <NuxtLink to="/tasks" class="nav-item">
-          <img src="" alt="icn" />
+          <NoteIcon />
           <p class="nav-item-text">Tasks</p></NuxtLink
         >
         <NuxtLink to="/timeline" class="nav-item">
-          <img src="" alt="icn" />
+          <TimelineIcon />
           <p class="nav-item-text">Timeline</p></NuxtLink
         >
         <NuxtLink to="/documents" class="nav-item">
-          <img src="" alt="icn" />
+          <FilesIcon />
           <p class="nav-item-text">Documents</p></NuxtLink
         >
         <NuxtLink to="/chat" class="nav-item">
@@ -51,7 +51,7 @@
           <p class="nav-item-text">Chat</p></NuxtLink
         >
         <NuxtLink to="/team" class="nav-item">
-          <img src="" alt="icn" />
+          <PeopleIcon />
           <p class="nav-item-text">Team</p></NuxtLink
         >
       </div>
