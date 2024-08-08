@@ -3,6 +3,7 @@ const supabase = useSupabaseClient()
 
 const loading = ref(false)
 const email = ref('')
+const isTextVisible = ref(false)
 
 const handleLogin = async () => {
   try {
@@ -14,7 +15,9 @@ const handleLogin = async () => {
       }
     })
     if (error) throw error
-    alert('Check your email for the login link!')
+    isTextVisible.value = true
+    email.value = ''
+
   } catch (error) {
     alert(error.error_description || error.message)
   } finally {
@@ -24,8 +27,7 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <form class="flex items-center justify-center h-screen mt-[-4rem]" @submit.prevent="handleLogin" ref="clearInput"
-    @submit="submitForm">
+  <form class="flex items-center justify-center h-screen mt-[-4rem]" @submit.prevent="handleLogin">
     <div class="flex flex-col">
       <div class="flex flex-col justify-center mb-2">
         <label class="text-sm text-grey-500 mb-1" for="email">Email</label>
@@ -35,37 +37,32 @@ const handleLogin = async () => {
           required />
       </div>
       <div class="flex flex-col justify-center">
-        <button :disabled="!email" @click="showText"
+        <button :disabled="!email"
           class="w-[22.125rem] h-10 bg-grey-100 hover:bg-grey-200 text-grey-700 rounded-lg border border-white btn-outline font-regular transition disabled:text-grey-400 disabled:transition disabled:hover:bg-grey-100"
           type="submit">
           Send me a magic link
         </button>
       </div>
-      <transition>
-        <p v-if="isTextVisible" class="text-sm text-grey-500 text-center absolute mt-[8.5rem]">Please check your inbox. If
-          you didn’t receive anything,<br> we likely couldn’t match the provided email to an account.</p>
+      <transition name="fade">
+        <p v-if="isTextVisible" class="flex text-sm text-grey-500 text-center mt-32 absolute ml-14">Please check
+          your inbox and
+          follow
+          the<br>
+          instructions in the email.</p>
       </transition>
     </div>
   </form>
 </template>
 
-
 <script>
 export default {
-  data() {
+  setup() {
     return {
-      isTextVisible: false
-    };
+      isTextVisible: ref(false)
+    }
   },
-  methods: {
-    isEmailValid(email) {
-      const emailPattern = "[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$";
-      return emailPattern.test(email);
-    },
-  }
-};
+}
 </script>
-
 
 <style scoped>
 .btn-outline {
@@ -77,12 +74,13 @@ input::-webkit-credentials-auto-fill-button {
 }
 
 /* Transition classes */
-.v-enter-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.3s ease;
 }
 
-.v-enter-from {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 </style>
-
