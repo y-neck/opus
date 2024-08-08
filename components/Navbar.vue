@@ -3,9 +3,22 @@
     <nav
       class="md:w-[266px] md:h-screen flex md:flex-col gap-8 md:border-r-2 border-grey-100 max-sm:w-screen max-sm:fixed max-sm:top-[95vh] max-sm:border-t-2"
     >
+      <div
+        class="bg-white text-grey-700 border-b-2 border-grey-100 flex flex-row justify-between md:justify-start align-center"
+      >
+        <div
+          id="project-dropdown"
+          class="md:w-[280px] md:pt-2 md:px-4 md:pb-4 flex gap-1"
+        >
+          <img src="" alt="icn" />
+          <p class="max-sm:hidden">[Team Name]</p>
+          <p>^</p>
+        </div>
+      </div>
       <div id="main-nav" class="hidden md:flex flex-col">
         <NuxtLink to="/inbox" class="nav-item">
-        <InboxIcon />   <!-- Test if components work properly -->
+          <InboxIcon />
+          <!-- Test if components work properly -->
           <p class="nav-item-text">Inbox</p></NuxtLink
         >
         <NuxtLink to="/task-overview" class="nav-item">

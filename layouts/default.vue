@@ -1,14 +1,11 @@
 <template>
-  <Header />
-  <div class="bg-white text-grey-700 px-4 h-screen md:flex md:flex-row">
+  <div class="bg-white text-grey-700 px-4 h-screen w-full md:flex md:flex-row">
     <Navbar />
-    <main class="p-16"><slot /></main>
+    <slot />
   </div>
 </template>
 
-<script setup>
-import Header from '~/components/Header.vue';
-</script>
+<script setup></script>
 
 <style scoped>
 /* :root {
