@@ -6,6 +6,12 @@ watch(user, () => {
     return navigateTo('/')
   }
 }, { immediate: true })
+
+definePageMeta({
+  title: 'Confirm Login',
+  description: '',
+  layout: false,
+});
 </script>
 
 <template>
