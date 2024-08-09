@@ -15,7 +15,7 @@ export default defineNuxtConfig({
       login: '/login', // Page to redirect the user to
       callback: '/confirm', // Page to redirect the user to after login
       include: undefined,
-      exclude: [],
+      exclude: ['/register'],
       cookieRedirect: false,
     },
   },

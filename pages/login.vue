@@ -1,14 +1,14 @@
-  <template>
-    <Auth />
-  </template>
+<template>
+  <AuthLoginForm />
+</template>
   
-  <script setup>
+<script setup>
+
+definePageMeta({
+  title: 'Login',
+  description: '',
+  layout: false,
+});
+</script>
   
-  definePageMeta({
-    title: 'Login',
-    description: '',
-    layout: false,
-  });
-  </script>
-  
-  <style scoped></style>
+<style scoped></style>

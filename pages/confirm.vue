@@ -1,19 +1,22 @@
-<script setup lang="ts">
-const user = useSupabaseUser()
+<script setup>
+const router = useRouter()
 
-watch(user, () => {
-  if (user.value) {
-    return navigateTo('/')
-  }
-}, { immediate: true })
+setTimeout(() => {
+  router.push('/login')
+}, 3000);
 
 definePageMeta({
-  title: 'Confirm Login',
+  title: 'Email confirmed',
   description: '',
   layout: false,
 });
 </script>
 
 <template>
-  <div>Waiting for login...</div>
+  <div class="flex items-center justify-center h-screen">
+    <p class="flex text-center text-grey-700">
+      Thank you for confirming your email.<br>
+      You will be redirected to the login page shortly.
+    </p>
+  </div>
 </template>
