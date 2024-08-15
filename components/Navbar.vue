@@ -47,7 +47,7 @@
           <p class="nav-item-text">Documents</p></NuxtLink
         >
         <NuxtLink to="/chat" class="nav-item">
-          <img src="" alt="icn" />
+          <BubbleIcon />
           <p class="nav-item-text">Chat</p></NuxtLink
         >
         <NuxtLink to="/team" class="nav-item">
