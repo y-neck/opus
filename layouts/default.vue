@@ -1,5 +1,7 @@
 <template>
-  <div class="bg-white text-grey-700 px-4 h-screen w-full md:flex md:flex-row">
+  <div
+    class="bg-white text-grey-700 px-4 min-h-screen w-full md:flex md:flex-row"
+  >
     <Navbar />
     <slot />
   </div>
