@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col w-full">
-    <Header pageTitle="Index" pageIcon="LayoutGridIcon.vue" />
+    <Header pageTitle="Index" pageIcon="LayoutGridIcon" />
     <main class="p-16">
       <p>Hello world</p>
     </main>
