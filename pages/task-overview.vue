@@ -7,9 +7,9 @@
           <div
             class="project-title flex items-center gap-4 border-b-2 border-b-grey-100"
           >
-            <h1 class="project-title text-2xl font-medium text-grey-500">
+            <h2 class="project-title text-2xl font-medium text-grey-500">
               {{ project.projectName }}
-            </h1>
+            </h2>
             <p
               class="project-task-count text-grey-700 text-xs font-semibold p-1 w-4 bg-grey-100 rounded"
             >
