@@ -5,7 +5,7 @@
       <div v-for="project in projectTasks">
         <div id="project-tasks-container w-full pb-16">
           <div
-            class="project-title flex items-center gap-4 border-b-2 border-b-grey-100"
+            class="section-header flex items-center gap-4 border-b-2 border-b-grey-100"
           >
             <h2 class="project-title text-2xl font-medium text-grey-500">
               {{ project.projectName }}
@@ -15,19 +15,18 @@
             >
               {{ project.tasks.length }}
             </p>
-            <!-- TODO: Add task counter -->
           </div>
           <div class="taskList" v-for="task in project.tasks">
             <div class="task py-4 border-b-2 border-b-grey-100">
-              <span class="task-name text-grey-950">{{ task }}</span>
+              <span class="task-name text-grey-950">{{ task.name }}</span>
               <div class="task-properties flex gap-1 text-grey-500">
-                <span class="task-property-due">Due Date</span>
+                <span class="task-property-due">{{task.dueDate}}</span>
                 <span class="divider">·</span>
                 <span class="task-property-project">
                   {{ project.projectName }}
                 </span>
                 <span class="divider">·</span
-                ><span class="task-property-assignees">N/A</span>
+                ><span class="task-property-assignees">{{task.assignedTo}}</span>
               </div>
             </div>
           </div>
@@ -48,10 +47,7 @@ console.log(user);
 import Header from '~/components/Header.vue';
 
 //Db logic
-const projectTasks = ref([
-  { projectName: 'Urban Wildlife', tasks: ['task1', 'task2', 'task3'] },
-  { projectName: 'Campus Navigation', tasks: ['task4', 'task5'] },
-]); /* TODO: Replace with actual data from DB */
+import projectTasks from '~/server/models/tasksETL';
 
 //Page meta
 definePageMeta({
