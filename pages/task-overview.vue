@@ -35,7 +35,7 @@
                   </span>
                   <span class="divider">·</span
                   ><span class="task-property-assignees">{{
-                    task.assignedTo.join(', ')
+                    task.assignedTo.map((member) => member.name).join(', ')
                   }}</span>
                 </div>
               </div>

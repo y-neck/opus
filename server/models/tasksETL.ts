@@ -16,7 +16,7 @@ const projectTasks: TaskModel[] = [
               month: 3,
               year: 4989,
             },
-            assignedTo: ['Everyone'],
+            assignedTo: [{ id: 1, name: 'member1' }],
           },
         ],
       },
@@ -32,7 +32,7 @@ const projectTasks: TaskModel[] = [
               month: new Date().getMonth() + 1,
               year: new Date().getFullYear(),
             },
-            assignedTo: [] as string[],
+            assignedTo: [],
           },
           {
             id: 3,
@@ -42,12 +42,15 @@ const projectTasks: TaskModel[] = [
               month: new Date().getMonth() + 1,
               year: new Date().getFullYear(),
             },
-            assignedTo: [] as string[],
+            assignedTo: [],
           },
         ],
       },
     ],
-    projectMembers: ['member1', 'member2'],
+    projectMembers: [
+      { id: 1, name: 'member1' },
+      { id: 2, name: 'member2' },
+    ],
   },
   {
     projectId: 2,
@@ -65,7 +68,7 @@ const projectTasks: TaskModel[] = [
               month: new Date().getMonth() + 1,
               year: new Date().getFullYear(),
             },
-            assignedTo: [] as string[],
+            assignedTo: [] as { id: number; name: string }[],
           },
           {
             id: 5,
@@ -75,12 +78,12 @@ const projectTasks: TaskModel[] = [
               month: new Date().getMonth() + 1,
               year: new Date().getFullYear(),
             },
-            assignedTo: [] as string[],
+            assignedTo: [],
           },
         ],
       },
     ],
-    projectMembers: ['member3'],
+    projectMembers: [{ id: 3, name: 'member3' }],
   },
 ];
 /* TODO: Replace with actual data from DB */
@@ -101,8 +104,8 @@ export interface TaskModel {
         month: number;
         year: number;
       };
-      assignedTo: string[];
+      assignedTo: { id: number; name: string }[];
     }[];
   }[];
-  projectMembers: string[];
+  projectMembers: { id: number; name: string }[];
 }
