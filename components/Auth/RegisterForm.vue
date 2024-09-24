@@ -48,7 +48,7 @@ const handleLogin = async () => {
 
         if (signUpError) throw signUpError
 
-        // Insert the user data into the "Profiles" table
+        // Insert the user data into the Profiles table
         const { error: insertError } = await supabase
             .from('Profiles')
             .insert({ email: email.value, password: password.value })

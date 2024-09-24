@@ -3,7 +3,6 @@
 </template>
         
 <script setup>
-
 definePageMeta({
     title: 'Register',
     description: '',

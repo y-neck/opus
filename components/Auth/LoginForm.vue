@@ -2,10 +2,10 @@
 <template>
     <form class="flex items-center justify-center h-screen mt-[-4rem]" @submit.prevent="handleLogin">
         <div class="flex flex-col">
-            <div class="flex flex-col justify-center mb-2">
+            <div class="flex flex-col justify-center mb-1">
                 <AuthInput label="Email" type="email" placeholder="your@email.com" v-model="email"
                     pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" />
-                <AuthInput label="Password" type="password" placeholder="••••••••" v-model="password" />
+                <AuthInput label="Password" type="password" placeholder="••••••••••••" v-model="password" />
             </div>
             <div class="flex flex-col justify-center">
                 <AuthButton :disabled="!email || !password" title=" Login" />
