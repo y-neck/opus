@@ -1,53 +1,53 @@
 @font-face {
-  font-family: 'Pretendard Black';
+  font-family: "Pretendard Black";
 
   src: url(/public/fonts/Pretendard-Black.otf);
 }
 
 @font-face {
-  font-family: 'Pretendard ExtraBold';
+  font-family: "Pretendard ExtraBold";
 
   src: url(/public/fonts/Pretendard-ExtraBold.otf);
 }
 
 @font-face {
-  font-family: 'Pretendard Bold';
+  font-family: "Pretendard Bold";
 
   src: url(/public/fonts/Pretendard-Bold.otf);
 }
 
 @font-face {
-  font-family: 'Pretendard SemiBold';
+  font-family: "Pretendard SemiBold";
 
   src: url(/public/fonts/Pretendard-SemiBold.otf);
 }
 
 @font-face {
-  font-family: 'Pretendard Medium';
+  font-family: "Pretendard Medium";
 
   src: url(/public/fonts/Pretendard-Medium.otf);
 }
 
 @font-face {
-  font-family: 'Pretendard Regular';
+  font-family: "Pretendard Regular";
 
   src: url(/public/fonts/Pretendard-Regular.otf);
 }
 
 @font-face {
-  font-family: 'Pretendard Light';
+  font-family: "Pretendard Light";
 
   src: url(/public/fonts/Pretendard-Light.otf);
 }
 
 @font-face {
-  font-family: 'Pretendard Thin';
+  font-family: "Pretendard Thin";
 
   src: url(/public/fonts/Pretendard-Thin.otf);
 }
 
 @font-face {
-  font-family: 'Pretendard ExtraLight';
+  font-family: "Pretendard ExtraLight";
 
   src: url(/public/fonts/Pretendard-ExtraLight.otf);
 }
@@ -71,4 +71,13 @@ html {
   --primary: 2 12% 50%;
   --secondary: 30 12% 29%;
   --accent: 35 12% 36%;
+}
+
+/* transparent autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+input[data-autocompleted] {
+  background-color: transparent !important;
 }
