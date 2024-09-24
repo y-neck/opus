@@ -3,7 +3,7 @@
     <Header pageTitle="Task Overview" pageIcon="NotepadIcon" />
     <main class="p-16">
       <div v-for="project in projectTasks">
-        <div id="project-tasks-container w-full pb-16">
+        <div id="project-tasks-container w-full mb-16">
           <div
             class="section-header flex items-center gap-4 border-b-2 border-b-grey-100"
           >
