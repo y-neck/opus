@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav
-      class="md:w-[266px] md:h-screen flex md:flex-col gap-8 md:border-r-2 border-grey-100 max-sm:w-screen max-sm:fixed max-sm:top-[95vh] max-sm:border-t-2"
+      class="md:w-[266px] md:h-full flex md:flex-col gap-8 md:border-r-2 border-grey-100 max-sm:w-screen max-sm:fixed max-sm:top-[95vh] max-sm:border-t-2"
     >
       <div
         class="bg-white text-grey-700 border-b-2 border-grey-100 flex flex-row justify-between md:justify-start align-center"
