@@ -1,24 +1,108 @@
 // Placeholder tasks
-const projectTasks = [
+const projectTasks: TaskModel[] = [
   {
     projectId: 1,
     projectName: 'Urban Wildlife',
-    taskSections: ['section1', 'section2'],
-    tasks: [
-      { id: 1, name: 'task1', dueDate: '25.03.4989', assignedTo: 'Everyone' },
-      { id: 2, name: 'task2', dueDate: '', assignedTo: '' },
-      { id: 3, name: 'task3', dueDate: '', assignedTo: '' },
+    taskSections: [
+      {
+        index: 0, // Add index value
+        name: 'section1',
+        tasks: [
+          {
+            id: 1,
+            name: 'task1',
+            dueDate: {
+              day: 25,
+              month: 3,
+              year: 4989,
+            },
+            assignedTo: ['Everyone'],
+          },
+        ],
+      },
+      {
+        index: 1, // Add index value
+        name: 'section2',
+        tasks: [
+          {
+            id: 2,
+            name: 'task2',
+            dueDate: {
+              day: new Date().getDate(),
+              month: new Date().getMonth() + 1,
+              year: new Date().getFullYear(),
+            },
+            assignedTo: [] as string[],
+          },
+          {
+            id: 3,
+            name: 'task3',
+            dueDate: {
+              day: new Date().getDate(),
+              month: new Date().getMonth() + 1,
+              year: new Date().getFullYear(),
+            },
+            assignedTo: [] as string[],
+          },
+        ],
+      },
     ],
+    projectMembers: ['member1', 'member2'],
   },
   {
     projectId: 2,
     projectName: 'Campus Navigation',
-    taskSections: ['section3'],
-    tasks: [
-      { id: 4, name: 'task4', dueDate: '', assignedTo: '' },
-      { id: 5, name: 'task5', dueDate: '', assignedTo: '' },
+    taskSections: [
+      {
+        index: 0, // Add index value
+        name: 'section3',
+        tasks: [
+          {
+            id: 4,
+            name: 'task4',
+            dueDate: {
+              day: new Date().getDate(),
+              month: new Date().getMonth() + 1,
+              year: new Date().getFullYear(),
+            },
+            assignedTo: [] as string[],
+          },
+          {
+            id: 5,
+            name: 'task5',
+            dueDate: {
+              day: new Date().getDate(),
+              month: new Date().getMonth() + 1,
+              year: new Date().getFullYear(),
+            },
+            assignedTo: [] as string[],
+          },
+        ],
+      },
     ],
+    projectMembers: ['member3'],
   },
-]; /* TODO: Replace with actual data from DB */
+];
+/* TODO: Replace with actual data from DB */
 
 export default projectTasks;
+
+export interface TaskModel {
+  projectId: number;
+  projectName: string;
+  taskSections: {
+    index: number; // Add index property
+    name: string;
+    tasks: {
+      id: number;
+      name: string;
+      dueDate: {
+        day: number;
+        month: number;
+        year: number;
+      };
+      assignedTo: string[];
+    }[];
+  }[];
+  projectMembers: string[];
+}

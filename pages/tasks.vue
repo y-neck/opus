@@ -14,44 +14,54 @@
               :style="{ color: `hsl(${generateRandomHue(index)}, 25%, 60%)` }"
             >
               <!-- :style: random hsl color for each h2 title -->
-              {{ section }}
+              {{ section.name }}
             </h2>
             <p
               class="project-task-count text-grey-700 text-xs font-semibold p-1 w-4 bg-grey-100 rounded"
             >
-              {{ project.tasks.length }}
+              {{ section.tasks.length }}
             </p>
           </div>
           <div
-            v-for="task in project.tasks"
-            :key="task.id"
-            class="task-container flex items-center align-top gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100"
+            v-for="(section, sectionIndex) in project.taskSections"
+            :key="section.index"
           >
-            <input
-              class="task-checkbox w-4 h-4 border-grey-700"
-              type="checkbox"
-              :name="`check-task-${task.id}`"
-              :id="`task-${task.id}`"
-            />
+            <div
+              v-for="(task, taskIndex) in section.tasks"
+              :key="task.id"
+              class="task-container flex items-center align-top gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100"
+            >
+              <input
+                class="task-checkbox w-4 h-4 border-grey-700"
+                type="checkbox"
+                :name="`check-task-${task.id}`"
+                :id="`task-${task.id}`"
+              />
 
-            <div class="task-info">
-              <p class="task-property-title" :id="`task-${task.name}`">
-                {{ task.name }}
-              </p>
-              <div class="task-property-description flex text-grey-500 gap-1">
-                <p class="task-property-dueDate">{{ task.dueDate || 'NaN' }}</p>
-                <span class="divider">·</span>
-                <p class="task-property-assignee">{{ task.assignedTo }}</p>
+              <div class="task-info">
+                <p class="task-property-title" :id="`task-${task.name}`">
+                  {{ task.name }}
+                </p>
+                <div class="task-property-description flex text-grey-500 gap-1">
+                  <p class="task-property-dueDate">
+                    {{ `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}` || 'NaN' }}
+                  </p>
+                  <span class="divider">·</span>
+                  <p class="task-property-assignee">{{ task.assignedTo.join(', ') }}</p>
+                </div>
+              </div>
+              <div class="task-edit-actions flex justify-self-end gap-1">
+                <button class="edit-task-btn"><PencilIcon /></button>
+                <button class="context-menu-btn"><DotsIcon /></button>
+                <!-- TODO: Add functionality to btns -->
               </div>
             </div>
-            <div class="task-edit-actions flex justify-self-end gap-1">
-              <button class="edit-task-btn"><PencilIcon /></button>
-              <button class="context-menu-btn"><DotsIcon /></button>
-              <!-- TODO: Add functionality to btns -->
-            </div>
           </div>
-          <button class="add-task-btn text-grey-500">+ Add Task</button>
+          <button class="add-task-btn text-grey-500" @click="addTask()">
+            + Add Task
+          </button>
           <!-- TODO: Add functionality to btn -->
+          
         </div>
       </div>
     </main>
@@ -82,6 +92,8 @@ definePageMeta({
 const generateRandomHue = (index: number) => {
   return Math.floor(Math.random() * 360);
 };
+
+function addTask() {}
 </script>
 
 <style scoped>
@@ -91,5 +103,9 @@ const generateRandomHue = (index: number) => {
 
 .task-section-title {
   color: hsl(var(--randomHue), 20%, 50%);
+}
+
+.new-task-label {
+  @apply text-grey-500;
 }
 </style>

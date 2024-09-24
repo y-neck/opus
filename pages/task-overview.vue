@@ -13,20 +13,31 @@
             <p
               class="project-task-count text-grey-700 text-xs font-semibold p-1 w-4 bg-grey-100 rounded"
             >
-              {{ project.tasks.length }}
+              {{
+                project.taskSections.reduce(
+                  (total, section) => total + section.tasks.length,
+                  0
+                )
+              }}
             </p>
           </div>
-          <div class="taskList" v-for="task in project.tasks">
-            <div class="task py-4 border-b-2 border-b-grey-100">
-              <span class="task-name text-grey-950">{{ task.name }}</span>
-              <div class="task-properties flex gap-1 text-grey-500">
-                <span class="task-property-due">{{task.dueDate}}</span>
-                <span class="divider">·</span>
-                <span class="task-property-project">
-                  {{ project.projectName }}
-                </span>
-                <span class="divider">·</span
-                ><span class="task-property-assignees">{{task.assignedTo}}</span>
+          <div v-for="section in project.taskSections" :key="section.index">
+            <div class="taskList" v-for="task in section.tasks" :key="task.id">
+              <div class="task py-4 border-b-2 border-b-grey-100">
+                <span class="task-name text-grey-950">{{ task.name }}</span>
+                <div class="task-properties flex gap-1 text-grey-500">
+                  <span class="task-property-due">{{
+                    `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}`
+                  }}</span>
+                  <span class="divider">·</span>
+                  <span class="task-property-project">
+                    {{ project.projectName }}
+                  </span>
+                  <span class="divider">·</span
+                  ><span class="task-property-assignees">{{
+                    task.assignedTo.join(', ')
+                  }}</span>
+                </div>
               </div>
             </div>
           </div>
