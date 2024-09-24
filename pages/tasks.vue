@@ -28,12 +28,12 @@
             class="task-container flex items-center align-top gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100"
           >
             <input
-              class="task-checkbox w-4 h-4"
+              class="task-checkbox w-4 h-4 border-grey-700"
               type="checkbox"
               :name="`check-task-${task.id}`"
               :id="`task-${task.id}`"
             />
-            <!-- TODO: Style checkbox -->
+
             <div class="task-info">
               <p class="task-property-title" :id="`task-${task.name}`">
                 {{ task.name }}
