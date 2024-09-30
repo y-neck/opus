@@ -13,7 +13,7 @@
             <transition>
                 <p v-if="errorMessage" class="flex text-sm text-grey-500 text-center mt-32 absolute ml-14">
                     {{ errorMessage }}</p>
-                <p v-else-if="successMessage" class="flex text-sm text-grey-500 text-center mt-32 absolute ml-14">
+                <p v-else-if="successMessage" class="flex text-sm text-grey-500 text-center mt-[12.5rem] absolute ml-2">
                     Please check your inbox and confirm your email.
                 </p>
             </transition>
