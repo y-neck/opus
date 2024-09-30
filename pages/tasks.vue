@@ -69,13 +69,41 @@
                   class="hidden"
                   v-if="isDropdownVisible[`edit-task-dd-${task.id}`]"
                 >
-                  <p role="menuitem" class="dropdown-menu-item">Edit Task</p>
-                  <p role="menuitem" class="dropdown-menu-item">Mark as done</p>
-                  <p role="menuitem" class="dropdown-menu-item">Delete Task</p>
+                  <p role="menuitem" class="dropdown-menu-item">
+                    <PencilIcon />Edit Task
+                  </p>
+                  <p role="menuitem" class="dropdown-menu-item">
+                    <CheckmarkIcon />Mark as done
+                  </p>
+                  <p
+                    role="menuitem"
+                    class="dropdown-menu-item text-destructive-red"
+                  >
+                    <TrashCanIcon />Delete Task
+                  </p>
                 </DropdownMenu>
-                <button class="context-menu-btn">
+                <button
+                  class="context-menu-btn"
+                  :data-task-id="task.id"
+                  @click="toggleDropdown(`context-menu-dd-${task.id}`)"
+                >
                   <DotsIcon />
                 </button>
+                <DropdownMenu
+                  :id="`context-menu-dd-${task.id}`"
+                  class="hidden"
+                  v-if="isDropdownVisible[`context-menu-dd-${task.id}`]"
+                >
+                  <p role="menuitem" class="dropdown-menu-item">
+                    <ChevronDoubleRightIcon />Move to ...
+                  </p>
+                  <p
+                    role="menuitem"
+                    class="dropdown-menu-item text-destructive-red"
+                  >
+                    <TrashCanIcon />Delete Task
+                  </p>
+                </DropdownMenu>
               </div>
             </div>
           </div>
@@ -107,6 +135,7 @@ import {
   isDropdownVisible,
   toggleDropdown,
 } from '~/src/functions/handleDropdown';
+import CheckmarkIcon from '~/components/icons/CheckmarkIcon.vue';
 
 /* Handle new-task-window */
 // Open new-task-window
@@ -131,6 +160,12 @@ onMounted(() => {
 /* Styles for dropdowns and layout */
 .new-task-label {
   @apply text-grey-500;
+}
+
+.dropdown-menu-item {
+  @apply flex;
+  @apply items-center;
+  @apply gap-2;
 }
 
 .dropdown-menu-item:hover {
