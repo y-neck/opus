@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
+    // Files to include in the build
     './pages/**/*.{vue,js,jsx,html}',
     './layouts/**/*.{vue,js,jsx,html}',
     './components/**/*.{vue,js,jsx,html}',
@@ -9,6 +10,7 @@ module.exports = {
   ],
   theme: {
     colors: {
+      // Colors
       'white': '#ffffff',
       'black': '#000000',
       'grey': {
@@ -30,6 +32,7 @@ module.exports = {
       },
     },
     screens: {
+      // Screen Breakpoints
       'sm': '640px',
       // => @media (min-width: 640px) { ... }
 
@@ -46,10 +49,23 @@ module.exports = {
       // => @media (min-width: 1536px) { ... }
     },
     fontFamily: {
+      // Custom Font Family "Pretendard"
       'sans': ['"Pretendard"', 'sans-serif'],
     },
     extend: {
     },
   },
+  "atDirectives": [
+    {
+      "name": "@apply",
+      "description": "Use the `@apply` directive to inline any existing utility classes into your own custom CSS.",
+      "references": [
+        {
+          "name": "Tailwind Documentation",
+          "url": "https://tailwindcss.com/docs/functions-and-directives#apply"
+        }
+      ]
+    }
+  ]
 };
 
