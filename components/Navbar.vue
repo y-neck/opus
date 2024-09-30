@@ -1,14 +1,14 @@
 <template>
   <div>
     <nav
-      class="md:w-[266px] md:h-full flex md:flex-col gap-8 md:border-r-2 border-grey-100 max-sm:w-screen max-sm:fixed max-sm:top-[95vh] max-sm:border-t-2"
+      class="md:w-[266px] md:h-full flex md:flex-col gap-8 md:border-r border-grey-100 max-sm:w-screen max-sm:fixed max-sm:top-[95vh] max-sm:border-t-2"
     >
       <div
-        class="bg-white text-grey-700 border-b-2 border-grey-100 flex flex-row justify-between md:justify-start align-center"
+        class="bg-white text-grey-700 border-b border-grey-100 flex flex-row justify-between md:justify-start align-center"
       >
         <div
           id="project-dropdown"
-          class="md:w-[280px] md:pt-2 md:px-4 md:pb-4 flex gap-1"
+          class="md:w-[280px] md:pt-3 md:px-4 md:pb-3 flex gap-1"
         >
           <img src="" alt="icn" />
           <p class="max-sm:hidden">[Team Name]</p>
