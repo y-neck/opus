@@ -2,7 +2,10 @@
   <div class="flex flex-col w-full">
     <Header pageTitle="Tasks" pageIcon="NoteIcon" />
     <main class="p-16">
-      <div v-for="project in projectTasks" :key="project.projectId">
+      <div
+        v-for="(project, projectIndex) in projectTasks"
+        :key="project.projectId"
+      >
         <div class="task-section-container pb-16">
           <div
             class="section-header flex items-center gap-4 border-b-2 border-b-grey-100"
@@ -58,14 +61,14 @@
               <div class="task-edit-actions flex justify-self-end gap-1">
                 <button
                   class="edit-task-btn"
-                  @click="toggleEditTaskDropdown(taskIndex)"
+                  @click="toggleEditTaskDropdown(task.id)"
                 >
                   <PencilIcon />
                 </button>
                 <DropdownMenu
-                  :id="`edit-task-dd-${taskIndex}`"
+                  :id="`edit-task-dd-${task.id}`"
                   class="hidden"
-                  v-if="isDropdownVisible[taskIndex]"
+                  v-if="isDropdownVisible[task.id]"
                 >
                   <p
                     id="edit-task-dd-btn-edit"
@@ -173,7 +176,7 @@
                   </div>
                 </div>
                 <div id="new-task-error" class="hidden">
-                  <p id="new-task-error-msg" class="text-destructiveRed">
+                  <p id="new-task-error-msg" class="text-destructive-red">
                     Please fill in at least name and due date
                   </p>
                 </div>
@@ -230,11 +233,22 @@ const generateRandomHue = (index: number) => {
   return Math.floor(Math.random() * 360);
 };
 
-// Edit-task dropdown handling
-const isDropdownVisible = ref<boolean[]>([]); // Ensure it's an array of booleans
+/* Dropdown handling*/
+// Initialize the visibility state for dropdowns by referencing tasks by id
+const isDropdownVisible = ref<{ [taskId: number]: boolean }>({});
 
-function toggleEditTaskDropdown(taskIndex: number) {
-  isDropdownVisible.value[taskIndex] = !isDropdownVisible.value[taskIndex];
+function toggleEditTaskDropdown(taskId: number) {
+  // If another dropdown is open, close it
+  Object.keys(isDropdownVisible.value).forEach((key) => {
+    if (parseInt(key) !== taskId) {
+      isDropdownVisible.value[parseInt(key)] = false;
+    }
+  });
+  // Toggle the dropdown visibility for the specific task clicked on
+  isDropdownVisible.value = {
+    ...isDropdownVisible.value,
+    [taskId]: !isDropdownVisible.value[taskId], // Toggle the visibility state
+  };
 }
 
 // Show add-new-task-window
