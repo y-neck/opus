@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown-overlay" :id="props.id" :class="props.class">
-    <div class="dropdown-menu">
+    <div class="dropdown-menu" role="menu" aria-label="Dropdown Menu">
       <slot></slot>
     </div>
   </div>
@@ -14,7 +14,7 @@ const isVisible = ref(false);
 <style scoped>
 .dropdown-overlay {
   display: flex; /* Ensure it uses flexbox for alignment */
-  flex-direction: column;
+  flex-direction: column !important;
   justify-content: flex-start; /* Align items to the start */
   align-items: flex-start; /* Align items to the start */
   z-index: 1000; /* Ensure it covers other elements */

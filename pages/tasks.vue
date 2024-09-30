@@ -56,7 +56,39 @@
                 </div>
               </div>
               <div class="task-edit-actions flex justify-self-end gap-1">
-                <button class="edit-task-btn"><PencilIcon /></button>
+                <button
+                  class="edit-task-btn"
+                  @click="toggleEditTaskDropdown(taskIndex)"
+                >
+                  <PencilIcon />
+                </button>
+                <DropdownMenu
+                  :id="`edit-task-dd-${taskIndex}`"
+                  class="hidden"
+                  v-if="isDropdownVisible[taskIndex]"
+                >
+                  <p
+                    id="edit-task-dd-btn-edit"
+                    role="menuitem"
+                    class="dropdown-menu-item"
+                  >
+                    Edit Task
+                  </p>
+                  <p
+                    id="task-done-dd-btn-done"
+                    role="menuitem"
+                    class="dropdown-menu-item"
+                  >
+                    Mark as done
+                  </p>
+                  <p
+                    id="delete-task-dd-btn-delete"
+                    role="menuitem"
+                    class="dropdown-menu-item"
+                  >
+                    Delete Task
+                  </p>
+                </DropdownMenu>
                 <button class="context-menu-btn"><DotsIcon /></button>
                 <!-- TODO: Add functionality to btns -->
               </div>
@@ -102,7 +134,6 @@
                       v-for="section in project.taskSections"
                       :key="section.index"
                       :value="section.name"
-                      class=""
                     >
                       {{ section.name }}
                     </option>
@@ -183,10 +214,11 @@ console.log(user);
 
 import Header from '~/components/Header.vue';
 import { ref } from 'vue';
+import DropdownMenu from '~/components/DropdownMenu.vue';
 
 import projectTasks from '~/server/models/tasksETL';
 
-//Page meta
+// Page meta
 definePageMeta({
   title: 'Tasks',
   description: '',
@@ -198,7 +230,12 @@ const generateRandomHue = (index: number) => {
   return Math.floor(Math.random() * 360);
 };
 
-// edit-task context menu
+// Edit-task dropdown handling
+const isDropdownVisible = ref<boolean[]>([]); // Ensure it's an array of booleans
+
+function toggleEditTaskDropdown(taskIndex: number) {
+  isDropdownVisible.value[taskIndex] = !isDropdownVisible.value[taskIndex];
+}
 
 // Show add-new-task-window
 function openNewTaskWindow() {
@@ -251,6 +288,7 @@ function closeNewTaskWindow() {
     addNewTaskWindow.classList.toggle('hidden');
   }
 }
+
 onMounted(() => {
   // Close add-new-task-window on escape key
   window.addEventListener('keydown', (e) => {
@@ -272,5 +310,11 @@ onMounted(() => {
 
 .new-task-label {
   @apply text-grey-500;
+}
+
+/* Hover styling for dropdown-menu-item */
+.dropdown-menu-item:hover {
+  @apply cursor-pointer; /* Change cursor to pointer */
+  @apply bg-grey-100;
 }
 </style>
