@@ -24,8 +24,10 @@ module.exports = {
         900: '#18181b',
         950: '#09090b',
       },
-      'destructiveRed': 'CF3636',
-      'destructiveDarkRed': 'B12222',
+      'destructive': {
+        red: '#CF3636',
+        darkRed: '#B12222',
+      },
     },
     screens: {
       'sm': '640px',
