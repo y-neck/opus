@@ -2,21 +2,20 @@
   <div>
     <NuxtImg
       id="profile-img"
-      :width="props.imgWidth"
-      height="auto"
       :src="props.src"
-      class="rounded-full"
-      placeholder
+      class="rounded-full bg-grey-100"
+      width="64"
+      height="64"
+      :placeholder="[64, 64]"
+      fit="cover"
       alt="Profile Picture"
+      loading="lazy"
     />
   </div>
 </template>
 
 <script setup>
 const props = defineProps({
-  imgWidth: String,
   src: String,
 });
 </script>
-
-<style scoped></style>

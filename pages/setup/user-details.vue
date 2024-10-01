@@ -7,6 +7,7 @@
   definePageMeta({
     title: 'Registration',
     description: '',
+    middleware: 'auth',
     layout: false,
   });
   </script>
