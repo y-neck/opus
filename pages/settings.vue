@@ -83,13 +83,6 @@
 </template>
 
 <script setup lang="ts">
-// Supabase auth
-const loading = ref(true);
-loading.value = true;
-const user = useSupabaseUser();
-
-console.log(user);
-
 import Header from '~/components/Header.vue';
 import PencilIcon from '~/components/icons/PencilIcon.vue';
 import ProfilePicture from '~/components/ProfilePicture.vue';
@@ -117,6 +110,7 @@ function deleteAccount() {
 definePageMeta({
   title: 'Settings',
   description: '',
+  middleware: 'auth',
   layout: 'default',
 });
 </script>

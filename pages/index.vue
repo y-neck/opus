@@ -8,13 +8,6 @@
 </template>
 
 <script setup>
-// Supabase auth
-const loading = ref(true);
-loading.value = true;
-const user = useSupabaseUser();
-
-console.log(user.value);
-
 import Header from '~/components/Header.vue';
 
 //Page meta

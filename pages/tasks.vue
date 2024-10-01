@@ -127,6 +127,14 @@ import DropdownMenu from '~/components/DropdownMenu.vue';
 import projectTasks from '~/server/models/tasksETL';
 import { onMounted } from 'vue';
 
+// Page meta
+definePageMeta({
+  title: 'Tasks',
+  description: '',
+  middleware: 'auth',
+  layout: 'default',
+});
+
 /* Random hue for titles */
 const generateRandomHue = (index: number) => {
   return Math.floor(Math.random() * 360);

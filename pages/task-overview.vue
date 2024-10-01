@@ -48,13 +48,6 @@
 </template>
 
 <script setup>
-// Supabase auth
-const loading = ref(true);
-loading.value = true;
-const user = useSupabaseUser();
-
-console.log(user);
-
 import Header from '~/components/Header.vue';
 
 //Db logic
@@ -64,6 +57,7 @@ import projectTasks from '~/server/models/tasksETL';
 definePageMeta({
   title: 'Task Overview',
   description: '',
+  middleware: 'auth',
   layout: 'default',
 });
 </script>
