@@ -11,6 +11,9 @@ export default defineNuxtConfig({
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,
     redirect: true, // INFO: Enable if you want to redirect to login automatically; http://supabase.nuxtjs.org/get-started#redirect
+    cookieOptions: {
+      secure: process.env.NODE_ENV === 'production',
+    },
     redirectOptions: {
       login: '/login', // Page to redirect the user to
       callback: '/confirm', // Page to redirect the user to after login
