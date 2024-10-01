@@ -28,7 +28,7 @@
             <div
               v-for="(task, taskIndex) in section.tasks"
               :key="task.id"
-              class="task-container group flex items-center justify-between gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100"
+              class="task-container group flex items-center gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100"
             >
               <div
                 class="task-info flex flex-row gap-2 align-baseline items-center"
@@ -198,8 +198,8 @@
                   </div>
                 </div>
                 <div id="new-task-error" class="hidden">
-                  <p id="new-task-error-msg" class="text-destructiveRed">
-                    Please fill in at least name and due date
+                  <p id="new-task-error-msg" class="text-destructive-red">
+                    Please fill in all fields.
                   </p>
                 </div>
               </form>
@@ -265,9 +265,38 @@ function openNewTaskWindow() {
   }
 }
 
+// Error handling for required fields
+function checkRequiredFields() {
+  const newTaskName =
+    document.querySelector<HTMLInputElement>('#new-task-name');
+  const newTaskDueDate =
+    document.querySelector<HTMLInputElement>('#new-task-due-date');
+  const alertMsg = document.querySelector<HTMLDivElement>('#new-task-error');
+  if (!newTaskName?.value || !newTaskDueDate?.value) {
+    alertMsg?.classList.remove('hidden');
+    return false;
+  } else {
+    alertMsg?.classList.add('hidden');
+    return true;
+  }
+}
+
 // Add new task
 function addNewTask() {
-  console.log('add new task');
+  const newTaskName =
+    document.querySelector<HTMLInputElement>('#new-task-name');
+  const newTaskSection =
+    document.querySelector<HTMLInputElement>('#new-task-section');
+  const newTaskDueDate =
+    document.querySelector<HTMLInputElement>('#new-task-due-date');
+  const newTaskAssignees = document.querySelector<HTMLInputElement>(
+    '#new-task-assignees'
+  );
+  if (checkRequiredFields()) {
+    // TODO: db logic
+    console.log('Task added');
+    closeNewTaskWindow();
+  }
 }
 
 // Close new-task-window
