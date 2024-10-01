@@ -50,8 +50,9 @@
                   <span class="divider">·</span>
                   <p class="task-property-assignee">
                     {{
-                      task.assignedTo.map((member) => member.name).join(', ') ||
-                      'Everyone'
+                      task.assignedTo
+                        .map((member: any) => member.name)
+                        .join(', ') || 'Everyone'
                     }}
                   </p>
                 </div>
@@ -64,6 +65,7 @@
                 >
                   <PencilIcon />
                 </button>
+                <!-- TODO: menu functionality -->
                 <DropdownMenu
                   :id="`edit-task-dd-${task.id}`"
                   class="hidden"
@@ -120,10 +122,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import Header from '~/components/Header.vue';
 import DropdownMenu from '~/components/DropdownMenu.vue';
 import projectTasks from '~/server/models/tasksETL';
+import { onMounted } from 'vue';
 
 /* Random hue for titles */
 const generateRandomHue = (index: number) => {
