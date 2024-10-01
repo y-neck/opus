@@ -40,6 +40,7 @@
                                                         <CopyIcon/>
                                                     </span>
                                                     <span
+                                                        @click="showEditModal(link)"
                                                         class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 active:text-grey-950 transition">
                                                         <PencilIcon/>
                                                     </span>
@@ -61,24 +62,38 @@
                     </main>
 
                     <!-- Modals -->
-                    <Modal
+                        <DocumentsModal
+                        v-if="isAddModalOpen"
+                        :isOpen="isAddModalOpen"
+                        title="Add a new document"
+                        @confirm="addDocument"
+                        @cancel="isAddModalOpen = false"/>
+
+                        <DocumentsModal
+                        v-if="isEditModalOpen"
+                        :isOpen="isEditModalOpen"
+                        title="Edit document"
+                        @confirm="editDocument"
+                        @cancel="isEditModalOpen = false"/>
+
+                        <RemoveModal
                         v-if="isDeleteModalOpen"
                         :isOpen="isDeleteModalOpen"
                         title="Remove Document"
                         message="Are you sure you want to remove this document?"
                         @confirm="deleteDocument"
                         @cancel="isDeleteModalOpen = false"/>
-
                 </div>
             </template>
 
             <script setup>
                 import Header from '~/components/Header.vue';
-                import Modal from '~/components/Modals/RemoveModal.vue';
                 import {ref} from 'vue';
                 import {format} from "date-fns";
                 import CopyIcon from '~/components/icons/CopyIcon.vue';
                 import TrashCanIcon from '~/components/icons/TrashCanIcon.vue';
+                import DocumentsModal from '~/components/Modals/DocumentsModal.vue';
+                import LinkModal from '~/components/Modals/DocumentsModal.vue';
 
                 // Supabase
                 const supabase = useSupabaseClient();
@@ -127,9 +142,10 @@
                 async function getLinks() {
                     try {
                         const {data, error, status} = await supabase
-                            .from('Links')
-                            .select('id, link, description, created_at')
-                            .order('created_at', { ascending: false });
+                        // TODO: Adjust the query to fetch links for the active project
+                        .from('Links')
+                        .select('id, link, description, created_at')
+                        .order('created_at', { ascending: false })
 
                         if (error && status !== 406) 
                             throw error;
@@ -153,11 +169,27 @@
                 }
 
                 const isDeleteModalOpen = ref(false);
+                const isEditModalOpen = ref(false);
                 const documentToDelete = ref(null);
 
                 function showDeleteModal(link) {
                     documentToDelete.value = link;
                     isDeleteModalOpen.value = true;
+                }
+
+                function showEditModal(link) {
+                    isEditModalOpen.value = true;
+                }
+
+                // Modalfunctions
+                async function addDocument() {
+                    console.log('Adding document');
+                    isAddModalOpen.value = false;
+                }
+
+                async function editDocument() {
+                    console.log('Editing document');
+                    isEditModalOpen.value = false;
                 }
 
                 async function deleteDocument() {
@@ -182,7 +214,7 @@
                         if (fetchError) 
                             throw fetchError;
                         
-                        // Update your links and grouped links state after deletion
+                        // Update links and grouped links state after deletion
                         if (updatedLinks) {
                             links.value = updatedLinks;
                             groupedLinks.value = groupLinksByDate(updatedLinks);
