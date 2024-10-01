@@ -9,15 +9,12 @@
         id="profile-img-section"
         class="flex items-end border-b-2 border-b-grey-100 w-full md:w-1/2 pb-16"
       >
-        <ProfilePicture
-          src="/public/img/dev-icon-testing.png"
-          img-width="64px"
-        />
-        <button class="profile-button mx-3">
+        <ProfilePicture src="~/public/img/dev-icon-testing.png" />
+        <button
+          class="profile-button bg-grey-100 hover:bg-grey-200 text-grey-700 transition mx-3"
+        >
           <PencilIcon />
-          <p id="update-img-button" class="profile-button-text text-grey-700">
-            Update
-          </p>
+          <p id="update-img-button" class="profile-button-text">Update</p>
         </button>
       </div>
       <div
@@ -58,7 +55,10 @@
             /><!-- TODO: Replace with current user email -->
           </div>
 
-          <button id="update-profile-button" class="profile-button">
+          <button
+            id="update-profile-button"
+            class="profile-button bg-grey-100 hover:bg-grey-200 text-grey-700 transition"
+          >
             Save Changes
           </button>
         </form>
@@ -72,12 +72,20 @@
         </p>
         <button
           id="delete-account-btn"
-          class="profile-button"
-          @click="deleteAccount()"
+          class="profile-button text-white bg-destructive-red hover:bg-destructive-darkRed transition"
+          @click="showDeleteModal()"
         >
           Delete Account
         </button>
       </div>
+      <Modal
+        v-if="isDeleteModalOpen"
+        :isOpen="isDeleteModalOpen"
+        title="Delete Account"
+        message="Are you sure you want to delete your account? This action cannot be undone."
+        @confirm="deleteAccount()"
+        @cancel="isDeleteModalOpen = false"
+      />
     </main>
   </div>
 </template>
@@ -86,6 +94,7 @@
 import Header from '~/components/Header.vue';
 import PencilIcon from '~/components/icons/PencilIcon.vue';
 import ProfilePicture from '~/components/ProfilePicture.vue';
+import Modal from '~/components/Modals/RemoveModal.vue';
 
 // Form input bindings
 let username = ref('');
@@ -97,6 +106,7 @@ let currentUsername; /* TODO: DB connection */
 let currentEmail;
 // update
 /* TODO: DB connection */
+
 // delete
 function deleteAccount() {
   alert(
@@ -104,6 +114,12 @@ function deleteAccount() {
   );
   //TODO: DB connection
   console.log('Account deleted');
+}
+
+/* Handle Modals */
+const isDeleteModalOpen = ref(false);
+function showDeleteModal() {
+  isDeleteModalOpen.value = true;
 }
 
 // Page meta
@@ -138,9 +154,6 @@ definePageMeta({
 
 .profile-button {
   @apply flex;
-  @apply bg-grey-100;
-  @apply text-grey-700;
-  @apply hover:bg-grey-200;
   @apply px-3;
   @apply py-2;
   @apply rounded-lg;
