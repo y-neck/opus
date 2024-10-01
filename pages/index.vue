@@ -13,7 +13,7 @@ const loading = ref(true);
 loading.value = true;
 const user = useSupabaseUser();
 
-console.log(user);
+console.log(user.value);
 
 import Header from '~/components/Header.vue';
 
