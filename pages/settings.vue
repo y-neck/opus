@@ -28,17 +28,31 @@
         >
           <div class="input-container">
             <label for="name-field" id="name-label" class="input-label"
-              >Username</label
+              >Name</label
             >
             <input
               type="text"
-              v-model="username"
+              v-model="name"
               id="name-field"
               class="input-text"
-              placeholder="Your current username"
-              aria-placeholder="Your current username"
+              :placeholder="`Your name: ${currentName}`"
+              :aria-placeholder="`Your name: ${currentName}`"
               aria-labelledby="name-label"
             /><!-- TODO: Replace with current user name -->
+          </div>
+          <div class="input-container">
+            <label for="surname-field" id="surname-label" class="input-label"
+              >Surname</label
+            >
+            <input
+              type="text"
+              v-model="surname"
+              id="surname-field"
+              class="input-text"
+              :placeholder="`Your surname: ${currentSurname}`"
+              :aria-placeholder="`Your surname: ${currentSurname}`"
+              aria-labelledby="surname-label"
+            />
           </div>
           <div class="input-container">
             <label for="email-field" id="email-label" class="input-label"
@@ -49,8 +63,8 @@
               v-model="email"
               class="input-text"
               id="email-field"
-              placeholder="Your current email"
-              aria-placeholder="Your current email"
+              :placeholder="`Your current email: ${currentEmail}`"
+              :aria-placeholder="`Your current email: ${currentEmail}`"
               aria-labelledby="email-label"
             /><!-- TODO: Replace with current user email -->
           </div>
@@ -103,13 +117,15 @@ import Modal from '~/components/Modals/RemoveModal.vue';
 console.log(supabaseConnection().user.value);
 
 // Form input bindings
-let username = ref('');
-let email = ref('');
+let name: string = '';
+let surname: string = '';
+let email: string = '';
 
 // DB CRUD
 // read
-let currentUsername; /* TODO: DB connection */
-let currentEmail;
+let currentName: string = ''; /* TODO: DB connection */
+let currentSurname: string = '';
+let currentEmail: string = '';
 // update
 /* TODO: DB connection */
 
