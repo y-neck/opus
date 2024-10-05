@@ -230,6 +230,7 @@
 </template>
 
 <script setup lang="ts">
+import { supabaseConnection } from '~/composables/supabaseConnection';
 import Header from '~/components/Header.vue';
 import DropdownMenu from '~/components/DropdownMenu.vue';
 import projectTasks from '~/server/models/tasksETL';

@@ -110,9 +110,6 @@ import Header from '~/components/Header.vue';
 import PencilIcon from '~/components/icons/PencilIcon.vue';
 import ProfilePicture from '~/components/ProfilePicture.vue';
 import Modal from '~/components/Modals/RemoveModal.vue';
-// // Supabase
-// const supabase = useSupabaseClient();
-// const user = useSupabaseUser();
 
 console.log(supabaseConnection().user.value);
 

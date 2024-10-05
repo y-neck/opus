@@ -48,6 +48,7 @@
 </template>
 
 <script setup>
+import { supabaseConnection } from '~/composables/supabaseConnection';
 import Header from '~/components/Header.vue';
 
 //Db logic
