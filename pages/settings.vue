@@ -111,20 +111,45 @@ import PencilIcon from '~/components/icons/PencilIcon.vue';
 import ProfilePicture from '~/components/ProfilePicture.vue';
 import Modal from '~/components/Modals/RemoveModal.vue';
 
-console.log(supabaseConnection().user.value);
-
-// Form input bindings
+// Form input bindings for user profile updates
 let name: string = '';
 let surname: string = '';
 let email: string = '';
 
-// DB CRUD
+/* DB CRUD */
 // read
-let currentName: string = ''; /* TODO: DB connection */
-let currentSurname: string = '';
-let currentEmail: string = '';
+let userId = supabaseConnection().user.value?.id;
+let currentName: string;
+let currentSurname: string;
+let currentEmail: string = supabaseConnection().user.value?.email;
+
+// TODO:Fetch user's profile picture from DB
+
+// Fetch user name from DB
+const { data: fetchName, error: fetchNameError } = await supabaseConnection()
+  .supabase.from('Profiles')
+  .select('name')
+  .eq('user_id', userId);
+if (fetchName && fetchName !== null) {
+  currentName = fetchName[0].name;
+} else {
+  currentName = '';
+  console.error(fetchNameError);
+}
+// Fetch user surname from DB
+const { data: fetchSurname, error: fetchSurnameError } =
+  await supabaseConnection()
+    .supabase.from('Profiles')
+    .select('surname')
+    .eq('user_id', userId);
+if (fetchSurname && fetchSurname !== null) {
+  currentSurname = fetchSurname[0].surname;
+} else {
+  currentSurname = '';
+  console.error(fetchSurnameError);
+}
+
 // update
-/* TODO: DB connection */
 
 // delete
 function deleteAccount() {
