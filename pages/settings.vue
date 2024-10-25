@@ -41,7 +41,7 @@
             >
             <input
               type="text"
-              v-model="name"
+              v-model="newSetName"
               id="name-field"
               class="input-text"
               :placeholder="`Your name: ${currentName}`"
@@ -55,7 +55,7 @@
             >
             <input
               type="text"
-              v-model="surname"
+              v-model="newSetSurname"
               id="surname-field"
               class="input-text"
               :placeholder="`Your surname: ${currentSurname}`"
@@ -69,18 +69,19 @@
             >
             <input
               type="email"
-              v-model="email"
+              v-model="newSetEmail"
               class="input-text"
               id="email-field"
               :placeholder="`Your current email: ${currentEmail}`"
               :aria-placeholder="`Your current email: ${currentEmail}`"
               aria-labelledby="email-label"
-            /><!-- TODO: Replace with current user email -->
+            />
           </div>
 
           <button
             id="update-profile-button"
             class="profile-button bg-grey-100 hover:bg-grey-200 text-grey-700 transition"
+            @click="updateUserProfile(newSetEmail, newSetName, newSetSurname)"
           >
             Save Changes
           </button>
@@ -121,9 +122,9 @@ import ProfilePicture from '~/components/ProfilePicture.vue';
 import Modal from '~/components/Modals/RemoveModal.vue';
 
 // Form input bindings for user profile updates
-let name: string = '';
-let surname: string = '';
-let email: string = '';
+let newSetName: string = '';
+let newSetSurname: string = '';
+let newSetEmail: string = '';
 
 /* DB CRUD */
 // read
@@ -131,7 +132,6 @@ let userId = supabaseConnection().user.value?.id;
 let currentName: string;
 let currentSurname: string;
 let currentEmail: any = supabaseConnection().user.value?.email;
-
 // Fetch user name from DB
 if (userId) {
   const { data: fetchName, error: fetchNameError } = await supabaseConnection()
@@ -197,8 +197,48 @@ async function updateProfileImg(event: Event) {
       .getPublicUrl(
         supabaseConnection().user.value?.id + '/' + selectedProfileImgRegexed
       );
-    /* Update profile picture */
+    /* Replace profile picture */
     profileImgHolder?.setAttribute('src', getProfileImgUrl?.publicUrl);
+  }
+}
+
+// Update user profile
+async function updateUserProfile(
+  newSetEmail: string,
+  newSetName: string,
+  newSetSurname: string
+) {
+  // Update profile in the 'Profiles' table if there are changes in name or surname
+  if (currentName !== newSetName || currentSurname !== newSetSurname) {
+    const { data: profileData, error: profileError } =
+      await supabaseConnection()
+        .supabase.from('Profiles')
+        .update({
+          name: currentName !== newSetName ? newSetName : currentName,
+          surname:
+            currentSurname !== newSetSurname ? newSetSurname : currentSurname,
+        })
+        .eq('email', currentEmail);
+
+    if (profileError) {
+      console.error('Error updating profile:', profileError);
+      return;
+    }
+    console.log('Profile updated successfully:', profileData);
+  }
+
+  // Update user's email in Supabase Auth if the email has changed
+  if (currentEmail !== newSetEmail) {
+    const { data: authEmail, error: authEmailError } =
+      await supabaseConnection().supabase.auth.updateUser({
+        email: newSetEmail,
+      });
+
+    if (authEmailError) {
+      console.error('Error updating user email in auth:', authEmailError);
+      return;
+    }
+    console.log('User email updated successfully:', authEmail);
   }
 }
 
