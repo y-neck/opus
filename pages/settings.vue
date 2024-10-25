@@ -9,7 +9,7 @@
         id="profile-img-section"
         class="flex items-end border-b-2 border-b-grey-100 w-full md:w-1/2 pb-16"
       >
-        <ProfilePicture src="" alt="Profile" />
+        <ProfilePicture src="" alt="Profile Img" />
         <button id="update-img-button">
           <label
             for="update-img-input"
