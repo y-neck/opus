@@ -9,12 +9,21 @@
         id="profile-img-section"
         class="flex items-end border-b-2 border-b-grey-100 w-full md:w-1/2 pb-16"
       >
-        <ProfilePicture src="~/public/img/dev-icon-testing.png" />
-        <button
-          class="profile-button bg-grey-100 hover:bg-grey-200 text-grey-700 transition mx-3"
-        >
-          <PencilIcon />
-          <p id="update-img-button" class="profile-button-text">Update</p>
+        <ProfilePicture src="" alt="Profile" />
+        <button id="update-img-button">
+          <label
+            for="update-img-input"
+            class="profile-button bg-grey-100 hover:bg-grey-200 text-grey-700 transition mx-3"
+          >
+            <PencilIcon />
+            <p id="update-img-button" class="profile-button-text">Update</p>
+          </label>
+          <input
+            type="file"
+            id="update-img-input"
+            accept="image/png, image/jpeg, image/jpg, image/webp, image/svg"
+            class="hidden"
+          />
         </button>
       </div>
       <div
@@ -38,7 +47,7 @@
               :placeholder="`Your name: ${currentName}`"
               :aria-placeholder="`Your name: ${currentName}`"
               aria-labelledby="name-label"
-            /><!-- TODO: Replace with current user name -->
+            />
           </div>
           <div class="input-container">
             <label for="surname-field" id="surname-label" class="input-label"
@@ -121,35 +130,77 @@ let email: string = '';
 let userId = supabaseConnection().user.value?.id;
 let currentName: string;
 let currentSurname: string;
-let currentEmail: string = supabaseConnection().user.value?.email;
-
-// TODO:Fetch user's profile picture from DB
+let currentEmail: any = supabaseConnection().user.value?.email;
 
 // Fetch user name from DB
-const { data: fetchName, error: fetchNameError } = await supabaseConnection()
-  .supabase.from('Profiles')
-  .select('name')
-  .eq('user_id', userId);
-if (fetchName && fetchName !== null) {
-  currentName = fetchName[0].name;
-} else {
-  currentName = '';
-  console.error(fetchNameError);
-}
-// Fetch user surname from DB
-const { data: fetchSurname, error: fetchSurnameError } =
-  await supabaseConnection()
+if (userId) {
+  const { data: fetchName, error: fetchNameError } = await supabaseConnection()
     .supabase.from('Profiles')
-    .select('surname')
+    .select('name')
     .eq('user_id', userId);
-if (fetchSurname && fetchSurname !== null) {
-  currentSurname = fetchSurname[0].surname;
-} else {
-  currentSurname = '';
-  console.error(fetchSurnameError);
+  if (fetchName && fetchName !== null) {
+    currentName = fetchName[0].name;
+  } else {
+    currentName = '';
+    console.error(fetchNameError);
+  }
+}
+
+// Fetch user surname from DB
+if (userId) {
+  const { data: fetchSurname, error: fetchSurnameError } =
+    await supabaseConnection()
+      .supabase.from('Profiles')
+      .select('surname')
+      .eq('user_id', userId);
+  if (fetchSurname && fetchSurname !== null) {
+    currentSurname = fetchSurname[0].surname;
+  } else {
+    currentSurname = '';
+    console.error(fetchSurnameError);
+  }
 }
 
 // update
+let updateImgInput: any = document?.querySelector('#update-img-input');
+let profileImgHolder = document?.querySelector('#profile-img');
+updateImgInput?.addEventListener('change', updateProfileImg);
+
+// Update profile picture
+async function updateProfileImg(event: Event) {
+  const selectedProfileImg = (event.target as HTMLInputElement).files?.[0];
+  if (selectedProfileImg) {
+    // Error if >200kb
+    if (selectedProfileImg.size > 200000) {
+      alert('File size should not exceed 200kb');
+      return;
+    }
+    // Replace spaces in filename with _
+    let selectedProfileImgRegexed = selectedProfileImg.name.replace(
+      /\s+/g /* Replace white space with _ */,
+      '_'
+    );
+    // Store file to user bucket if provided
+    const { data, error } = await supabaseConnection()
+      .supabase.storage.from('profile_img')
+      .upload(
+        supabaseConnection().user.value?.id + '/' + selectedProfileImgRegexed,
+        selectedProfileImg,
+        {
+          // Replace existing file
+          upsert: true,
+        }
+      );
+    // Update profile picture on settings page
+    const { data: getProfileImgUrl } = await supabaseConnection()
+      .supabase.storage.from('profile_img') /* Get file from bucket */
+      .getPublicUrl(
+        supabaseConnection().user.value?.id + '/' + selectedProfileImgRegexed
+      );
+    /* Update profile picture */
+    profileImgHolder?.setAttribute('src', getProfileImgUrl?.publicUrl);
+  }
+}
 
 // delete
 function deleteAccount() {
