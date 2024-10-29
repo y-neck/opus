@@ -78,6 +78,11 @@ async function logout() {
   align-items: center;
 }
 
+.nav-item.router-link-active {
+  @apply bg-grey-100;
+  @apply rounded-lg;
+}
+
 .nav-item-text {
   line-height: 32px;
   padding-inline: 8px;
