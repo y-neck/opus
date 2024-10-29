@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav
-      class="md:w-[266px] md:h-full flex md:flex-col gap-8 md:border-r border-grey-100 max-sm:w-screen max-sm:fixed max-sm:top-[95vh] max-sm:border-t-2"
+      class="md:w-[266px] md:h-full flex md:flex-col gap-8 md:border-r border-grey-100 max-sm:w-screen max-sm:fixed max-sm:top-[95vh] max-sm:border-t-2 max-md:justify-center"
     >
       <div
         class="bg-white text-grey-700 border-b border-grey-100 flex flex-row justify-between md:justify-start align-center"
@@ -55,11 +55,22 @@
           <p class="nav-item-text">Team</p></NuxtLink
         >
       </div>
+      <button id="logout-btn" class="nav-item" @click="logout()">
+        <LogoutIcon />
+        <p class="nav-item-text hidden md:block">Logout</p>
+      </button>
     </nav>
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+async function logout() {
+  // Log out user
+  const { error } = await supabaseConnection().supabase.auth.signOut();
+  // Redirect to login page
+  navigateTo('/login');
+}
+</script>
 
 <style scoped>
 .nav-item {
