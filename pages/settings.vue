@@ -244,12 +244,19 @@ async function updateUserProfile(
 }
 
 // delete
-function deleteAccount() {
-  alert(
-    'Do you really want to delete your account? You will lose all your data! This action cannot be undone.'
-  );
-  //TODO: DB connection
+async function deleteAccount() {
+  let userId = supabaseConnection().supabase.auth.users.id; /* TODO: Fix */
+  const { data, error } =
+    await supabaseConnection().supabase.auth.admin.deleteUser(userId);
+  if (error) {
+    console.error('Error deleting user:', error);
+    return;
+  }
+
   console.log('Account deleted');
+
+  // Redirect to login page
+  navigateTo('/login');
 }
 
 /* Handle Modals */
