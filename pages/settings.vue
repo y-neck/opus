@@ -214,6 +214,7 @@ async function updateUserProfile(
       await supabaseConnection()
         .supabase.from('Profiles')
         .update({
+          email: currentEmail !== newSetEmail ? newSetEmail : currentEmail,
           name: currentName !== newSetName ? newSetName : currentName,
           surname:
             currentSurname !== newSetSurname ? newSetSurname : currentSurname,
