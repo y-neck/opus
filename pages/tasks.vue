@@ -7,10 +7,11 @@
         :key="project.projectId"
       >
         <div class="task-section-container pb-16">
+          <!-- Task Section Header and Task Count -->
           <div
-            class="section-header flex items-center gap-4 border-b-2 border-b-grey-100"
             v-for="(section, index) in project.taskSections"
-            :key="index"
+            :key="section.index"
+            class="section-header flex items-center gap-4 border-b-2 border-b-grey-100"
           >
             <h2
               class="task-section-title text-2xl"
@@ -24,6 +25,8 @@
               {{ section.tasks.length }}
             </p>
           </div>
+
+          <!-- Tasks within each section -->
           <div v-for="section in project.taskSections" :key="section.index">
             <div
               v-for="(task, taskIndex) in section.tasks"
@@ -48,17 +51,14 @@
                   >
                     <p class="task-property-dueDate">
                       {{
-                        `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}` ||
-                        'NaN'
+                        task.dueDate
+                          ? `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}`
+                          : 'NaN'
                       }}
                     </p>
                     <span class="divider">·</span>
                     <p class="task-property-assignee">
-                      {{
-                        task.assignedTo
-                          .map((member: any) => member.name)
-                          .join(', ') || 'Everyone'
-                      }}
+                      {{ task.assignedTo}}
                     </p>
                   </div>
                 </div>
@@ -233,8 +233,13 @@
 import { supabaseConnection } from '~/composables/supabaseConnection';
 import Header from '~/components/Header.vue';
 import DropdownMenu from '~/components/DropdownMenu.vue';
-import projectTasks from '~/server/models/tasksETL';
-import { onMounted } from 'vue';
+import userProfile from '~/middleware/auth';
+import { ref, onMounted } from 'vue';
+/* Import projects */
+import projectTasksModel, {
+  type Project,
+} from '~/middleware/models/projectsETL';
+import { getProjects } from '~/middleware/projectMiddleware';
 
 // Page meta
 definePageMeta({
@@ -242,6 +247,15 @@ definePageMeta({
   description: '',
   middleware: 'auth',
   layout: 'default',
+});
+
+/* DB CRUD */
+// Make projectTasks a ref to enable reactivity
+const projectTasks = ref<Project[]>([]);
+
+onMounted(async () => {
+  projectTasks.value = await getProjects();
+  console.log('Project tasks from projectETL:', projectTasks.value);
 });
 
 /* Random hue for titles */

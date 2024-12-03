@@ -65,55 +65,119 @@ export async function getProjects(): Promise<Project[]> {
     console.log('Project Data fetching successful');
 
     // Map data to Project interface
-    return projectsData.map((project: any) => ({
-      projectId: project.id,
-      projectName: project.project_name,
+    const projects = await Promise.all(
+      projectsData.map(async (project: any) => ({
+        projectId: project.id,
+        projectName: project.project_name,
 
-      // Map members assigned to project
-      projectMembers: membersData
-        .filter((member: any) => member.project_id === project.id)
-        .map((member: any) => ({
-          id: member.user_id,
-          name: memberNameMap[member.user_id] || 'Unknown', // Use map to find full name or 'Unknown' as fallback
-          role: member.role,
-        })) as ProjectMember[],
+        // Map members assigned to project
+        projectMembers: membersData
+          .filter((member: any) => member.project_id === project.id)
+          .map((member: any) => ({
+            id: member.user_id,
+            name: memberNameMap[member.user_id] || 'Unknown', // Use map to find full name or 'Unknown' as fallback
+            role: member.role,
+          })) as ProjectMember[],
 
-      // Map sections assigned to project
-      taskSections: sectionsData
-        .filter((section: any) => section.project_id === project.id)
-        .map((section: any) => ({
-          index: section.id,
-          name: section.section_name,
+        // Map sections assigned to project
+        taskSections: await Promise.all(
+          sectionsData
+            .filter((section: any) => section.project_id === project.id)
+            .map(async (section: any) => ({
+              index: section.id,
+              name: section.section_name,
 
-          // Map tasks assigned to each section
-          tasks: tasksData
-            .filter((task: any) => task.tasks_section === section.id)
-            .map((task: any) => ({
-              id: task.id,
-              name: task.name,
-              startDate: task.start_date
-                ? {
-                    day: new Date(task.start_date).getDate(),
-                    month: new Date(task.start_date).getMonth() + 1,
-                    year: new Date(task.start_date).getFullYear(),
-                  }
-                : undefined,
-              dueDate: task.due_date
-                ? {
-                    day: new Date(task.due_date).getDate(),
-                    month: new Date(task.due_date).getMonth() + 1,
-                    year: new Date(task.due_date).getFullYear(),
-                  }
-                : undefined,
+              // Map tasks assigned to each section
+              tasks: await Promise.all(
+                tasksData
+                  // Filter tasks that belong to the current section by checking if tasks_section matches the section ID
+                  .filter((task: any) => task.tasks_section === section.id)
+                  // Map through each filtered task and process it asynchronously
+                  .map(async (task: any) => {
+                    // Parse `assigned_to` as an array of IDs
+                    // Check if `assigned_to` is already an array; if not, split by commas to get individual IDs
+                    const assignedToIds = Array.isArray(task.assigned_to)
+                      ? task.assigned_to
+                      : typeof task.assigned_to === 'string'
+                      ? task.assigned_to
+                          .split(',')
+                          .map((id: string) => parseInt(id.trim(), 10))
+                      : [];
 
-              // Map assigned members to task
-              assignedTo: task.assigned_to.map((assigned: any) => ({
-                id: assigned.id,
-                name: memberNameMap[assigned.id] || 'Unknown',
-                role: assigned.role,
-              })) as ProjectMember[],
-            })) as Task[],
-        })) as TaskSection[],
+                    // Fetch profiles for each assigned member by mapping through assignedToIds
+                    // Promise.all ensures all profile fetches happen in parallel
+                    const assignedMembers: ProjectMember[] = await Promise.all(
+                      assignedToIds.map(async (assignedId: number) => {
+                        // Fetch the profile for the assigned member by user ID
+                        const { data: profileData, error } =
+                          await supabaseConnection()
+                            .supabase.from('Profiles')
+                            .select('id, name, surname')
+                            .eq('id', assignedId)
+                            .single();
+
+                        // Handle cases where profile data may not be found
+                        if (error) {
+                          console.warn(
+                            `Profile not found for ID ${assignedId}`
+                          );
+                          return {
+                            id: assignedId,
+                            name: 'Unknown', // Set default name if profile is missing
+                            role: 'Unknown', // Set default role if profile is missing
+                          };
+                        }
+
+                        // Find the member's role from `membersData` using user ID, falling back to 'Unknown' if role is missing
+                        const memberRole = membersData.find(
+                          (member) => member.user_id === assignedId
+                        )?.role;
+
+                        return {
+                          id: assignedId,
+                          name: `${profileData?.name} ${profileData?.surname}`, // Format name and surname
+                          role: memberRole || 'Unknown', // Assign role or fallback to 'Unknown'
+                        };
+                      })
+                    );
+
+                    // Return a task object with populated fields
+                    return {
+                      id: task.id,
+                      name: task.name,
+                      // Parse and format startDate if present
+                      startDate: task.start_date
+                        ? {
+                            day: new Date(task.start_date).getDate(),
+                            month: new Date(task.start_date).getMonth() + 1,
+                            year: new Date(task.start_date).getFullYear(),
+                          }
+                        : undefined, // Leave undefined if no start date
+                      // Parse and format dueDate if present
+                      dueDate: task.due_date
+                        ? {
+                            day: new Date(task.due_date).getDate(),
+                            month: new Date(task.due_date).getMonth() + 1,
+                            year: new Date(task.due_date).getFullYear(),
+                          }
+                        : undefined, // Leave undefined if no due date
+                      assignedTo: assignedMembers, // Assign fetched members list to assignedTo
+                    };
+                  })
+              ),
+            }))
+        ),
+      }))
+    );
+
+    return projects.map((project) => ({
+      ...project,
+      taskSections: project.taskSections.map((section) => ({
+        ...section,
+        tasks: section.tasks.map((task) => ({
+          ...task,
+        })) as Task[], // Ensure TypeScript treats this as a Task array
+      })) as TaskSection[],
     })) as Project[];
   } catch (error) {
     console.error('Error assembling project data:', error);

@@ -35,9 +35,9 @@ export interface TaskSection {
 export interface Project {
   projectId: number;
   projectName: string;
-  tasks: Task[];
-  taskSections?: TaskSection[];
-  projectMembers: ProjectMember[];
+  tasks: Task[]; // Array of tasks for each project
+  taskSections?: TaskSection[]; // Array of sections within a project
+  projectMembers: ProjectMember[]; // Array of ProjectMember objects for each project's members
 }
 
 // Initialize projectTasks with empty array
