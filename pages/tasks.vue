@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col w-full">
     <Header pageTitle="Tasks" pageIcon="NoteIcon" />
-    <main class="p-16">
+    <main class="p-16 flex flex-col">
       <div
         v-for="(project, projectIndex) in projectTasks"
         :key="project.projectId"
       >
-        <div class="task-section-container pb-16">
+        <div class="task-section-container">
           <!-- Task Section Header and Task Count -->
           <div
             v-for="(section, index) in project.taskSections"
@@ -187,6 +187,10 @@ function openNewTaskWindow() {
 
 <style scoped>
 /* Styles for dropdowns and layout */
+.task-section-container {
+  @apply pb-16 flex flex-col gap-4;
+}
+
 .new-task-label {
   @apply text-grey-500;
 }

@@ -21,7 +21,7 @@ export interface Task {
     month: number;
     year: number;
   };
-  statusId: number;
+  status_id: number;
   assignedTo: ProjectMember[]; // Use the ProjectMember interface for clarity
   tasksSection?: number; // Use the TaskSection interface for clarity
 }

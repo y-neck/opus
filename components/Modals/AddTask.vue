@@ -38,7 +38,7 @@
                       {{ section.name }}
                     </option>
                   </select>
-                  <label for="new-task-due-date" class="sr-only"
+                  <label for="new-task-due-date" class="new-task-label sr-only"
                     >Due Date</label
                   >
                   <input

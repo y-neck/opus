@@ -30,6 +30,7 @@ export async function getProjects(): Promise<Project[]> {
     console.log('MembersData: ', membersData);
     if (membersError) throw membersError;
 
+    // FIXME: Name not properly assigned to member
     // Fetch corresponding Profiles for Members
     const { data: memberNameData, error: memberNameError } =
       await supabaseConnection()
@@ -165,8 +166,36 @@ export async function getProjects(): Promise<Project[]> {
                     };
                   })
               ),
+              // Add tasks that are not assigned to any task section
             }))
-        ),
+          ),
+          unsectionedTasks: await Promise.all(
+            tasksData
+          .filter(
+            (task: any) =>
+              task.projects_id === project.id && !task.tasks_section
+          )
+          .map(async (task: any) => ({
+            id: task.id,
+            name: task.name,
+            startDate: task.start_date
+              ? {
+                  day: new Date(task.start_date).getDate(),
+                  month: new Date(task.start_date).getMonth() + 1,
+                  year: new Date(task.start_date).getFullYear(),
+                }
+              : undefined, // Leave undefined if no start date
+            dueDate: task.due_date
+              ? {
+                  day: new Date(task.due_date).getDate(),
+                  month: new Date(task.due_date).getMonth() + 1,
+                  year: new Date(task.due_date).getFullYear(),
+                }
+              : undefined, // Leave undefined if no due date
+            assignedTo: [], // Assign empty array to assignedTo
+            status_id: task.status_id,
+          }))
+          )
       }))
     );
 
