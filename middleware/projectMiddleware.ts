@@ -7,6 +7,7 @@ import type {
   Task,
 } from './models/projectsETL';
 
+// Fetch all projects from the database
 export async function getProjects(): Promise<Project[]> {
   // DEBUG:
   console.log('Testing supabaseConnection ', supabaseConnection());
@@ -199,17 +200,29 @@ export async function getProjects(): Promise<Project[]> {
       }))
     );
 
-    return projects.map((project) => ({
-      ...project,
-      taskSections: project.taskSections.map((section) => ({
-        ...section,
-        tasks: section.tasks.map((task) => ({
-          ...task,
-        })) as Task[], // Ensure TypeScript treats this as a Task array
-      })) as TaskSection[],
-    })) as Project[];
+    // Map over the projects and create task sections and unsectioned tasks
+    return projects.map((project) => {
+      // Create task sections by mapping over the task sections and tasks
+      const taskSections = project.taskSections?.map((section) => {
+        // Map over the tasks and create a new task object
+        const tasks = section.tasks.map((task) => {
+          return { ...task } as Task;
+        });
+        // Return a new task section object with the tasks
+        return { ...section, tasks } as TaskSection;
+      }) ?? []; // If no task sections, return an empty array
+      // Create unsectioned tasks by mapping over the unsectioned tasks
+      const unsectionedTasks = project.unsectionedTasks?.map((task) => ({...task} as Task));
+      // Combine all tasks into one array
+      const allTasks = [...taskSections.flatMap((section) => section.tasks) , ...unsectionedTasks];
+      // Return a new project object with the task sections, unsectioned tasks, and all tasks
+      return { ...project, taskSections, unsectionedTasks, tasks: allTasks } as Object as Project;
+    }) as Project[]; // Cast the result to an array of Project objects
   } catch (error) {
+    // Log an error if there is a problem assembling the project data
     console.error('Error assembling project data:', error);
+    // Return an empty array if there is an error
     return [];
   }
-}
+  }
+

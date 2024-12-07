@@ -21,7 +21,7 @@ export interface Task {
     month: number;
     year: number;
   };
-  status_id: number;
+  status_id: string | number;
   assignedTo: ProjectMember[]; // Use the ProjectMember interface for clarity
   tasksSection?: number; // Use the TaskSection interface for clarity
 }
@@ -33,9 +33,10 @@ export interface TaskSection {
 }
 // Project Interface
 export interface Project {
-  projectId: number;
+  projectId: string | number;
   projectName: string;
   tasks: Task[]; // Array of tasks for each project
+  unsectionedTasks?: Task[]; // Array of tasks that are not assigned to any section
   taskSections?: TaskSection[]; // Array of sections within a project
   projectMembers: ProjectMember[]; // Array of ProjectMember objects for each project's members
 }
