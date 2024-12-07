@@ -44,7 +44,11 @@
                   @click="markAsDone(task.id)"
                 />
                 <div class="task-properties">
-                  <p class="task-property-title" :id="`task-${task.name}`">
+                  <p :class="{ 
+                    'task-property-title': true,
+                    'task-done': task.status_id === 3 
+                    }" 
+                    :id="`task-${task.id}`">
                     {{ task.name }}
                   </p>
                   <div
@@ -257,27 +261,9 @@ const projectTasks = ref<Project[]>([]);
 onMounted(async () => {
   // Fetch projects data from DB
   projectTasks.value = await getProjects();
+  projectTasks.value = [...projectTasks.value]; // Enforcing reactivity
   console.log('Project tasks from projectETL:', projectTasks.value);
 
-  // Get done tasks and mark them
-  const markDoneTasks = () => {
-    projectTasks.value.forEach((project) => {
-      project.taskSections?.forEach((section) => {
-      project.tasks?.forEach((task) => {
-        if (task.status_id === 3) {
-          document
-            .querySelector<HTMLInputElement>(`#task-${task.id}`)
-            ?.classList.add('task-done');
-        }
-      });
-      });
-    });
-  };
-  console.log('Marked tasks as done');
-  return {
-    projectTasks,
-    markDoneTasks,
-  };
 });
 
 /* Random hue for titles */
@@ -287,8 +273,7 @@ const generateRandomHue = (index: number) => {
 
 /* Mark task as done */
 async function markAsDone(taskId: number) {
-  console.log('Marked task as done: task-id', taskId);
-  // TODO: Change task status to done
+  console.log('Marking task as done: task-id', taskId);
   const { data: getTaskStatus, error: getTaskStatusError } =
     await supabaseConnection()
       .supabase.from('Tasks')
@@ -302,27 +287,41 @@ async function markAsDone(taskId: number) {
       }
 
       const currentStatus = Number(getTaskStatus?.status_id);
-
       const newStatus = currentStatus === 1 || currentStatus === 2 ? 3 : 2; // If status is todo/in-progress, change to done, else change to in-progress as changing the status means the task is in progress
         const { error: updateTaskError } = await supabaseConnection()
           .supabase.from('Tasks')
           .update({ status_id: newStatus })
           .eq('id', taskId);
-        console.log('Updated task status to done: task-id', taskId);
       
 if (updateTaskError) {
       console.error('Error updating task status:', updateTaskError);
       return;
 }
-    console.log(
-      `Updated task status to ${newStatus === 3 ? 'done' : 'not done'}: task-id`,
-      taskId
-    );
 
-  // Mark task as done visually
-  document
-    .querySelector<HTMLInputElement>(`#task-${taskId}`)
-    ?.classList.toggle('task-done');
+// Mark task as done visually with reactivity
+const project = projectTasks.value.find(proj =>
+  proj.taskSections?.some(section => 
+    section.tasks.some(task => task.id===taskId))
+);
+if (project) {
+  const section = project.taskSections?.find((section) =>
+    section.tasks.some((task) => task.id === taskId)
+  );
+  if (section) {
+    const taskIndex = section.tasks.findIndex((task) => task.id === taskId);
+    if (taskIndex !== -1) {
+      section.tasks[taskIndex] = {
+        ...section.tasks[taskIndex], // Spread operator to create a new object
+        status_id: newStatus, // Update the status
+      };
+    }
+  }
+} 
+
+console.log(
+  `Updated task status to ${newStatus === 3 ? 'done' : 'not done'}: task-id`,
+  taskId
+);
 }
 
 /* Handle dropdowns */
