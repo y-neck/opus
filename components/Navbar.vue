@@ -10,9 +10,7 @@
           id="project-dropdown"
           class="md:w-[280px] md:pt-3 md:px-4 md:pb-3 flex gap-1"
         >
-          <img src="" alt="icn" />
-          <p class="max-sm:hidden">[Team Name]</p>
-          <p>^</p>
+          <ProjectSwitch />
         </div>
       </div>
       <div id="main-nav" class="hidden md:flex flex-col">

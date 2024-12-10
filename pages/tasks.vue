@@ -24,6 +24,15 @@
             >
               {{ section.tasks.length }}
             </p>
+            <button
+                  class="edit-section-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
+                  :data-task-id="section.index"
+                 @click="openEditSectionWindow(section.index)"
+                >
+              <DotsIcon />
+            </button>
+            <EditSection :project="project" :section="section"/>
+                  
           </div>
 
           <!-- Tasks within each section -->
@@ -81,10 +90,10 @@
                 <!-- TODO: menu functionality -->
                 <DropdownMenu
                   :id="`edit-task-dd-${task.id}`"
-                  class="hidden"
+                  class="dropdown hidden"
                   v-if="isDropdownVisible[`edit-task-dd-${task.id}`]"
                 >
-                  <p role="menuitem" class="dropdown-menu-item">
+                  <p role="menuitem" class="dropdown-menu-item" @click="openEditTaskWindow(task.id)">
                     <PencilIcon />Edit Task
                   </p>
                   <p
@@ -124,6 +133,7 @@
                   </p>
                 </DropdownMenu>
               </div>
+              <EditTask/>
             </div>
           </div>
           
@@ -238,7 +248,11 @@
 import { supabaseConnection } from '~/composables/supabaseConnection';
 import Header from '~/components/Header.vue';
 import DropdownMenu from '~/components/DropdownMenu.vue';
+/* Import modals */
+import EditSection from '~/components/Modals/EditSection.vue';
 import AddTask from '~/components/Modals/AddTask.vue';
+import EditTask from '~/components/Modals/EditTask.vue';
+
 import userProfile from '~/middleware/auth';
 import { ref, onMounted } from 'vue';
 /* Import projects */
@@ -262,8 +276,8 @@ onMounted(async () => {
   // Fetch projects data from DB
   projectTasks.value = await getProjects();
   projectTasks.value = [...projectTasks.value]; // Enforcing reactivity
+  // DEBUG:
   console.log('Project tasks from projectETL:', projectTasks.value);
-
 });
 
 /* Random hue for titles */
@@ -317,7 +331,6 @@ if (project) {
     }
   }
 } 
-
 console.log(
   `Updated task status to ${newStatus === 3 ? 'done' : 'not done'}: task-id`,
   taskId
@@ -338,6 +351,25 @@ function openNewTaskWindow() {
     document.querySelector<HTMLDivElement>('#add-task-backdrop');
   if (addNewTaskWindow) {
     addNewTaskWindow.classList.toggle('hidden');
+  }
+}
+
+function openEditSectionWindow(sectionIndex: number) {
+  const editSectionWindow =
+    document.querySelector<HTMLDivElement>('#edit-section-backdrop');
+  if (editSectionWindow) {
+    editSectionWindow.classList.toggle('hidden');
+  }
+}
+
+function openEditTaskWindow(taskId: number) {
+  const editTaskWindow =
+    document.querySelector<HTMLDivElement>('#edit-task-backdrop');
+  if (editTaskWindow) {
+    editTaskWindow.classList.toggle('hidden');
+    document.querySelectorAll<HTMLDivElement>('.dropdown-overlay').forEach((el) => {
+      el.classList.add('hidden');
+    });
   }
 }
 </script>
