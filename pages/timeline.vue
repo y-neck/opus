@@ -2,7 +2,7 @@
   <div class="flex flex-col w-full">
     <Header pageTitle="Index" pageIcon="LayoutGridIcon" />
     <main class="p-16">
-      <p>Hello world</p>
+      <p>Coming soon</p>
     </main>
   </div>
 </template>
