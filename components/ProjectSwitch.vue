@@ -45,6 +45,10 @@ const setActiveProject = (projectId: number, projectName: string) => {
   // // DEBUG:
   // console.log(`Set active project: ${activeProjectId}`);
   toggleDropdown('project-dd');
+  // Redirect to tasks page if not already on tasks page
+  if (window.location.pathname === '/task-overview') {
+    navigateTo('/tasks');
+  }
 };
 
 // Watch for changes in active project
