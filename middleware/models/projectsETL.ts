@@ -39,6 +39,7 @@ export interface Project {
   unsectionedTasks?: Task[]; // Array of tasks that are not assigned to any section
   taskSections?: TaskSection[]; // Array of sections within a project
   projectMembers: ProjectMember[]; // Array of ProjectMember objects for each project's members
+  // TODO: add property for project image link
 }
 
 // Initialize projectTasks with empty array

@@ -30,7 +30,7 @@
       </div>
       <div id="team-nav" class="flex md:flex-col justify-between max-sm:gap-8">
         <p id="team-name" class="hidden md:block text-grey-500 text-sm">
-          [Team Name]
+          {{ activeProjectName }}
         </p>
         <NuxtLink to="/tasks" class="nav-item">
           <NoteIcon />
@@ -61,7 +61,16 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+/* Display current project */
+import { useProjectStore } from '~/middleware/projectStore';  // Import pinia store
+
+// Initialize pinia store
+const projectStore=useProjectStore();
+// Update team name reactively
+const activeProjectName = computed(() => projectStore.activeProjectName);
+
+// Logout function
 async function logout() {
   // Log out user
   const { error } = await supabaseConnection().supabase.auth.signOut();

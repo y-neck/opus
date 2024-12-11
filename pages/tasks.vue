@@ -3,13 +3,12 @@
     <Header pageTitle="Tasks" pageIcon="NoteIcon" />
     <main class="p-16 flex flex-col">
       <div
-        v-for="(project, projectIndex) in projectTasks"
-        :key="project.projectId"
+        v-if="project"
       >
         <div class="task-section-container">
           <!-- Task Section Header and Task Count -->
           <div
-            v-for="(section, index) in project.taskSections"
+            v-for="(section, index) in project?.taskSections"
             :key="section.index"
             class="section-header flex items-center gap-4 border-b-2 border-b-grey-100"
           >
@@ -240,6 +239,7 @@
           </button>
         </div>
       </div>
+      <div v-else><p>Please select a project.</p></div>
     </main>
   </div>
 </template>
@@ -260,6 +260,8 @@ import projectTasksModel, {
   type Project,
 } from '~/middleware/models/projectsETL';
 import { getProjects } from '~/middleware/projectMiddleware';
+import { useProjectStore } from '~/middleware/projectStore';
+
 // Page meta
 definePageMeta({
   title: 'Tasks',
@@ -268,9 +270,17 @@ definePageMeta({
   layout: 'default',
 });
 
-/* DB CRUD */
+/* Handle active project */
+const project = computed(() => {
+  // Find project based on active project ID
+return projectTasks.value.find(p=>p.projectId===projectStore.activeProjectId);
+})
 // Make projectTasks a ref to enable reactivity
 const projectTasks = ref<Project[]>([]);
+// Initialize pinia project store
+const projectStore = useProjectStore();
+
+/* DB CRUD */
 
 onMounted(async () => {
   // Fetch projects data from DB
@@ -284,6 +294,7 @@ onMounted(async () => {
 const generateRandomHue = (index: number) => {
   return Math.floor(Math.random() * 360);
 };
+
 
 /* Mark task as done */
 async function markAsDone(taskId: number) {
@@ -313,16 +324,12 @@ if (updateTaskError) {
 }
 
 // Mark task as done visually with reactivity
-const project = projectTasks.value.find(proj =>
-  proj.taskSections?.some(section => 
-    section.tasks.some(task => task.id===taskId))
-);
-if (project) {
-  const section = project.taskSections?.find((section) =>
-    section.tasks.some((task) => task.id === taskId)
+if (project.value) {
+  const section = project.value.taskSections?.find((section:any) =>
+    section.tasks.some((task:any) => task.id === taskId)
   );
   if (section) {
-    const taskIndex = section.tasks.findIndex((task) => task.id === taskId);
+    const taskIndex = section.tasks.findIndex((task:any) => task.id === taskId);
     if (taskIndex !== -1) {
       section.tasks[taskIndex] = {
         ...section.tasks[taskIndex], // Spread operator to create a new object
@@ -330,7 +337,8 @@ if (project) {
       };
     }
   }
-} 
+}
+// DEBUG:
 console.log(
   `Updated task status to ${newStatus === 3 ? 'done' : 'not done'}: task-id`,
   taskId
