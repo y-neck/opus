@@ -1,58 +1,84 @@
 <template>
   <div class="flex flex-col w-full">
     <Header pageTitle="Task Overview" pageIcon="NotepadIcon" />
-    <main class="p-16">
-      <div v-for="project in projectTasks">
-        <div id="project-tasks-container w-full mb-16">
-          <div
-            class="section-header flex items-center gap-4 border-b-2 border-b-grey-100"
-          >
-            <h2 class="project-title text-2xl font-medium text-grey-500">
+        <main class="p-16 flex flex-col">
+          <!-- Loop over each project -->
+        <div v-for="(project, projectIndex) in projects" :key="project.projectId" class="task-section-container flex flex-col mb-8">
+          <!-- Task Section Header and Task Count -->
+           <h2
+              class="task-project-title text-2xl"
+              :style="{ color: `hsl(${generateRandomHue(projectIndex)}, 25%, 60%)` }"
+            >
               {{ project.projectName }}
             </h2>
-            <p
-              class="project-task-count text-grey-700 text-xs font-semibold p-1 w-4 bg-grey-100 rounded"
-            >
-              {{
-                project.taskSections.reduce(
-                  (total, section) => total + section.tasks.length,
-                  0
-                )
-              }}
-            </p>
-          </div>
-          <div v-for="section in project.taskSections" :key="section.index">
-            <div class="taskList" v-for="task in section.tasks" :key="task.id">
-              <div class="task py-4 border-b-2 border-b-grey-100">
-                <span class="task-name text-grey-950">{{ task.name }}</span>
-                <div class="task-properties flex gap-1 text-grey-500">
-                  <span class="task-property-due">{{
-                    `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}`
-                  }}</span>
-                  <span class="divider">·</span>
-                  <span class="task-property-project">
-                    {{ project.projectName }}
-                  </span>
-                  <span class="divider">·</span
-                  ><span class="task-property-assignees">{{
-                    task.assignedTo.map((member) => member.name).join(', ')
-                  }}</span>
+            <!-- Loop over each task section -->
+            <div
+              v-for="(section, sectionIndex) in [
+            ...(project.taskSections ?? []),
+            ...(project.unsectionedTasks?.length
+              ? [unsectionedSection(project.unsectionedTasks)]
+              : []),
+          ]"
+          :key="sectionIndex"
+              class="task-section-container flex flex-col gap-2 border-b-2 border-b-grey-100"
+            > <!-- Type-cast combined array; ?? []: if null, return empty array -->
+              <div class="task-section-header flex items-center gap-2">
+              <h3
+                class="task-section-title text-xl"
+              >
+                {{ section.name }}
+              </h3>
+              <p
+                class="project-task-count text-grey-700 text-xs font-semibold p-1 w-4 bg-grey-100 rounded"
+              >
+                {{ section.tasks.length }}
+              </p></div>
+              <!-- Tasks within each section -->
+              <div
+              v-for="task in section.tasks"
+              :key="task.id"
+              class="task-container group flex items-center gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100"
+              >
+              <div
+              class="task-info flex flex-row gap-2 align-baseline items-center"
+              >
+              <div class="task-properties">
+                <p class="task-property-title" 
+                :id="`task-${task.id}`">
+                {{ task.name }}
+              </p>
+              <div
+              class="task-property-description flex text-grey-500 gap-1"
+              >
+              <p class="task-property-dueDate">
+                {{
+                  task.dueDate
+                  ? `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}`
+                  : 'NaN'
+                }}
+                      </p>
+                      <span class="divider">·</span>
+                      <p class="task-property-assignee">
+                        {{ task.assignedTo }}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
     </main>
   </div>
 </template>
 
-<script setup>
-import { supabaseConnection } from '~/composables/supabaseConnection';
+<script setup lang="ts">
 import Header from '~/components/Header.vue';
 
-//Db logic
-import projectTasks from '~/server/models/tasksETL';
+import { getProjects } from '~/middleware/projectMiddleware';
+
+const projects = await getProjects();
+// // DEBUG:
+// console.log('Projects:', projects);
 
 //Page meta
 definePageMeta({
@@ -61,6 +87,19 @@ definePageMeta({
   middleware: 'auth',
   layout: 'default',
 });
+
+/* Define sections locally */
+function unsectionedSection(unsectionedTasks: any[]): { name: string; tasks: any[] } {
+  return{
+    name: 'Tasks without section',
+    tasks: unsectionedTasks,
+  };
+}
+
+/* Random hue for titles */
+const generateRandomHue = (index: number) => {
+  return Math.floor(Math.random() * 360);
+};
 </script>
 
 <style scoped></style>
