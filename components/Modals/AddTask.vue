@@ -12,6 +12,7 @@
                 <label for="new-task-name" class="new-task-label">Task</label>
                 <input
                   id="new-task-name"
+                  v-model="newTaskName"
                   class="w-full h-12 border border-grey-100 rounded-md px-3 placeholder:text-grey-400"
                   type="text"
                   placeholder="Task name"
@@ -23,8 +24,8 @@
                   >
                   <select
                     id="new-task-section"
+                    v-model="newTaskSection"
                     class="w-full h-12 border border-grey-100 rounded-md px-3 bg-white"
-                    required
                   >
                     <option value="" selected disabled hidden>
                       Select a section
@@ -43,6 +44,7 @@
                   >
                   <input
                     id="new-task-due-date"
+                    v-model="newTaskDueDate"
                     class="h-12 border border-grey-100 rounded-md px-3 placeholder:text-grey-400 w-fit"
                     type="date"
                     placeholder="Due Date"
@@ -67,7 +69,7 @@
                     <input
                       type="checkbox"
                       :id="'member-' + member.id"
-                      :value="member.name"
+                      v-model="newTaskAssignees[member.id]"
                       class="rounded-full"
                     />
                   </div>
@@ -108,42 +110,77 @@ import {
 } from '~/src/functions/handleDropdown';
 import CheckmarkIcon from '~/components/icons/CheckmarkIcon.vue';
 
+import { useProjectStore } from '~/middleware/projectStore';
+const projectStore = useProjectStore();
+
+
 // Props
 const props = defineProps({
   project: Object,
 })
 
+// Refs for inputs
+const newTaskName = ref('');
+const newTaskSection = ref('');
+const newTaskDueDate = ref('');
+const newTaskAssignees = ref<{ [key: number]: boolean }>({});
+const showError = ref(false);
+
 /* Handle new-task-window */
 // Error handling for required fields
 function checkRequiredFields() {
-  const newTaskName =
-    document.querySelector<HTMLInputElement>('#new-task-name');
-  const newTaskDueDate =
-    document.querySelector<HTMLInputElement>('#new-task-due-date');
-  const alertMsg = document.querySelector<HTMLDivElement>('#new-task-error');
-  if (!newTaskName?.value || !newTaskDueDate?.value) {
-    alertMsg?.classList.remove('hidden');
+  if (!newTaskName.value || !newTaskDueDate.value) {
+    showError.value = true;
     return false;
   } else {
-    alertMsg?.classList.add('hidden');
+    showError.value = false;
     return true;
   }
 }
 
 // Add new task
-function addNewTask() {
-  const newTaskName =
-    document.querySelector<HTMLInputElement>('#new-task-name');
-  const newTaskSection =
-    document.querySelector<HTMLInputElement>('#new-task-section');
-  const newTaskDueDate =
-    document.querySelector<HTMLInputElement>('#new-task-due-date');
-  const newTaskAssignees = document.querySelector<HTMLInputElement>(
-    '#new-task-assignees'
-  );
+async function addNewTask() {
   if (checkRequiredFields()) {
-    // TODO: db logic
-    console.log('Task added');
+    // Extract selected assignees id's from newTaskAssignees ref
+    const selectedAssignees = Object.keys(newTaskAssignees.value)
+    .filter((id) => newTaskAssignees.value[id]) // Filter only assignees with true values
+    .map((id) => Number(id)); // Convert keys to numbers (if stored as strings)
+    // DEBUG:
+    console.log('selectedAssignees', selectedAssignees);
+
+    // Add new task to DB
+    try {
+      const { error: addTaskError } = await supabaseConnection().supabase
+        .from('Tasks')
+        .insert([
+          // FIXME: insert overload -> selectedAssignees stringified array instead of array of ids
+          // Error 'invalid input syntax for type integer: "[31]"'
+          {
+            name: newTaskName.value,
+            due_date: new Date(newTaskDueDate.value).toISOString(),
+            status_id: 1,
+            projects_id: projectStore.activeProjectId,
+            assigned_to: selectedAssignees, // Ensure this is an array
+            tasks_section: newTaskSection?.value ? Number(newTaskSection.value) : null,
+          },
+        ]);
+      if (addTaskError) {
+        console.error('Error adding task:', addTaskError);
+        return;
+      }
+      console.log('Task added successfully');
+      closeNewTaskWindow();
+    } catch (error) {
+      console.error('Unexpected error adding task:', error);
+    }
+        
+    // DEBUG:
+console.log('Task added:', {
+      name: newTaskName.value,
+      section: newTaskSection?.value,
+      dueDate: newTaskDueDate.value,
+      assignees: selectedAssignees,
+    });
     closeNewTaskWindow();
   }
 }
