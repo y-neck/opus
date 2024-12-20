@@ -26,7 +26,13 @@
                   :placeholder="'New section name'"
                   v-model="newSectionName"
                 />
-                <button id="delete-section-btn" class="w-fit h-12 flex rounded-md px-3 text-destructive-red hover:bg-grey-100 transition"><TrashCanIcon /><span>Delete Section</span></button>
+                <button 
+                id="delete-section-btn" 
+                class="w-fit h-12 flex rounded-md px-3 text-destructive-red hover:bg-grey-100 transition"
+                @click="deleteSection(currentSectionId)"
+                >
+                  <TrashCanIcon /><span>Delete Section</span>
+                </button>
                 </div>
                 
               </form>
@@ -111,8 +117,8 @@ function closeEditSectionWindow() {
 }
 
 async function renameSection(renameSectionName, currentSectionId) {
-  // DEBUG:
-  console.log('Renaming section: ', renameSectionName, currentSectionId);
+  // // DEBUG:
+  // console.log('Renaming section: ', renameSectionName, currentSectionId);
 
   const { error: renameSectionError } = await supabaseConnection().supabase
       .from('Tasks_Sections')
@@ -130,6 +136,13 @@ async function addNewSection (currentProjectId, newSectionName){
     if (addNewSectionError){
       console.error('Error adding new section:', addNewSectionError);
     }
+}
+
+async function deleteSection(currentSectionId){
+  const response = await supabaseConnection().supabase
+      .from('Tasks_Sections')
+      .delete()
+      .eq('id', currentSectionId);
 }
 
 // Save new section name
