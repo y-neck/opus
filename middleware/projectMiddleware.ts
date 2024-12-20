@@ -17,7 +17,8 @@ export async function getProjects(): Promise<Project[]> {
     const { data: projectsData, error: projectsError } =
       await supabaseConnection()
         .supabase.from('Projects')
-        .select('id, project_name, project_img');
+        .select('id, project_name, project_img')
+        .order('project_name', { ascending: true });
     // DEBUG:
     console.log('ProjectsData: ', projectsData);
     if (projectsError) throw projectsError;
@@ -49,7 +50,8 @@ export async function getProjects(): Promise<Project[]> {
     const { data: sectionsData, error: sectionsError } =
       await supabaseConnection()
         .supabase.from('Tasks_Sections')
-        .select('id, project_id, section_name');
+        .select('id, project_id, section_name')
+        .order('section_name', { ascending: true });   
     // DEBUG:
     console.log('SectionsData: ', sectionsData);
     if (sectionsError) throw sectionsError;
@@ -59,7 +61,8 @@ export async function getProjects(): Promise<Project[]> {
       .supabase.from('Tasks')
       .select(
         'id, name, start_date, due_date, status_id, projects_id, assigned_to, tasks_section'
-      );
+      )
+      .order('name', { ascending: true });
     // DEBUG:
     console.log('TasksData: ', tasksData);
     if (tasksError) throw tasksError;
