@@ -16,7 +16,7 @@
                   type="text"
                   :placeholder="section || 'Edit section name'"
                   v-model="renameSectionName"
-                /> <!-- FIXME: Get section name of current section id-->
+                /> 
                 <div id="more-section-actions" class="flex gap-2">
                   <label for="add-section" class="edit-section-label">Add new section:</label>
                 <input
@@ -69,7 +69,7 @@ import TrashCanIcon from '../icons/TrashCanIcon.vue';
 
 import { useProjectStore } from '~/middleware/projectStore';
 const projectStore = useProjectStore();
-const currentProjectId = computed(() => projectStore.activeProjectId);
+const currentProjectId = computed(() => projectStore.activeProjectId); // Get the current project ID from pinia store
 
 // Props
 const props = defineProps({
@@ -93,13 +93,14 @@ onMounted(() => {
 });
 
 // ensure that props.section actually changes when you selecting a new section
+// Watch for changes in sectionId prop and reset renameSectionName when section is not provided
 watch(
-  () => props.sectionId,
+  () => props.sectionId, // Watch the sectionId prop for changes
   (newSectionId) => {
     if (newSectionId !== null && props.section) {
-      currentSectionId.value = newSectionId;
+      currentSectionId.value = newSectionId; // Update currentSectionId on change
     } else{
-      renameSectionName.value = ''; // Reset renameSectionName if section is not provided
+      renameSectionName.value = ''; // Reset renameSectionName when section is not provided
       currentSectionId.value = null;
     }
   },
@@ -115,11 +116,11 @@ function closeEditSectionWindow() {
     editSectionWindow.classList.add('hidden');
   }
 }
-
+/* Section CRUD */
+// Rename section
 async function renameSection(renameSectionName, currentSectionId) {
   // // DEBUG:
   // console.log('Renaming section: ', renameSectionName, currentSectionId);
-
   const { error: renameSectionError } = await supabaseConnection().supabase
       .from('Tasks_Sections')
       .update({ section_name: renameSectionName })
@@ -128,7 +129,7 @@ async function renameSection(renameSectionName, currentSectionId) {
         console.error('Error renaming section:', renameSectionError);
       }
     }
-
+// Add new section
 async function addNewSection (currentProjectId, newSectionName){
   const {error: addNewSectionError} = await supabaseConnection().supabase
       .from('Tasks_Sections')
@@ -138,14 +139,26 @@ async function addNewSection (currentProjectId, newSectionName){
     }
 }
 
-async function deleteSection(currentSectionId){
-  const response = await supabaseConnection().supabase
-      .from('Tasks_Sections')
-      .delete()
-      .eq('id', currentSectionId);
+// Refresh sections on the page when updated via CRUD
+async function refreshSections(currentProjectId) {
+  try {
+    const { data: sections, error } = await supabaseConnection().supabase
+    .from('Tasks_Sections')
+    .select('*')
+    .eq('project_id', currentProjectId)
+    .order('section_name', { ascending: true });
+    
+    if (error) {
+      console.error('Error fetching sections:', error);
+      return;
+    }
+    // Update the project store or directly bind to UI components
+    console.log('Sections updated:', sections);
+  } catch (error) {
+    console.error('Error refreshing sections:', error);
+  }
 }
-
-// Save new section name
+// Save section edits
 async function saveSectionEdits() {
   // // DEBUG:
   // console.log('Current section to be edited: ',currentSectionId)
@@ -156,6 +169,7 @@ async function saveSectionEdits() {
       // DEBUG:
       console.log('Section renamed successfully');
       closeEditSectionWindow();
+      refreshSections(currentProjectId.value);
     } catch (error) {
       console.error('Error renaming section:', error);
     }
@@ -166,10 +180,20 @@ async function saveSectionEdits() {
       // DEBUG:
       console.log('New section added successfully');
       closeEditSectionWindow();
+      refreshSections(currentProjectId.value);
     } catch (error) {
       console.error('Error adding new section:', error);
     }
   }
+}
+
+// Delete section
+async function deleteSection(currentSectionId){
+  const response = await supabaseConnection().supabase
+      .from('Tasks_Sections')
+      .delete()
+      .eq('id', currentSectionId);
+    refreshSections(currentProjectId.value);
 }
 </script>
 
