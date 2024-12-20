@@ -51,7 +51,7 @@
                     required
                   />
                 </div>
-                <label for="new-task-assignees" class="new-task-label"
+                <!-- <label for="new-task-assignees" class="new-task-label"
                   >Assign to</label
                 >
                 <div class="new-task-assignees flex gap-2 flex-wrap">
@@ -73,7 +73,7 @@
                       class="rounded-full"
                     />
                   </div>
-                </div>
+                </div> -->
                 <div id="new-task-error" class="hidden">
                   <p id="new-task-error-msg" class="text-destructive-red">
                     Please fill in all fields.
@@ -102,7 +102,7 @@
           </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 /* Handle dropdowns */
 import {
   isDropdownVisible,
@@ -123,7 +123,7 @@ const props = defineProps({
 const newTaskName = ref('');
 const newTaskSection = ref('');
 const newTaskDueDate = ref('');
-const newTaskAssignees = ref<{ [key: number]: boolean }>({});
+const newTaskAssignees = ref({});
 const showError = ref(false);
 
 /* Handle new-task-window */
@@ -141,26 +141,17 @@ function checkRequiredFields() {
 // Add new task
 async function addNewTask() {
   if (checkRequiredFields()) {
-    // Extract selected assignees id's from newTaskAssignees ref
-    const selectedAssignees = Object.keys(newTaskAssignees.value)
-    .filter((id) => newTaskAssignees.value[id]) // Filter only assignees with true values
-    .map((id) => Number(id)); // Convert keys to numbers (if stored as strings)
-    // DEBUG:
-    console.log('selectedAssignees', selectedAssignees);
-
     // Add new task to DB
     try {
       const { error: addTaskError } = await supabaseConnection().supabase
         .from('Tasks')
         .insert([
-          // FIXME: insert overload -> selectedAssignees stringified array instead of array of ids
-          // Error 'invalid input syntax for type integer: "[31]"'
           {
             name: newTaskName.value,
             due_date: new Date(newTaskDueDate.value).toISOString(),
             status_id: 1,
             projects_id: projectStore.activeProjectId,
-            assigned_to: selectedAssignees, // Ensure this is an array
+            // TODO: assigned_to: selectedAssignees.length ? selectedAssignees : null,
             tasks_section: newTaskSection?.value ? Number(newTaskSection.value) : null,
           },
         ]);
@@ -168,8 +159,8 @@ async function addNewTask() {
         console.error('Error adding task:', addTaskError);
         return;
       }
-      console.log('Task added successfully');
-      closeNewTaskWindow();
+      else {console.log('Task added successfully');
+      closeNewTaskWindow();}
     } catch (error) {
       console.error('Unexpected error adding task:', error);
     }
@@ -179,7 +170,7 @@ console.log('Task added:', {
       name: newTaskName.value,
       section: newTaskSection?.value,
       dueDate: newTaskDueDate.value,
-      assignees: selectedAssignees,
+      // assignees: selectedAssignees,
     });
     closeNewTaskWindow();
   }
@@ -187,10 +178,9 @@ console.log('Task added:', {
 
 // Close new-task-window
 function closeNewTaskWindow() {
-  const addNewTaskWindow =
-    document.querySelector<HTMLDivElement>('#add-task-backdrop');
+  const addNewTaskWindow = document.querySelector('#add-task-backdrop');
   if (addNewTaskWindow) {
-    addNewTaskWindow.classList.add('hidden');
+    addNewTaskWindow.classList.toggle('hidden', true);
   }
 }
 

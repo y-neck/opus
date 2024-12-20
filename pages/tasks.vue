@@ -47,7 +47,7 @@
                   class="task-checkbox w-4 h-4 border-grey-700"
                   type="checkbox"
                   :name="`check-task-${task.id}`"
-                  :id="`task-${task.id}`"
+                  :id="`task-checkbox-${task.id}`"
                   @click="markAsDone(task.id)"
                 />
                 <div class="task-properties">
@@ -55,7 +55,7 @@
                     'task-property-title': true,
                     'task-done': task.status_id === 3 
                     }" 
-                    :id="`task-${task.id}`">
+                    :id="`task-title-${task.id}`">
                     {{ task.name }}
                   </p>
                   <div
