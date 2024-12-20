@@ -26,12 +26,11 @@
             <button
                   class="edit-section-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
                   :data-task-id="section.index"
-                 @click="openEditSectionWindow(section.index)"
+                 @click="openEditSectionWindow(section.index, section.name)"
                 >
               <DotsIcon />
             </button>
-            <EditSection :project="project" :section="section"/>
-                  
+            <EditSection :project="project" :section="section.name" :sectionId="section.index" />       
           </div>
 
           <!-- Tasks within each section -->
@@ -362,9 +361,11 @@ function openNewTaskWindow() {
   }
 }
 
-function openEditSectionWindow(sectionIndex: number) {
+function openEditSectionWindow(sectionId: number, section: string) {
+  // DEBUG:
+  console.log('Opening edit section window: ', sectionId, section);
   const editSectionWindow =
-    document.querySelector<HTMLDivElement>('#edit-section-backdrop');
+    document.querySelector<HTMLDivElement>(`#edit-section-backdrop-${sectionId}`);
   if (editSectionWindow) {
     editSectionWindow.classList.toggle('hidden');
   }
