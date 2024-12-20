@@ -28,6 +28,7 @@ export interface Task {
 // Task Section Interface
 export interface TaskSection {
   index: number;
+  projectId: number;
   name: string;
   tasks: Task[];
 }

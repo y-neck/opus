@@ -91,7 +91,6 @@ watch(
   () => props.sectionId,
   (newSectionId) => {
     if (newSectionId !== null && props.section) {
-      renameSectionName.value = props.section;
       currentSectionId.value = newSectionId;
     } else{
       renameSectionName.value = ''; // Reset renameSectionName if section is not provided
@@ -124,10 +123,10 @@ async function renameSection(renameSectionName, currentSectionId) {
       }
     }
 
-async function addNewSection (newSectionName){
+async function addNewSection (currentProjectId, newSectionName){
   const {error: addNewSectionError} = await supabaseConnection().supabase
       .from('Tasks_Sections')
-      .insert({ index: currentProjectId, name: newSectionName });
+      .insert({ project_id: currentProjectId, section_name: newSectionName });
     if (addNewSectionError){
       console.error('Error adding new section:', addNewSectionError);
     }
@@ -150,7 +149,7 @@ async function saveSectionEdits() {
   }
   if (newSectionName.value.length > 0) {
     try {
-      await addNewSection(newSectionName.value);
+      await addNewSection(currentProjectId.value, newSectionName.value);
       // DEBUG:
       console.log('New section added successfully');
       closeEditSectionWindow();
@@ -159,7 +158,6 @@ async function saveSectionEdits() {
     }
   }
 }
-
 </script>
 
 <style scoped>
