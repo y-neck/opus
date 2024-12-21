@@ -102,8 +102,10 @@
                     <CheckmarkIcon />Toggle done
                   </p>
                   <p
+                    :id="`delete-task-${task.id}`"
                     role="menuitem"
                     class="dropdown-menu-item text-destructive-red"
+                    @click="deleteTask(task.id)"
                   >
                     <TrashCanIcon />Delete Task
                   </p>
@@ -124,8 +126,10 @@
                     <ChevronDoubleRightIcon />Move to ...
                   </p>
                   <p
+                    :id="`delete-task-${task.id}`"
                     role="menuitem"
                     class="dropdown-menu-item text-destructive-red"
+                    @click="deleteTask(task.id)"
                   >
                     <TrashCanIcon />Delete Task
                   </p>
@@ -196,11 +200,12 @@
                     <CheckmarkIcon />Toggle done
                   </p>
                   <p
+                    :id="`delete-task-${task.id}`"
                     role="menuitem"
                     class="dropdown-menu-item text-destructive-red"
-                  >
-                    <TrashCanIcon />Delete Task
-                  </p>
+                    @click="deleteTask(task.id)"
+                  ><TrashCanIcon />Delete Task
+                </p>
                 </DropdownMenu>
                 <button
                   class="context-menu-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
@@ -218,8 +223,10 @@
                     <ChevronDoubleRightIcon />Move to ...
                   </p>
                   <p
+                    :id="`delete-task-${task.id}`"
                     role="menuitem"
                     class="dropdown-menu-item text-destructive-red"
+                    @click="deleteTask(task.id)"
                   >
                     <TrashCanIcon />Delete Task
                   </p>
@@ -350,6 +357,39 @@ import {
   toggleDropdown,
 } from '~/src/functions/handleDropdown';
 import CheckmarkIcon from '~/components/icons/CheckmarkIcon.vue';
+
+// Delete task
+async function deleteTask(taskId: number) {
+  try{
+  const response = await supabaseConnection().supabase
+  .from('Tasks')
+  .delete()
+  .eq('id', taskId);
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    return;
+  }
+
+  // Refresh tasks
+    if (project.value) {
+      // Find the section containing the task
+      const section = project.value.taskSections?.find((section: any) =>
+        section.tasks.some((task: any) => task.id === taskId)
+      );
+
+      if (section) {
+        // Remove the task from the section
+        section.tasks = section.tasks.filter((task: any) => task.id !== taskId);
+      } else if (project.value.unsectionedTasks) {
+        // If the task is unsectioned, remove it from the unsectionedTasks array
+        project.value.unsectionedTasks = project.value.unsectionedTasks.filter(
+          (task: any) => task.id !== taskId
+        );
+      }
+    }
+    // DEBUG:
+    console.log(`Task deleted: task-id ${taskId}`);
+}
 
 /* Handle new-task-window */
 // Open new-task-window
