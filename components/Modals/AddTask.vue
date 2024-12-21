@@ -143,7 +143,7 @@ async function addNewTask() {
   if (checkRequiredFields()) {
     // Add new task to DB
     try {
-      const { error: addTaskError } = await supabaseConnection().supabase
+      const { error: addTaskError, data } = await supabaseConnection().supabase
         .from('Tasks')
         .insert([
           {
@@ -154,14 +154,24 @@ async function addNewTask() {
             // TODO: assigned_to: selectedAssignees.length ? selectedAssignees : null,
             tasks_section: newTaskSection?.value ? Number(newTaskSection.value) : null,
           },
-        ]);
+        ])
+        .select();
       if (addTaskError) {
         console.error('Error adding task:', addTaskError);
         return;
       }
       else {console.log('Task added successfully');
       closeNewTaskWindow();}
-    } catch (error) {
+
+      // Refresh tasks
+      const task = data[0];
+      const section = props.project?.taskSections?.find((sec) => sec.name === newTaskSection.value);
+      if (section) {
+        section.tasks.push(task); // Add task to section
+      } else if (props.project?.unsectionedTasks) {
+        props.project.unsectionedTasks.push(task); // Add task to unsectionedTasks
+      }
+        } catch (error) {
       console.error('Unexpected error adding task:', error);
     }
         
