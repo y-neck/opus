@@ -358,19 +358,8 @@ import {
 } from '~/src/functions/handleDropdown';
 import CheckmarkIcon from '~/components/icons/CheckmarkIcon.vue';
 
-// Delete task
-async function deleteTask(taskId: number) {
-  try{
-  const response = await supabaseConnection().supabase
-  .from('Tasks')
-  .delete()
-  .eq('id', taskId);
-  } catch (error) {
-    console.error('Error deleting task:', error);
-    return;
-  }
-
-  // Refresh tasks
+// Refresh tasks
+async function refreshTasks(taskId?: number) {
     if (project.value) {
       // Find the section containing the task
       const section = project.value.taskSections?.find((section: any) =>
@@ -387,6 +376,20 @@ async function deleteTask(taskId: number) {
         );
       }
     }
+}
+
+// Delete task
+async function deleteTask(taskId: number) {
+  try{
+  const response = await supabaseConnection().supabase
+  .from('Tasks')
+  .delete()
+  .eq('id', taskId);
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    return;
+  }
+  refreshTasks(taskId);
     // DEBUG:
     console.log(`Task deleted: task-id ${taskId}`);
 }
