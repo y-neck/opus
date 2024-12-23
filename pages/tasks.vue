@@ -114,12 +114,18 @@
               </div>
             </div>
           </div>
-          <!-- Add Task Component -->
-          <AddTask :project="project"/>
-          <button class="add-task-btn text-grey-500" @click="openNewTaskWindow()">+ Add Task</button>
         </div>
       </div>
       <div v-else><p>Please select a project.</p></div>
+      <div v-if="project" id="context-menu" class="flex gap-8 justify-center">
+      <div id="add-task-container" class="self-center flex flex-col gap-2">
+      <AddTask :project="project"/>
+      <button class="add-task-btn text-grey-500" @click="openNewTaskWindow()">+ Add Task</button>
+</div>
+    <div id="add-section-container" class="self-center flex flex-col gap-2">
+      <AddSection :project="project"/>
+      <button class="add-task-btn text-grey-500" @click="openNewSectionWindow()">+ Add Section</button>
+</div></div>
     </main>
   </div>
 </template>
@@ -133,6 +139,7 @@ import DropdownMenu from '~/components/DropdownMenu.vue';
 import EditSection from '~/components/Modals/EditSection.vue';
 import AddTask from '~/components/Modals/AddTask.vue';
 import EditTask from '~/components/Modals/EditTask.vue';
+import AddSection from '~/components/Modals/AddSection.vue';
 
 import userProfile from '~/middleware/auth';
 import { ref, onMounted } from 'vue';
@@ -276,6 +283,14 @@ function openNewTaskWindow() {
     document.querySelector<HTMLDivElement>('#add-task-backdrop');
   if (addNewTaskWindow) {
     addNewTaskWindow.classList.toggle('hidden');
+  }
+}
+
+function openNewSectionWindow() {
+  const addNewSectionWindow =
+    document.querySelector<HTMLDivElement>('#add-section-backdrop');
+  if (addNewSectionWindow) {
+    addNewSectionWindow.classList.toggle('hidden');
   }
 }
 

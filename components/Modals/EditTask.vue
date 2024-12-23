@@ -109,7 +109,6 @@ import { getProjects } from '~/middleware/projectMiddleware';
 /* Handle active project */
 import { useProjectStore } from '~/middleware/projectStore';
 import projectTasks from '~/middleware/models/projectsETL';
-import { ca } from 'date-fns/locale';
 const projectStore = useProjectStore();
 
 // Props
