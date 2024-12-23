@@ -70,21 +70,6 @@
                     <TrashCanIcon /> Delete Task
                   </p>
                 </DropdownMenu>
-                <button
-                  class="context-menu-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
-                  :data-task-id="task.id"
-                  @click="toggleDropdown(`context-menu-dd-${task.id}`)"
-                >
-                  <DotsIcon />
-                </button>
-                <DropdownMenu :id="`context-menu-dd-${task.id}`" class="hidden" v-if="isDropdownVisible[`context-menu-dd-${task.id}`]">
-                  <p role="menuitem" class="dropdown-menu-item">
-                    <ChevronDoubleRightIcon /> Move to ...
-                  </p>
-                  <p :id="`delete-task-${task.id}`" role="menuitem" class="dropdown-menu-item text-destructive-red" @click="deleteTask(task.id)">
-                    <TrashCanIcon /> Delete Task
-                  </p>
-                </DropdownMenu>
               </div>
             </div>
           </div>
@@ -126,25 +111,9 @@
                     <TrashCanIcon /> Delete Task
                   </p>
                 </DropdownMenu>
-                <button
-                  class="context-menu-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
-                  :data-task-id="task.id"
-                  @click="toggleDropdown(`context-menu-dd-${task.id}`)"
-                >
-                  <DotsIcon />
-                </button>
-                <DropdownMenu :id="`context-menu-dd-${task.id}`" class="hidden" v-if="isDropdownVisible[`context-menu-dd-${task.id}`]">
-                  <p role="menuitem" class="dropdown-menu-item">
-                    <ChevronDoubleRightIcon /> Move to ...
-                  </p>
-                  <p :id="`delete-task-${task.id}`" role="menuitem" class="dropdown-menu-item text-destructive-red" @click="deleteTask(task.id)">
-                    <TrashCanIcon /> Delete Task
-                  </p>
-                </DropdownMenu>
               </div>
             </div>
           </div>
-
           <!-- Add Task Component -->
           <AddTask :project="project"/>
           <button class="add-task-btn text-grey-500" @click="openNewTaskWindow()">+ Add Task</button>
