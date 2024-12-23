@@ -2,47 +2,31 @@
   <div class="flex flex-col w-full">
     <Header pageTitle="Tasks" pageIcon="NoteIcon" />
     <main class="p-16 flex flex-col">
-      <div
-        v-if="project"
-      >
+      <div v-if="project">
         <div class="task-section-container">
-          <!-- Task Section Header and Task Count -->
-          <div
-            v-for="(section, index) in project?.taskSections"
-            :key="section.index"
-            class="section-header flex items-center gap-4 border-b-2 border-b-grey-100"
-          >
-            <h2
-              class="task-section-title text-2xl"
-              :style="{ color: `hsl(${generateRandomHue(index)}, 25%, 60%)` }"
-            >
-              {{ section.name }}
-            </h2>
-            <p
-              class="project-task-count text-grey-700 text-xs font-semibold p-1 w-4 bg-grey-100 rounded"
-            >
-              {{ section.tasks.length }}
-            </p>
-            <button
-                  class="edit-section-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
-                  :data-task-id="section.index"
-                 @click="openEditSectionWindow(section.index, section.name)"
-                >
-              <DotsIcon />
-            </button>
-            <EditSection :project="project" :section="section.name" :sectionId="section.index" />       
-          </div>
-
-          <!-- Tasks within each section -->
-          <div v-for="section in project.taskSections" :key="section.index">
-            <div
-              v-for="(task, taskIndex) in section.tasks"
-              :key="task.id"
-              class="task-container group flex items-center gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100"
-            >
-              <div
-                class="task-info flex flex-row gap-2 align-baseline items-center"
+          <!-- Task Sections with Tasks -->
+          <div v-for="(section, index) in project.taskSections" :key="section.index">
+            <!-- Section Header -->
+            <div class="section-header flex items-center gap-4 border-b-2 border-b-grey-100">
+              <h2 class="task-section-title text-2xl" :style="{ color: `hsl(${generateRandomHue(index)}, 25%, 60%)` }">
+                {{ section.name }}
+              </h2>
+              <p class="project-task-count text-grey-700 text-xs font-semibold p-1 w-4 bg-grey-100 rounded">
+                {{ section.tasks.length }}
+              </p>
+              <button
+                class="edit-section-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
+                :data-task-id="section.index"
+                @click="openEditSectionWindow(section.index, section.name)"
               >
+                <DotsIcon />
+              </button>
+              <EditSection :project="project" :section="section.name" :sectionId="section.index" />
+            </div>
+
+            <!-- Tasks under this section -->
+            <div v-for="(task, taskIndex) in section.tasks" :key="task.id" class="task-container group flex items-center gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100">
+              <div class="task-info flex flex-row gap-2 align-baseline items-center">
                 <input
                   class="task-checkbox w-4 h-4 border-grey-700"
                   type="checkbox"
@@ -51,131 +35,22 @@
                   @click="markAsDone(task.id)"
                 />
                 <div class="task-properties">
-                  <p :class="{ 
-                    'task-property-title': true,
-                    'task-done': task.status_id === 3 
-                    }" 
-                    :id="`task-title-${task.id}`">
-                    {{ task.name }}
-                  </p>
-                  <div
-                    class="task-property-description flex text-grey-500 gap-1"
-                  >
-                    <p class="task-property-dueDate">
-                      {{
-                        task.dueDate
-                          ? `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}`
-                          : 'NaN'
-                      }}
-                    </p>
-                    <span class="divider">·</span>
-                    <p class="task-property-assignee">
-                      {{ task.assignedTo }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div
-                class="task-edit-actions flex flex-row opacity-0 gap-1 mt-1 group-hover:opacity-100 transition"
-              >
-                <button
-                  class="edit-task-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
-                  :data-task-id="task.id"
-                  @click="toggleDropdown(`edit-task-dd-${task.id}`)"
-                >
-                  <PencilIcon />
-                </button>
-                <!-- TODO: menu functionality -->
-                <DropdownMenu
-                  :id="`edit-task-dd-${task.id}`"
-                  class="dropdown hidden"
-                  v-if="isDropdownVisible[`edit-task-dd-${task.id}`]"
-                >
-                  <p role="menuitem" class="dropdown-menu-item" @click="openEditTaskWindow(task.id)">
-                    <PencilIcon />Edit Task
-                  </p>
                   <p
-                    role="menuitem"
-                    class="dropdown-menu-item"
-                    @click="markAsDone(task.id)"
+                    :class="{ 'task-property-title': true, 'task-done': task.status_id === 3 }"
+                    :id="`task-title-${task.id}`"
                   >
-                    <CheckmarkIcon />Toggle done
-                  </p>
-                  <p
-                    :id="`delete-task-${task.id}`"
-                    role="menuitem"
-                    class="dropdown-menu-item text-destructive-red"
-                    @click="deleteTask(task.id)"
-                  >
-                    <TrashCanIcon />Delete Task
-                  </p>
-                </DropdownMenu>
-                <button
-                  class="context-menu-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
-                  :data-task-id="task.id"
-                  @click="toggleDropdown(`context-menu-dd-${task.id}`)"
-                >
-                  <DotsIcon />
-                </button>
-                <DropdownMenu
-                  :id="`context-menu-dd-${task.id}`"
-                  class="hidden"
-                  v-if="isDropdownVisible[`context-menu-dd-${task.id}`]"
-                >
-                  <p role="menuitem" class="dropdown-menu-item">
-                    <ChevronDoubleRightIcon />Move to ...
-                  </p>
-                  <p
-                    :id="`delete-task-${task.id}`"
-                    role="menuitem"
-                    class="dropdown-menu-item text-destructive-red"
-                    @click="deleteTask(task.id)"
-                  >
-                    <TrashCanIcon />Delete Task
-                  </p>
-                </DropdownMenu>
-              </div>
-              <EditTask/>
-            </div>
-          </div>
-          
-          <!-- Unsectioned tasks -->
-          <div v-if="project.unsectionedTasks && project.unsectionedTasks.length > 0" class="unsectioned-tasks-container">
-            <h2 class="task-section-title text-2xl">Unsectioned Tasks</h2>
-            <div
-              v-for="(task, taskIndex) in project.unsectionedTasks"
-              :key="task.id"
-              class="task-container group flex items-center gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100"
-            >
-              <div class="task-info flex flex-row gap-2 align-baseline items-center">
-                <input
-                  class="task-checkbox w-4 h-4 border-grey-700"
-                  type="checkbox"
-                  :name="`check-task-${task.id}`"
-                  :id="`task-${task.id}`"
-                />
-                <div class="task-properties">
-                  <p class="task-property-title" :id="`task-${task.name}`">
                     {{ task.name }}
                   </p>
                   <div class="task-property-description flex text-grey-500 gap-1">
                     <p class="task-property-dueDate">
-                      {{
-                        task.dueDate
-                          ? `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}`
-                          : 'NaN'
-                      }}
+                      {{ task.dueDate ? `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}` : 'NaN' }}
                     </p>
                     <span class="divider">·</span>
-                    <p class="task-property-assignee">
-                      {{ task.assignedTo }}
-                    </p>
+                    <p class="task-property-assignee">{{ task.assignedTo }}</p>
                   </div>
                 </div>
               </div>
-              <div
-                class="task-edit-actions flex flex-row opacity-0 gap-1 mt-1 group-hover:opacity-100 transition"
-              >
+              <div class="task-edit-actions flex flex-row opacity-0 gap-1 mt-1 group-hover:opacity-100 transition">
                 <button
                   class="edit-task-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
                   :data-task-id="task.id"
@@ -183,29 +58,17 @@
                 >
                   <PencilIcon />
                 </button>
-                <!-- TODO: menu functionality -->
-                <DropdownMenu
-                  :id="`edit-task-dd-${task.id}`"
-                  class="hidden"
-                  v-if="isDropdownVisible[`edit-task-dd-${task.id}`]"
-                >
-                  <p role="menuitem" class="dropdown-menu-item">
-                    <PencilIcon />Edit Task
+                <DropdownMenu :id="`edit-task-dd-${task.id}`" class="dropdown hidden" v-if="isDropdownVisible[`edit-task-dd-${task.id}`]">
+                  <p role="menuitem" class="dropdown-menu-item" :data-task-id="task.id" @click="openEditTaskWindow(task.id)">
+                    <PencilIcon /> Edit Task
                   </p>
-                  <p
-                    role="menuitem"
-                    class="dropdown-menu-item"
-                    @click="markAsDone(task.id)"
-                  >
-                    <CheckmarkIcon />Toggle done
+                  <EditTask :project="project" :task="task" :taskId="task.id"/>
+                  <p role="menuitem" class="dropdown-menu-item" @click="markAsDone(task.id)">
+                    <CheckmarkIcon /> Toggle done
                   </p>
-                  <p
-                    :id="`delete-task-${task.id}`"
-                    role="menuitem"
-                    class="dropdown-menu-item text-destructive-red"
-                    @click="deleteTask(task.id)"
-                  ><TrashCanIcon />Delete Task
-                </p>
+                  <p :id="`delete-task-${task.id}`" role="menuitem" class="dropdown-menu-item text-destructive-red" @click="deleteTask(task.id)">
+                    <TrashCanIcon /> Delete Task
+                  </p>
                 </DropdownMenu>
                 <button
                   class="context-menu-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
@@ -214,41 +77,84 @@
                 >
                   <DotsIcon />
                 </button>
-                <DropdownMenu
-                  :id="`context-menu-dd-${task.id}`"
-                  class="hidden"
-                  v-if="isDropdownVisible[`context-menu-dd-${task.id}`]"
-                >
+                <DropdownMenu :id="`context-menu-dd-${task.id}`" class="hidden" v-if="isDropdownVisible[`context-menu-dd-${task.id}`]">
                   <p role="menuitem" class="dropdown-menu-item">
-                    <ChevronDoubleRightIcon />Move to ...
+                    <ChevronDoubleRightIcon /> Move to ...
                   </p>
-                  <p
-                    :id="`delete-task-${task.id}`"
-                    role="menuitem"
-                    class="dropdown-menu-item text-destructive-red"
-                    @click="deleteTask(task.id)"
-                  >
-                    <TrashCanIcon />Delete Task
+                  <p :id="`delete-task-${task.id}`" role="menuitem" class="dropdown-menu-item text-destructive-red" @click="deleteTask(task.id)">
+                    <TrashCanIcon /> Delete Task
                   </p>
                 </DropdownMenu>
               </div>
             </div>
           </div>
 
-          <!-- Add task component -->
+          <!-- Unsectioned Tasks -->
+          <div v-if="project.unsectionedTasks && project.unsectionedTasks.length > 0" class="unsectioned-tasks-container">
+            <h2 class="task-section-title text-2xl">Unsectioned Tasks</h2>
+            <div v-for="(task, taskIndex) in project.unsectionedTasks" :key="task.id" class="task-container group flex items-center gap-2 p-4 h-16 w-full border-b-2 border-b-grey-100">
+              <div class="task-info flex flex-row gap-2 align-baseline items-center">
+                <input class="task-checkbox w-4 h-4 border-grey-700" type="checkbox" :name="`check-task-${task.id}`" :id="`task-${task.id}`" />
+                <div class="task-properties">
+                  <p class="task-property-title" :id="`task-${task.name}`">{{ task.name }}</p>
+                  <div class="task-property-description flex text-grey-500 gap-1">
+                    <p class="task-property-dueDate">
+                      {{ task.dueDate ? `${task.dueDate.day}.${task.dueDate.month}.${task.dueDate.year}` : 'NaN' }}
+                    </p>
+                    <span class="divider">·</span>
+                    <p class="task-property-assignee">{{ task.assignedTo }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="task-edit-actions flex flex-row opacity-0 gap-1 mt-1 group-hover:opacity-100 transition">
+                <button
+                  class="edit-task-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
+                  :data-task-id="task.id"
+                  @click="toggleDropdown(`edit-task-dd-${task.id}`)"
+                >
+                  <PencilIcon />
+                </button>
+                <DropdownMenu :id="`edit-task-dd-${task.id}`" class="hidden" v-if="isDropdownVisible[`edit-task-dd-${task.id}`]">
+                  <p role="menuitem" class="dropdown-menu-item" :data-task-id="task.id" @click="openEditTaskWindow(task.id)">
+                    <PencilIcon /> Edit Task
+                  </p>
+                  <EditTask :project="project" :task="task" :taskId="task.id"/>
+                  <p role="menuitem" class="dropdown-menu-item" @click="markAsDone(task.id)">
+                    <CheckmarkIcon /> Toggle done
+                  </p>
+                  <p :id="`delete-task-${task.id}`" role="menuitem" class="dropdown-menu-item text-destructive-red" @click="deleteTask(task.id)">
+                    <TrashCanIcon /> Delete Task
+                  </p>
+                </DropdownMenu>
+                <button
+                  class="context-menu-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
+                  :data-task-id="task.id"
+                  @click="toggleDropdown(`context-menu-dd-${task.id}`)"
+                >
+                  <DotsIcon />
+                </button>
+                <DropdownMenu :id="`context-menu-dd-${task.id}`" class="hidden" v-if="isDropdownVisible[`context-menu-dd-${task.id}`]">
+                  <p role="menuitem" class="dropdown-menu-item">
+                    <ChevronDoubleRightIcon /> Move to ...
+                  </p>
+                  <p :id="`delete-task-${task.id}`" role="menuitem" class="dropdown-menu-item text-destructive-red" @click="deleteTask(task.id)">
+                    <TrashCanIcon /> Delete Task
+                  </p>
+                </DropdownMenu>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Task Component -->
           <AddTask :project="project"/>
-          <button
-            class="add-task-btn text-grey-500"
-            @click="openNewTaskWindow()"
-          >
-            + Add Task
-          </button>
+          <button class="add-task-btn text-grey-500" @click="openNewTaskWindow()">+ Add Task</button>
         </div>
       </div>
       <div v-else><p>Please select a project.</p></div>
     </main>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { supabaseConnection } from '~/composables/supabaseConnection';
@@ -390,8 +296,8 @@ async function deleteTask(taskId: number) {
     return;
   }
   refreshTasks(taskId);
-    // DEBUG:
-    console.log(`Task deleted: task-id ${taskId}`);
+    // // DEBUG:
+    // console.log(`Task deleted: task-id ${taskId}`);
 }
 
 /* Handle new-task-window */
@@ -405,8 +311,8 @@ function openNewTaskWindow() {
 }
 
 function openEditSectionWindow(sectionId: number, section: string) {
-  // DEBUG:
-  console.log('Opening edit section window: ', sectionId, section);
+  // // DEBUG:
+  // console.log('Opening edit section window: ', sectionId, section);
   const editSectionWindow =
     document.querySelector<HTMLDivElement>(`#edit-section-backdrop-${sectionId}`);
   if (editSectionWindow) {
@@ -415,11 +321,14 @@ function openEditSectionWindow(sectionId: number, section: string) {
 }
 
 function openEditTaskWindow(taskId: number) {
+  // // DEBUG:
+  // console.log('Opening edit task window: ', taskId);
   const editTaskWindow =
-    document.querySelector<HTMLDivElement>('#edit-task-backdrop');
+    document.querySelector(`#edit-task-backdrop-${taskId}`);
   if (editTaskWindow) {
-    editTaskWindow.classList.toggle('hidden');
-    document.querySelectorAll<HTMLDivElement>('.dropdown-overlay').forEach((el) => {
+    editTaskWindow.classList.remove('hidden');
+    // Hide dropdowns
+    document.querySelectorAll('.dropdown-overlay').forEach((el) => {
       el.classList.add('hidden');
     });
   }
