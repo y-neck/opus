@@ -85,15 +85,17 @@
                 >
                   <PencilIcon />
                 </button>
-                <!-- TODO: menu functionality -->
                 <DropdownMenu
                   :id="`edit-task-dd-${task.id}`"
                   class="dropdown hidden"
                   v-if="isDropdownVisible[`edit-task-dd-${task.id}`]"
                 >
-                  <p role="menuitem" class="dropdown-menu-item" @click="openEditTaskWindow(task.id)">
+                  <p role="menuitem" class="dropdown-menu-item" 
+                  :data-task-id="task.id"
+                  @click="openEditTaskWindow(task.id)">
                     <PencilIcon />Edit Task
                   </p>
+                  <EditTask :project="project" :taskId="task.id"/>
                   <p
                     role="menuitem"
                     class="dropdown-menu-item"
@@ -135,7 +137,6 @@
                   </p>
                 </DropdownMenu>
               </div>
-              <EditTask/>
             </div>
           </div>
           
@@ -189,9 +190,12 @@
                   class="hidden"
                   v-if="isDropdownVisible[`edit-task-dd-${task.id}`]"
                 >
-                  <p role="menuitem" class="dropdown-menu-item">
+                  <p role="menuitem" class="dropdown-menu-item" 
+                  :data-task-id="task.id"
+                  @click="openEditTaskWindow(task.id)">
                     <PencilIcon />Edit Task
                   </p>
+                  <EditTask :project="project" :taskId="task.id"/>
                   <p
                     role="menuitem"
                     class="dropdown-menu-item"
@@ -238,11 +242,11 @@
           <!-- Add task component -->
           <AddTask :project="project"/>
           <button
-            class="add-task-btn text-grey-500"
-            @click="openNewTaskWindow()"
+          class="add-task-btn text-grey-500"
+          @click="openNewTaskWindow()"
           >
-            + Add Task
-          </button>
+          + Add Task
+        </button>
         </div>
       </div>
       <div v-else><p>Please select a project.</p></div>
@@ -405,8 +409,8 @@ function openNewTaskWindow() {
 }
 
 function openEditSectionWindow(sectionId: number, section: string) {
-  // DEBUG:
-  console.log('Opening edit section window: ', sectionId, section);
+  // // DEBUG:
+  // console.log('Opening edit section window: ', sectionId, section);
   const editSectionWindow =
     document.querySelector<HTMLDivElement>(`#edit-section-backdrop-${sectionId}`);
   if (editSectionWindow) {
@@ -415,11 +419,14 @@ function openEditSectionWindow(sectionId: number, section: string) {
 }
 
 function openEditTaskWindow(taskId: number) {
+  // DEBUG:
+  console.log('Opening edit task window: ', taskId);
   const editTaskWindow =
-    document.querySelector<HTMLDivElement>('#edit-task-backdrop');
+    document.querySelector(`#edit-task-backdrop-${taskId}`);
   if (editTaskWindow) {
-    editTaskWindow.classList.toggle('hidden');
-    document.querySelectorAll<HTMLDivElement>('.dropdown-overlay').forEach((el) => {
+    editTaskWindow.classList.remove('hidden');
+    // Hide dropdowns
+    document.querySelectorAll('.dropdown-overlay').forEach((el) => {
       el.classList.add('hidden');
     });
   }
