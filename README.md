@@ -16,7 +16,15 @@ Software: Nuxt3 + Supabase
 - [ ] Chat with your team members
 - [ ] Install as web application on your device
 
+## Installation
+
 ## Contribution
 
 You are welcome to contribute to this project. Please clone the repository and submit your changes as pull requests. If you have any problems or questions, please open an issue.
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+
+### Known Issues
+Information: This project is still in development and might still have some issues. Please report any issues you encounter.
+Tasks:
+- [ ] Assigning tasks to a (different) specific member currently does not work
+- [ ] The reactive update of the task list sometimes does not update the date correctly; -> Reload the page if needed
