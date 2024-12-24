@@ -9,8 +9,8 @@ import type {
 
 // Fetch all projects from the database
 export async function getProjects(): Promise<Project[]> {
-  // DEBUG:
-  console.log('Testing supabaseConnection ', supabaseConnection());
+  // // DEBUG:
+  // console.log('Testing supabaseConnection ', supabaseConnection());
 
   try {
     // Fetch Projects
@@ -28,8 +28,8 @@ export async function getProjects(): Promise<Project[]> {
       await supabaseConnection()
         .supabase.from('Members')
         .select('id, project_id, user_id, role');
-    // DEBUG:
-    console.log('MembersData: ', membersData);
+    // // DEBUG:
+    // console.log('MembersData: ', membersData);
     if (membersError) throw membersError;
 
     // FIXME: Name not properly assigned to member
@@ -52,8 +52,8 @@ export async function getProjects(): Promise<Project[]> {
         .supabase.from('Tasks_Sections')
         .select('id, project_id, section_name')
         .order('section_name', { ascending: true });   
-    // DEBUG:
-    console.log('SectionsData: ', sectionsData);
+    // // DEBUG:
+    // console.log('SectionsData: ', sectionsData);
     if (sectionsError) throw sectionsError;
 
     // Fetch Tasks and Assigned Members
@@ -63,11 +63,11 @@ export async function getProjects(): Promise<Project[]> {
         'id, name, start_date, due_date, status_id, projects_id, assigned_to, tasks_section'
       )
       .order('name', { ascending: true });
-    // DEBUG:
-    console.log('TasksData: ', tasksData);
+    // // DEBUG:
+    // console.log('TasksData: ', tasksData);
     if (tasksError) throw tasksError;
-    // DEBUG:
-    console.log('Project Data fetching successful');
+    // // DEBUG:
+    // console.log('Project Data fetching successful');
 
     // Map data to Project interface
     const projects = await Promise.all(

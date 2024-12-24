@@ -55,8 +55,8 @@ const setActiveProject = (projectId: number, projectName: string) => {
 watch (
   () => projectStore.activeProjectId, 
   (newValue) => {
-    // DEBUG:
-    console.log(`Watcher: Active project changed to: ${newValue}`);
+    // // DEBUG:
+    // console.log(`Watcher: Active project changed to: ${newValue}`);
   } )
 
 // Reactive reference to active project
@@ -66,8 +66,7 @@ onMounted(async () => {
     // Fetch projects data from DB
     projectTasks.value = await getProjects();
     projectTasks.value = [...projectTasks.value]; // Enforcing reactivity
-    // DEBUG:
-    console.log('Project tasks from projectETL:', projectTasks.value);}
+}
     catch(error){
         console.error('Error fetching projects:', error);
     }

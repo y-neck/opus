@@ -28,3 +28,5 @@ Information: This project is still in development and might still have some issu
 Tasks:
 - [ ] Assigning tasks to a (different) specific member currently does not work
 - [ ] The reactive update of the task list sometimes does not update the date correctly; -> Reload the page if needed
+Project Switch:
+- [ ] Project image is not yet implemented

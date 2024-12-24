@@ -166,8 +166,6 @@ async function saveSectionEdits() {
   if(renameSectionName.value.length > 0 && currentSectionId.value !== undefined) {
     try{
       await renameSection(renameSectionName.value, currentSectionId.value);
-      // DEBUG:
-      console.log('Section renamed successfully');
       closeEditSectionWindow();
       refreshSections(currentProjectId.value);
     } catch (error) {
@@ -177,8 +175,6 @@ async function saveSectionEdits() {
   if (newSectionName.value.length > 0) {
     try {
       await addNewSection(currentProjectId.value, newSectionName.value);
-      // DEBUG:
-      console.log('New section added successfully');
       closeEditSectionWindow();
       refreshSections(currentProjectId.value);
     } catch (error) {

@@ -15,8 +15,8 @@ export const useProjectStore = defineStore('projectStore', {
             // Set the active project ID
             this.activeProjectId = projectId;
             this.activeProjectName = projectName;
-            // DEBUG:
-            console.log(`New active project ID: ${this.activeProjectId}, ${this.activeProjectName}`);
+            // // DEBUG:
+            // console.log(`New active project ID: ${this.activeProjectId}, ${this.activeProjectName}`);
         },
             // Fetch projects
             async fetchProjects() {
