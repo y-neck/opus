@@ -197,7 +197,21 @@ async function deleteDocument() {
 definePageMeta({
   title: 'Documents',
   description: '',
-  layout: 'default',
   middleware: 'auth',
+  layout: 'default',
+});
+useSeoMeta({
+  title: 'Opus - Documents',
+  ogTitle: 'Documents' /* Title of page without branding */,
+  ogSiteName: 'opus' /* Overall site name */,
+  ogType: 'website' /* 'website' | 'article' | 'book' | 'profile' */,
+  description:
+    'Manage the links to the relevant documents of your projects',
+  ogDescription:
+    'Manage the links to the relevant documents of your projects',
+  creator: 'https://github.com/y-neck/ | https://github.com/kevinschaerer/' /* Creator of page */,
+  robots: 'noindex, nofollow' /* Robots meta tag */,
+  ogImage:
+    '' /* Image of page when sharing */,
 });
 </script>

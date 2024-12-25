@@ -80,12 +80,26 @@ const projects = await getProjects();
 // // DEBUG:
 // console.log('Projects:', projects);
 
-//Page meta
+// Page meta
 definePageMeta({
   title: 'Task Overview',
   description: '',
   middleware: 'auth',
   layout: 'default',
+});
+useSeoMeta({
+  title: 'Opus - Task Overview',
+  ogTitle: 'Task Overview' /* Title of page without branding */,
+  ogSiteName: 'opus' /* Overall site name */,
+  ogType: 'website' /* 'website' | 'article' | 'book' | 'profile' */,
+  description:
+    'Get an overview of all tasks in all your projects',
+  ogDescription:
+    'Get an overview of all tasks in all your projects',
+  creator: 'https://github.com/y-neck/ | https://github.com/kevinschaerer/' /* Creator of page */,
+  robots: 'noindex, nofollow' /* Robots meta tag */,
+  ogImage:
+    '' /* Image of page when sharing */,
 });
 
 /* Define sections locally */

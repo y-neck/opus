@@ -157,6 +157,20 @@ definePageMeta({
   middleware: 'auth',
   layout: 'default',
 });
+useSeoMeta({
+  title: 'Opus - Tasks',
+  ogTitle: 'Tasks' /* Title of page without branding */,
+  ogSiteName: 'opus' /* Overall site name */,
+  ogType: 'website' /* 'website' | 'article' | 'book' | 'profile' */,
+  description:
+    'Display and manage the tasks for your projects',
+  ogDescription:
+    'Display and manage the tasks for your projects',
+  creator: 'https://github.com/y-neck/ | https://github.com/kevinschaerer/' /* Creator of page */,
+  robots: 'noindex, nofollow' /* Robots meta tag */,
+  ogImage:
+    '' /* Image of page when sharing */,
+});
 
 /* Handle active project */
 const project = computed(() => {

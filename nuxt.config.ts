@@ -7,6 +7,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss', '@nuxtjs/supabase', '@nuxt/image', '@pinia/nuxt'],
+  plugins: ['~/plugins/preamble.client.ts'],
   supabase: {
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,
@@ -24,17 +25,15 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      meta: [
-        {
-          name: 'viewport',
-          content: 'width=device-width,initial-scale=1',
-        },
-        { charset: 'utf-8' },
-      ],
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
       link: [
         { rel: 'icon', type: 'image/x-icon', href: './public/favicon.ico' },
         { rel: 'stylesheet', href: './src/styles.css' },
       ],
+      htmlAttrs: {
+        lang: 'en',
+      },
     },
   },
 });
