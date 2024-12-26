@@ -18,6 +18,7 @@
                 class="edit-section-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
                 :data-task-id="section.index"
                 @click="openEditSectionWindow(section.index, section.name)"
+                aria-label="edit task section"
               >
                 <DotsIcon />
               </button>
@@ -30,6 +31,8 @@
                 <input
                   class="task-checkbox w-4 h-4 border-grey-700"
                   type="checkbox"
+                  role="checkbox"
+                  aria-label="Checkbox to mark task as done"
                   :name="`check-task-${task.id}`"
                   :id="`task-checkbox-${task.id}`"
                   @click="markAsDone(task.id)"
@@ -55,6 +58,7 @@
                   class="edit-task-btn w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
                   :data-task-id="task.id"
                   @click="toggleDropdown(`edit-task-dd-${task.id}`)"
+                  aria-label="edit task button"
                 >
                   <PencilIcon />
                 </button>

@@ -9,7 +9,7 @@
             >
               <h2 class="font-medium text-2xl">Edit Section</h2>
               <form id="edit-section-form" class="flex flex-col gap-2">
-                <label for="edit-section-name" class="edit-section-label">Edit Section name:</label>
+                <label for="rename-name" class="edit-section-label">Edit Section name:</label>
                 <input
                   id="rename-section"
                   class="w-full h-12 border border-grey-100 rounded-md px-3 placeholder:text-grey-400"
