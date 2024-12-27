@@ -1,89 +1,101 @@
 <template>
   <div>
-    <button 
-      id="project-dd" 
-      class="dropdown-menu-button flex items-center justify-between px-4 py-2 border-2 border-grey-100 rounded-md" 
-      @click="toggleDropdown('project-dd')">
-      <span class="chevron">▼</span>
-      <span>{{ activeProjectName || 'Select Project' }}</span>
+    <button
+      id="project-dd"
+      class="dropdown-menu-button flex items-center justify-between gap-2 rounded-md"
+      @click="toggleDropdown('project-dd')"
+    >
+      <!-- Replace icon with variable. You may want to set a project as the default because of layout shifts and no content when nothing is selected. -->
+      <span> <PlantIcon /></span>
+      <p>{{ activeProjectName || "Select Project" }}</p>
+      <span class="-ml-1"> <ChevronDownIcon /></span>
     </button>
-  <!-- Dropdown Options -->
-    <DropdownMenu 
+    <!-- Dropdown Options -->
+    <DropdownMenu
       id="project-dd-container"
       v-show="isDropdownVisible['project-dd']"
-      class="dropdown-menu-options">
-      <p 
-        v-for="project in projectTasks" 
-        :key="project.projectId" 
-        role="menuitem" 
-        :class="['dropdown-menu-item px-1 truncate', { active: project.projectId === projectStore.activeProjectId }]"
-        @click="setActiveProject(project.projectId as number, project.projectName as string)"
-        >
-        
-          {{ project.projectName }}
+      class="dropdown-menu-options"
+    >
+      <p
+        v-for="project in projectTasks"
+        :key="project.projectId"
+        role="menuitem"
+        :class="[
+          'dropdown-menu-item px-1 truncate',
+          { active: project.projectId === projectStore.activeProjectId },
+        ]"
+        @click="
+          setActiveProject(
+            project.projectId as number,
+            project.projectName as string
+          )
+        "
+      >
+        {{ project.projectName }}
       </p>
     </DropdownMenu>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
-import DropdownMenu from '~/components/DropdownMenu.vue';
+import { ref, onMounted, watch } from "vue";
+import DropdownMenu from "~/components/DropdownMenu.vue";
 /* Import projects */
-import { useProjectStore } from '~/middleware/projectStore';  // Import pinia store
-import type { Project } from '~/middleware/models/projectsETL';
-import { getProjects } from '~/middleware/projectMiddleware';
+import { useProjectStore } from "~/middleware/projectStore"; // Import pinia store
+import type { Project } from "~/middleware/models/projectsETL";
+import { getProjects } from "~/middleware/projectMiddleware";
 
 // Initialize pinia store
-const projectStore=useProjectStore();
+const projectStore = useProjectStore();
 // Use pinia store state and actions, destructure reactive properties from store
-const {activeProjectId} = projectStore;
+const { activeProjectId } = projectStore;
 const activeProjectName = computed(() => projectStore.activeProjectName);
 // Set active project in store
 const setActiveProject = (projectId: number, projectName: string) => {
   projectStore.setActiveProject(projectId, projectName);
   // // DEBUG:
   // console.log(`Set active project: ${activeProjectId}`);
-  toggleDropdown('project-dd');
+  toggleDropdown("project-dd");
   // Redirect to tasks page if not already on tasks page
-  if (window.location.pathname === '/task-overview') {
-    navigateTo('/tasks');
+  if (window.location.pathname === "/task-overview") {
+    navigateTo("/tasks");
   }
 };
 
 // Watch for changes in active project
-watch (
-  () => projectStore.activeProjectId, 
+watch(
+  () => projectStore.activeProjectId,
   (newValue) => {
     // // DEBUG:
     // console.log(`Watcher: Active project changed to: ${newValue}`);
-  } )
+  }
+);
 
 // Reactive reference to active project
 const projectTasks = ref<Project[]>([]);
 onMounted(async () => {
-    try{
+  try {
     // Fetch projects data from DB
     projectTasks.value = await getProjects();
     projectTasks.value = [...projectTasks.value]; // Enforcing reactivity
-}
-    catch(error){
-        console.error('Error fetching projects:', error);
-    }
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+  }
 });
 
 /* Handle dropdown */
 import {
   isDropdownVisible,
   toggleDropdown,
-} from '~/src/functions/handleDropdown';
+} from "~/src/functions/handleDropdown";
+import ChevronDoubleRightIcon from "./icons/ChevronDoubleRightIcon.vue";
 </script>
 
 <style scoped>
-.dropdown-menu{
+.dropdown-menu {
   @apply border-grey-100 border-2 rounded-md;
 }
-.dropdown-menu-item :not(:first){
+.dropdown-menu-item :not(:first) {
   @apply flex items-center;
 }
 .dropdown-menu-item:hover {

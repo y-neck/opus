@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white text-grey-700 px-4 min-h-screen w-full md:flex md:flex-row"
+    class="bg-white text-grey-700 px-7 min-h-screen w-full md:flex md:flex-row"
   >
     <Navbar />
     <slot />

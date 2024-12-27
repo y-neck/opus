@@ -1,22 +1,21 @@
 <template>
-  <div>
+  <div class="md:h-screen md:border-r border-grey-100 flex flex-col">
     <nav
-      class="md:w-[266px] md:h-full flex md:flex-col gap-8 md:border-r border-grey-100 max-sm:w-screen max-sm:fixed max-sm:top-[95vh] max-sm:border-t-2 max-md:justify-center"
+      class="md:w-[252px] flex md:flex-col max-sm:w-screen max-sm:fixed max-sm:border-t-2 max-md:justify-center"
     >
       <div
-        class="bg-white text-grey-700 border-b border-grey-100 flex flex-row justify-between md:justify-start align-center"
+        class="bg-white text-grey-700 md:h-[3.75rem] border-b -ml-7 border-grey-100 flex flex-row justify-between md:justify-start align-center"
       >
         <div
           id="project-dropdown"
-          class="md:w-[280px] md:pt-3 md:px-4 md:pb-3 flex gap-1"
+          class="md:w-[280px] md:px-7 flex items-center"
         >
           <ProjectSwitch />
         </div>
       </div>
-      <div id="main-nav" class="hidden md:flex flex-col">
+      <div id="main-nav" class="hidden md:flex flex-col mt-4">
         <NuxtLink to="/inbox" class="nav-item">
           <InboxIcon />
-          <!-- Test if components work properly -->
           <p class="nav-item-text">Inbox</p></NuxtLink
         >
         <NuxtLink to="/task-overview" class="nav-item">
@@ -28,7 +27,10 @@
           <p class="nav-item-text">Settings</p></NuxtLink
         >
       </div>
-      <div id="team-nav" class="flex md:flex-col justify-between max-sm:gap-8">
+      <div
+        id="team-nav"
+        class="flex md:flex-col justify-between max-sm:gap-8 mt-8"
+      >
         <p id="team-name" class="hidden md:block text-grey-500 text-sm">
           {{ activeProjectName }}
         </p>
@@ -53,20 +55,31 @@
           <p class="nav-item-text">Team</p></NuxtLink
         >
       </div>
-      <button id="logout-btn" class="nav-item" @click="logout()">
-        <LogoutIcon />
-        <p class="nav-item-text hidden md:block">Logout</p>
-      </button>
+
+      <div class="absolute bottom-5">
+        <button
+          id="logout-btn"
+          class="nav-item group transition"
+          @click="logout()"
+        >
+          <LogoutIcon class="group-hover:text-destructive-darkRed" />
+          <p
+            class="nav-item-text hidden md:block group-hover:text-destructive-darkRed"
+          >
+            Logout
+          </p>
+        </button>
+      </div>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
 /* Display current project */
-import { useProjectStore } from '~/middleware/projectStore';  // Import pinia store
+import { useProjectStore } from "~/middleware/projectStore"; // Import pinia store
 
 // Initialize pinia store
-const projectStore=useProjectStore();
+const projectStore = useProjectStore();
 // Update team name reactively
 const activeProjectName = computed(() => projectStore.activeProjectName);
 
@@ -75,7 +88,7 @@ async function logout() {
   // Log out user
   const { error } = await supabaseConnection().supabase.auth.signOut();
   // Redirect to login page
-  navigateTo('/login');
+  navigateTo("/login");
 }
 </script>
 
@@ -88,6 +101,9 @@ async function logout() {
 .nav-item.router-link-active {
   @apply bg-grey-100;
   @apply rounded-lg;
+  padding-left: 0.75rem;
+  margin-left: -0.75rem;
+  max-width: 15.5rem;
 }
 
 .nav-item-text {
