@@ -4,9 +4,8 @@
 
 <script setup>
 definePageMeta({
-  title: 'Password Recovery',
-  description: '',
-  middleware: 'auth',
+  title: "Password Recovery",
+  description: "",
   layout: false,
 });
 </script>

@@ -1,14 +1,16 @@
 <template>
-    <button :disabled="disabled"
-        class="w-[20rem] h-10 bg-grey-100 hover:bg-grey-200 text-grey-700 rounded-lg font-regular transition disabled:text-grey-400 disabled:transition disabled:hover:bg-grey-100"
-        type="submit">
-        {{ title }}
-    </button>
+  <button
+    :disabled="disabled"
+    class="w-[20rem] h-10 bg-grey-700 active:hover:bg-grey-800 text-grey-50 rounded-lg font-regular transition disabled:opacity-80 disabled:transition mt-4 font-medium"
+    type="submit"
+  >
+    {{ title }}
+  </button>
 </template>
 
 <script setup>
 defineProps({
-    title: String,
-    disabled: Boolean
-})
+  title: String,
+  disabled: Boolean,
+});
 </script>
