@@ -24,7 +24,7 @@
             v-for="(linksGroup, date) in groupedLinks"
             :key="date"
           >
-            <h3 class="font-normal text-sm text-grey-500 tracking-[0.01em]">
+            <h3 class="text-sm text-grey-500 tracking-[0.01em]">
               {{ date }}
             </h3>
             <hr class="text-grey-100 mt-2" />
@@ -78,7 +78,6 @@
             </ul>
           </div>
         </div>
-        <!-- TODO: Rework text if no documents in DB -->
         <p v-else>No documents found</p>
       </div>
     </main>
@@ -93,42 +92,53 @@
     />
   </div>
 </template>
+
 <script setup>
-import { supabaseConnection } from '~/composables/supabaseConnection';
-import Header from '~/components/Header.vue';
-import Modal from '~/components/Modals/RemoveModal.vue';
-import { ref } from 'vue';
-import { format } from 'date-fns';
-import CopyIcon from '~/components/icons/CopyIcon.vue';
-import TrashCanIcon from '~/components/icons/TrashCanIcon.vue';
+import { ref, onMounted, watchEffect } from "vue";
+import { supabaseConnection } from "~/composables/supabaseConnection";
+import { useProjectStore } from "~/middleware/projectStore";
+import Header from "~/components/Header.vue";
+import Modal from "~/components/Modals/RemoveModal.vue";
+import { format } from "date-fns";
+import CopyIcon from "~/components/icons/CopyIcon.vue";
+import TrashCanIcon from "~/components/icons/TrashCanIcon.vue";
+import PencilIcon from "~/components/icons/PencilIcon.vue";
+import PlusIcon from "~/components/icons/PlusIcon.vue";
+import DotsIcon from "~/components/icons/DotsIcon.vue";
 
 const links = ref([]);
 const groupedLinks = ref({});
+const projectStore = useProjectStore();
+const isDeleteModalOpen = ref(false);
+const documentToDelete = ref(null);
+
 // Function to format the link by removing protocol and path
 function formatLink(url) {
   try {
     const hostname = new URL(url).hostname;
-    return hostname.replace('www.', ''); // Remove 'www.' if present
+    return hostname.replace("www.", ""); // Remove 'www.' if present
   } catch (error) {
-    console.error('Invalid URL:', url);
+    console.error("Invalid URL:", url);
     return url; // Return the original URL if it can't be parsed
   }
 }
+
 // Function to generate favicon URL
 function getFaviconUrl(url, size = 64) {
   try {
     const hostname = new URL(url).hostname;
     return `https://www.google.com/s2/favicons?sz=${size}&domain=${hostname}`;
   } catch (error) {
-    console.error('Invalid URL:', url);
-    return '';
+    console.error("Invalid URL:", url);
+    return "";
   }
 }
+
 // Function to group links by their created_at date
 function groupLinksByDate(data) {
   const grouped = {};
   data.forEach((link) => {
-    const date = format(link.created_at, 'EEEE, dd MMM yyyy');
+    const date = format(new Date(link.created_at), "EEEE, dd MMM yyyy");
     if (!grouped[date]) {
       grouped[date] = [];
     }
@@ -136,82 +146,90 @@ function groupLinksByDate(data) {
   });
   return grouped;
 }
+
 async function getLinks() {
   try {
-    const { data, error, status } = await supabase
-      .from('Links')
-      .select('id, link, description, created_at')
-      .order('created_at', { ascending: false });
-    if (error && status !== 406) throw error;
+    console.log("Fetching links for project:", projectStore.activeProjectId);
+
+    const { data, error } = await supabaseConnection()
+      .supabase.from("Links")
+      .select("*")
+      .eq("project_id", projectStore.activeProjectId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching links:", error);
+      return;
+    }
+
+    console.log("Fetched links:", data);
 
     if (data) {
       links.value = data;
       groupedLinks.value = groupLinksByDate(data);
+      console.log("Grouped links:", groupedLinks.value);
     }
   } catch (error) {
-    console.error(error.message);
+    console.error("Error in getLinks:", error);
   }
 }
-getLinks();
+
 // Function to copy the document link to clipboard
 function copyDocument(link) {
   navigator.clipboard.writeText(link);
 }
-const isDeleteModalOpen = ref(false);
-const documentToDelete = ref(null);
+
 function showDeleteModal(link) {
   documentToDelete.value = link;
   isDeleteModalOpen.value = true;
 }
+
 async function deleteDocument() {
   try {
-    console.log('Deleting document:', documentToDelete.value.id);
-    // Delete document from the database using its ID
-    const { error, status } = await supabase
-      .from('Links')
+    if (!documentToDelete.value) return;
+
+    const { error } = await supabaseConnection()
+      .supabase.from("Links")
       .delete()
-      .eq('id', documentToDelete.value.id);
-    if (error && status !== 406) throw error;
+      .eq("id", documentToDelete.value.id);
 
-    // After successful deletion, fetch the updated links list
-    const { data: updatedLinks, error: fetchError } = await supabase
-      .from('Links')
-      .select('link, description, created_at')
-      .order('created_at', { ascending: false });
-    if (fetchError) throw fetchError;
+    if (error) throw error;
 
-    // Update your links and grouped links state after deletion
-    if (updatedLinks) {
-      links.value = updatedLinks;
-      groupedLinks.value = groupLinksByDate(updatedLinks);
-    }
-    console.log('Deleting document:', documentToDelete.value);
-    console.log('Links after deletion:', links.value);
-    // Close the modal after deletion
+    // Refresh the links list
+    await getLinks();
+
+    // Close the modal
     isDeleteModalOpen.value = false;
+    documentToDelete.value = null;
   } catch (error) {
-    console.error('Error deleting document:', error.message);
+    console.error("Error deleting document:", error);
   }
 }
+
+// Watch for project changes and fetch links
+watchEffect(() => {
+  if (projectStore.activeProjectId) {
+    getLinks();
+  }
+});
+
 // Page meta
 definePageMeta({
-  title: 'Documents',
-  description: '',
-  middleware: 'auth',
-  layout: 'default',
+  title: "Documents",
+  description: "",
+  middleware: "auth",
+  layout: "default",
 });
+
 useSeoMeta({
-  title: 'Opus - Documents',
-  ogTitle: 'Documents' /* Title of page without branding */,
-  ogSiteName: 'opus' /* Overall site name */,
-  ogType: 'website' /* 'website' | 'article' | 'book' | 'profile' */,
-  description:
-    'Manage the links to the relevant documents of your projects',
-  ogDescription:
-    'Manage the links to the relevant documents of your projects',
-  creator: 'https://github.com/y-neck/ | https://github.com/kevinschaerer/' /* Creator of page */,
-  robots: 'noindex, nofollow' /* Robots meta tag */,
-  ogImage:
-    '' /* Image of page when sharing */,
+  title: "Opus - Documents",
+  ogTitle: "Documents",
+  ogSiteName: "opus",
+  ogType: "website",
+  description: "Manage the links to the relevant documents of your projects",
+  ogDescription: "Manage the links to the relevant documents of your projects",
+  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
+  robots: "noindex, nofollow",
+  ogImage: "",
 });
 </script>
