@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 45 920;
+  font-style: normal;
+  src: url("/fonts/PretendardVariable.woff2") format("woff2-variations");
+}
+
+body {
+  font-family: "Pretendard", system-ui, sans-serif;
+  font-weight: 460;
+  background: var(--background);
+}
+
+:root {
+  --text: 0 0% 2%;
+  --background: #fff;
+  --primary: 2 12% 50%;
+  --secondary: 30 12% 71%;
+  --accent: 35 12% 64%;
+}
+
+.dark {
+  --text: 0 0% 98%;
+  --background: 0 0% 4%;
+  --primary: 2 12% 50%;
+  --secondary: 30 12% 29%;
+  --accent: 35 12% 36%;
+}
+
+/* transparent autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+
+input[data-autocompleted] {
+  background-color: transparent !important;
+}
+
+/* Hover styling for dropdown-menu-item */
+.dropdown-menu-item:hover {
+  @apply cursor-pointer;
+  /* Change cursor to pointer */
+  @apply bg-grey-100;
+}
