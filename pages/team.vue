@@ -3,7 +3,7 @@
     <Header :pageTitle="'Team'" :pageIcon="'PeopleIcon'">
       <template #actions>
         <div class="flex flex-row gap-3">
-          <button class="flex flex-row">
+          <button class="flex flex-row" @click="showInviteModal">
             <span class="mt-1 mr-1"><AddPeopleIcon /></span>
             Invite Member
           </button>
@@ -16,7 +16,7 @@
       <div>
         <div v-for="member in teamMembers" :key="member.id">
           <div
-            class="flex items-center justify-between p-3 group transition-all"
+            class="flex items-center justify-between py-3 group transition-all"
           >
             <div class="flex items-center gap-3">
               <div
@@ -66,6 +66,12 @@
       </div>
     </main>
   </div>
+  <!-- Invite Member Modal -->
+  <InviteMemberModal
+    v-if="isInviteModalOpen"
+    :projectId="project"
+    @close="closeInviteModal"
+  />
 </template>
 
 <script setup>
@@ -73,11 +79,22 @@ import { ref, computed, onMounted, watchEffect } from "vue";
 import { useProjectStore } from "~/middleware/projectStore";
 import { supabaseConnection } from "~/composables/supabaseConnection";
 import Header from "~/components/Header.vue";
+import InviteMemberModal from "~/components/Modals/InviteMemberModal.vue";
 import PencilIcon from "~/components/icons/PencilIcon.vue";
 
 const teamMembers = ref([]);
 const projectStore = useProjectStore();
 const currentUser = ref(null);
+const isInviteModalOpen = ref(true);
+
+// Handle Modal
+const showInviteModal = () => {
+  isInviteModalOpen.value = true;
+};
+
+const closeInviteModal = () => {
+  isInviteModalOpen.value = false;
+};
 
 const project = computed(() => {
   return projectStore.activeProjectId;
