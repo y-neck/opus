@@ -27,13 +27,16 @@
           <p class="nav-item-text">Settings</p></NuxtLink
         >
       </div>
+      <div>
+        <p id="team-name" class="hidden md:block text-grey-500 text-sm mt-8">
+          <span v-if="activeProjectName">{{ activeProjectName }}</span>
+          <span v-else><ActiveProjectSkeleton /></span>
+        </p>
+      </div>
       <div
         id="team-nav"
-        class="flex md:flex-col justify-between max-sm:gap-8 mt-8"
+        class="flex md:flex-col justify-between max-sm:gap-8 mt-1"
       >
-        <p id="team-name" class="hidden md:block text-grey-500 text-sm">
-          {{ activeProjectName }}
-        </p>
         <NuxtLink to="/tasks" class="nav-item">
           <NoteIcon />
           <p class="nav-item-text">Tasks</p></NuxtLink
@@ -77,6 +80,7 @@
 <script setup lang="ts">
 /* Display current project */
 import { useProjectStore } from "~/middleware/projectStore"; // Import pinia store
+import ActiveProjectSkeleton from "~/components/Skeleton/ActiveProjectSkeleton.vue";
 
 // Initialize pinia store
 const projectStore = useProjectStore();
