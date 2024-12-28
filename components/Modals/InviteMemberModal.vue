@@ -16,7 +16,7 @@
           type="email"
           required
           class="w-[24.75rem] pl-3 h-9 border border-grey-100 rounded-lg placeholder:font-base"
-          placeholder="Add new members by mail"
+          placeholder="Add a new member by mail"
         />
       </div>
     </form>
