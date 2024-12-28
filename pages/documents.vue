@@ -18,6 +18,12 @@
     </Header>
     <main class="p-16">
       <div>
+        <h2 class="text-2xl mb-1.5">Documents</h2>
+        <!-- Skeleton before page is fully loaded -->
+        <div v-if="isLoading">
+          <DocumentsSkeleton />
+          <DocumentsSkeleton />
+        </div>
         <div v-if="Object.keys(groupedLinks).length">
           <div
             class="my-4 mb-9"
@@ -66,7 +72,7 @@
                       </span>
                       <span
                         @click="showDeleteModal(link)"
-                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 active:text-destructive-red transition"
+                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 hover:text-destructive-red transition"
                       >
                         <TrashCanIcon />
                       </span>
@@ -78,7 +84,6 @@
             </ul>
           </div>
         </div>
-        <p v-else>No documents found</p>
       </div>
     </main>
     <!-- Modals -->
@@ -94,11 +99,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 import { supabaseConnection } from "~/composables/supabaseConnection";
 import { useProjectStore } from "~/middleware/projectStore";
 import Header from "~/components/Header.vue";
 import Modal from "~/components/Modals/RemoveModal.vue";
+import DocumentsSkeleton from "~/components/Skeleton/DocumentsSkeleton.vue";
 import { format } from "date-fns";
 import CopyIcon from "~/components/icons/CopyIcon.vue";
 import TrashCanIcon from "~/components/icons/TrashCanIcon.vue";
@@ -111,6 +117,7 @@ const groupedLinks = ref({});
 const projectStore = useProjectStore();
 const isDeleteModalOpen = ref(false);
 const documentToDelete = ref(null);
+const isLoading = ref(true);
 
 // Function to format the link by removing protocol and path
 function formatLink(url) {
@@ -171,6 +178,8 @@ async function getLinks() {
     }
   } catch (error) {
     console.error("Error in getLinks:", error);
+  } finally {
+    isLoading.value = false;
   }
 }
 
