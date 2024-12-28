@@ -5,9 +5,10 @@
       class="dropdown-menu-button flex items-center justify-between gap-2 rounded-md"
       @click="toggleDropdown('project-dd')"
     >
-      <!-- Replace icon with variable. You may want to set a project as the default because of layout shifts and no content when nothing is selected. -->
+      <!-- TODO: Replace icon with variable. -->
       <span> <PlantIcon /></span>
-      <p>{{ activeProjectName || "Select Project" }}</p>
+      <p v-if="activeProjectName">{{ activeProjectName }}</p>
+      <span v-else="DropdownSkeleton"> <DropdownSkeleton /> </span>
       <span class="-ml-1"> <ChevronDownIcon /></span>
     </button>
     <!-- Dropdown Options -->
@@ -33,6 +34,15 @@
       >
         {{ project.projectName }}
       </p>
+      <hr class="border-grey-100" />
+      <p class="flex flex-row items-center gap-2 cursor-pointer">
+        <span><PlusIcon /></span> Create Project
+      </p>
+      <p
+        class="flex flex-row items-center gap-2 cursor-pointer text-destructive-red"
+      >
+        <span><TrashCanIcon /></span> Delete Project
+      </p>
     </DropdownMenu>
   </div>
 </template>
@@ -40,6 +50,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import DropdownMenu from "~/components/DropdownMenu.vue";
+import DropdownSkeleton from "~/components/Skeleton/DropdownSkeleton.vue";
 /* Import projects */
 import { useProjectStore } from "~/middleware/projectStore"; // Import pinia store
 import type { Project } from "~/middleware/models/projectsETL";
@@ -77,7 +88,16 @@ onMounted(async () => {
   try {
     // Fetch projects data from DB
     projectTasks.value = await getProjects();
-    projectTasks.value = [...projectTasks.value]; // Enforcing reactivity
+
+    if (projectTasks.value.length > 0 && !projectStore.activeProjectId) {
+      const firstProject = projectTasks.value[0];
+      setActiveProject(
+        firstProject.projectId as number,
+        firstProject.projectName
+      );
+
+      isDropdownVisible.value["project-dd"] = false;
+    }
   } catch (error) {
     console.error("Error fetching projects:", error);
   }
@@ -98,10 +118,8 @@ import ChevronDoubleRightIcon from "./icons/ChevronDoubleRightIcon.vue";
 .dropdown-menu-item :not(:first) {
   @apply flex items-center;
 }
-.dropdown-menu-item:hover {
-  @apply cursor-pointer bg-grey-100 rounded-md;
-}
+
 .active {
-  @apply bg-grey-200 rounded-md; /* Highlight active project */
+  @apply bg-grey-100 py-1 px-2.5 -ml-2 rounded-lg; /* Highlight active project */
 }
 </style>
