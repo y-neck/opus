@@ -1,5 +1,8 @@
 <template>
-  <div class="fixed inset-0 z-10 flex items-center justify-cente" v-if="isOpen">
+  <div
+    class="fixed inset-0 z-10 flex items-center justify-center"
+    v-if="isOpen"
+  >
     <div class="bg-white rounded-lg p-6 w-[496px] border border-grey-100">
       <h2 class="text-2xl font-medium mb-14 tracking-[0.005em]">{{ title }}</h2>
       <input type="url" />
