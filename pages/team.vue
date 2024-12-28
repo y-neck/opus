@@ -13,11 +13,20 @@
     <main class="p-16">
       <h2 class="text-2xl mb-1.5">Members</h2>
       <hr class="border-grey-100" />
+      <!-- Skeleton before page is fully loaded -->
+      <div v-if="isLoading">
+        <MemberSkeleton />
+        <hr class="border-grey-100" />
+        <MemberSkeleton />
+        <hr class="border-grey-100" />
+        <MemberSkeleton />
+        <hr class="border-grey-100" />
+        <MemberSkeleton />
+        <hr class="border-grey-100" />
+      </div>
       <div>
         <div v-for="member in teamMembers" :key="member.id">
-          <div
-            class="flex items-center justify-between py-3 group transition-all"
-          >
+          <div class="flex justify-between py-3 group transition-all">
             <div class="flex items-center gap-3">
               <div
                 class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-grey-100"
@@ -28,18 +37,9 @@
                   :alt="`${member.name} ${member.surname}`"
                   class="w-full h-full object-cover"
                 />
-                <span v-else class="text-base text-grey-500">
-                  {{ member.name?.charAt(0) }}{{ member.surname?.charAt(0) }}
-                </span>
               </div>
               <div>
-                <h3>
-                  {{
-                    isCurrentUser(member.id)
-                      ? "You"
-                      : `${member.name} ${member.surname}`
-                  }}
-                </h3>
+                <h3>{{ member.name }} {{ member.surname }}</h3>
                 <p class="text-base font-normal text-grey-500">
                   {{ getRoleName(member.role) }}
                 </p>
@@ -55,7 +55,7 @@
               </span>
               <span
                 @click="showDeleteModal(link)"
-                class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 active:text-destructive-red transition"
+                class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 hover:text-destructive-red transition"
               >
                 <RemovePeopleIcon />
               </span>
@@ -79,13 +79,14 @@ import { ref, computed, onMounted, watchEffect } from "vue";
 import { useProjectStore } from "~/middleware/projectStore";
 import { supabaseConnection } from "~/composables/supabaseConnection";
 import Header from "~/components/Header.vue";
+import MemberSkeleton from "~/components/Skeleton/MemberSkeleton.vue";
 import InviteMemberModal from "~/components/Modals/InviteMemberModal.vue";
 import PencilIcon from "~/components/icons/PencilIcon.vue";
 
 const teamMembers = ref([]);
 const projectStore = useProjectStore();
-const currentUser = ref(null);
-const isInviteModalOpen = ref(true);
+const isInviteModalOpen = ref(false);
+const isLoading = ref(true);
 
 // Handle Modal
 const showInviteModal = () => {
@@ -99,22 +100,6 @@ const closeInviteModal = () => {
 const project = computed(() => {
   return projectStore.activeProjectId;
 });
-
-async function getCurrentUser() {
-  try {
-    const {
-      data: { user },
-    } = await supabaseConnection().supabase.auth.getUser();
-    currentUser.value = user;
-    console.log("Current user:", user);
-  } catch (error) {
-    console.error("Error getting current user:", error);
-  }
-}
-
-function isCurrentUser(memberId) {
-  return currentUser.value?.id === memberId;
-}
 
 function getRoleName(roleId) {
   const roles = {
@@ -164,15 +149,16 @@ async function fetchTeamMembers() {
             role: member.role,
           };
         });
+        isLoading.value = false;
       }
     }
   } catch (error) {
     console.error("Error in fetchTeamMembers:", error);
+    isLoading.value = false;
   }
 }
 
 onMounted(async () => {
-  await getCurrentUser();
   await fetchTeamMembers();
 
   watchEffect(async () => {
