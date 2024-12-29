@@ -31,9 +31,11 @@
               <div
                 class="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-grey-100"
               >
-                <img
+                <NuxtImg
                   v-if="member.profile_img"
-                  :src="member.profile_img"
+                  :src="`https://zdrhwehycbxujrbltjlj.supabase.co/storage/v1/object/public/profile_img/${
+                    member.user_id
+                  }/${member.profile_img}?v=${Date.now()}`"
                   :alt="`${member.name} ${member.surname}`"
                   class="w-full h-full object-cover"
                 />
@@ -130,7 +132,7 @@ async function fetchTeamMembers() {
         const { data: profilesData, error: profilesError } =
           await supabaseConnection()
             .supabase.from("Profiles")
-            .select("id, name, surname, email, profile_img")
+            .select("id, name, surname, email, profile_img, user_id")
             .in("id", userIds);
 
         if (profilesError) {
@@ -145,6 +147,7 @@ async function fetchTeamMembers() {
             name: profile?.name || "No name found",
             surname: profile?.surname || "No surname found",
             email: profile?.email || "No email found",
+            user_id: profile.user_id,
             profile_img: profile?.profile_img || null,
             role: member.role,
           };
