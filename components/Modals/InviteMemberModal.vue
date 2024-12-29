@@ -41,6 +41,11 @@ import { ref } from "vue";
 
 const emit = defineEmits(["close"]);
 
+const props = defineProps({
+  isOpen: Boolean,
+  projectId: String,
+});
+
 const email = ref("");
 const role = ref("3");
 const isLoading = ref(false);
@@ -68,6 +73,7 @@ const handleInvite = async () => {
         body: JSON.stringify({
           email: email.value,
           role: role.value,
+          projectId: props.projectId,
         }),
       }
     );
