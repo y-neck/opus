@@ -1,7 +1,7 @@
 import type { Title } from '#build/components';
 <template>
   <input
-    class="w-[20rem] h-10 border text-grey-700 border-grey-100 rounded-lg pl-3 placeholder-grey-400 pr-2 focus:outline-none focus:border-grey-200"
+    class="w-[20rem] h-10 border text-grey-700 border-grey-100 rounded-lg pl-3 placeholder-grey-400 pr-2"
     :type="type"
     :placeholder="placeholder"
     :value="modelValue"
