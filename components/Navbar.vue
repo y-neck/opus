@@ -28,10 +28,10 @@
         >
       </div>
       <div>
-        <p id="team-name" class="hidden md:block text-grey-500 text-sm mt-8">
-          <span v-if="activeProjectName">{{ activeProjectName }}</span>
+        <div id="team-name" class="hidden md:block text-grey-500 text-sm mt-8">
+          <p v-if="activeProjectName">{{ activeProjectName }}</p>
           <span v-else><ActiveProjectSkeleton /></span>
-        </p>
+        </div>
       </div>
       <div
         id="team-nav"
