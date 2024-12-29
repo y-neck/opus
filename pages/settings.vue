@@ -1,322 +1,229 @@
 <template>
-  <div class="flex flex-col w-full">
+  <div class="w-full">
     <Header page-title="Settings" page-icon="SettingsIcon" />
     <main class="p-16">
-      <h2 id="update-profile " class="pb-8 text-grey-700 text-2xl">
+      <h2 id="update-profile" class="pb-5 text-grey-700 text-2xl">
         Update Profile
       </h2>
-      <div
-        id="profile-img-section"
-        class="flex items-end border-b-2 border-b-grey-100 w-full md:w-1/2 pb-16"
-      >
-        <ProfilePicture src="" alt="Profile Img" />
-        <button id="update-img-button">
-          <label
-            for="update-img-input"
-            class="profile-button bg-grey-100 hover:bg-grey-200 text-grey-700 transition mx-3"
-          >
-            <PencilIcon />
-            <p id="update-img-button" class="profile-button-text">Update</p>
-          </label>
-          <input
-            type="file"
-            id="update-img-input"
-            accept="image/png, image/jpeg, image/jpg, image/webp, image/svg"
-            class="hidden"
-          />
-        </button>
+      <div id="profile-img-section" class="flex items-end">
+        <ProfilePicture
+          :src="profileImage"
+          alt="Profile Image"
+          id="profile-img"
+        />
+        <UploadProfilePicture label="Update Image" />
       </div>
-      <div
-        id="profile-information-container"
-        class="w-full border-b-2 border-b-grey-100 pb-6"
-      >
+      <div id="profile-information-container" class="pt-14">
         <form
           id="profile-information"
-          class="flex flex-col gap-4 pt-8"
-          method="post"
+          class="flex flex-col gap-5 items-start"
+          @submit.prevent="updateUserProfile"
         >
-          <div class="input-container">
-            <label for="name-field" id="name-label" class="input-label"
-              >Name</label
-            >
+          <div class="flex flex-col gap-1">
+            <label for="name-field" class="text-grey-500 text-sm">Name</label>
             <input
               type="text"
               v-model="newSetName"
               id="name-field"
-              class="input-text"
-              :placeholder="`Your name: ${currentName}`"
-              :aria-placeholder="`Your name: ${currentName}`"
-              aria-labelledby="name-label"
+              class="border border-grey-100 h-9 w-[396px] placeholder:text-grey-400 pl-3 rounded-lg"
+              :placeholder="currentName"
             />
           </div>
-          <div class="input-container">
-            <label for="surname-field" id="surname-label" class="input-label"
+          <div class="flex flex-col gap-1">
+            <label for="surname-field" class="text-grey-500 text-sm"
               >Surname</label
             >
             <input
               type="text"
               v-model="newSetSurname"
               id="surname-field"
-              class="input-text"
-              :placeholder="`Your surname: ${currentSurname}`"
-              :aria-placeholder="`Your surname: ${currentSurname}`"
-              aria-labelledby="surname-label"
+              class="border border-grey-100 h-9 w-[396px] placeholder:text-grey-400 pl-3 rounded-lg"
+              :placeholder="currentSurname"
             />
           </div>
-          <div class="input-container">
-            <label for="email-field" id="email-label" class="input-label"
-              >Email</label
-            >
+          <div class="flex flex-col gap-1">
+            <label for="email-field" class="text-grey-500 text-sm">Email</label>
             <input
               type="email"
               v-model="newSetEmail"
-              class="input-text"
               id="email-field"
-              :placeholder="`Your current email: ${currentEmail}`"
-              :aria-placeholder="`Your current email: ${currentEmail}`"
-              aria-labelledby="email-label"
+              class="border border-grey-100 h-9 w-[396px] placeholder:text-grey-400 pl-3 rounded-lg"
+              :placeholder="currentEmail"
             />
           </div>
-
           <button
-            id="update-profile-button"
-            class="profile-button bg-grey-100 hover:bg-grey-200 text-grey-700 transition"
-            @click="updateUserProfile(newSetEmail, newSetName, newSetSurname)"
+            type="submit"
+            class="flex flex-row items-center gap-1 px-3 h-9 rounded-lg bg-grey-100 hover:bg-grey-200 text-grey-700 transition cursor-pointer"
           >
             Save Changes
           </button>
         </form>
       </div>
-      <div id="deleteAccount" class="w-full flex flex-col gap-4 pt-6">
+      <hr class="border-grey-100 mt-12" />
+      <div id="deleteAccount" class="pt-6">
         <h2 class="text-2xl">Delete Account</h2>
-        <p class="w-1/2 text-grey-500">
+        <p class="text-grey-500 font-normal leading-[1.375rem] pt-0.5">
           Keep in mind that this action is irreversible and all your data will
-          be permanently deleted. If you have any concerns or feedback, we'd
-          love to hear from you before you go.
+          be permanently deleted. <br />
+          If you have any concerns or feedback, we'd love to hear from you
+          before you go.
         </p>
         <button
           id="delete-account-btn"
-          class="profile-button text-white bg-destructive-red hover:bg-destructive-darkRed transition"
-          @click="showDeleteModal()"
+          class="flex flex-row items-center px-3 h-9 rounded-lg bg-destructive-red hover:bg-destructive-darkRed text-grey-50 transition cursor-pointer mt-5"
+          @click="showDeleteModal"
         >
           Delete Account
         </button>
+        <Toast :message="profileUpdated || profileError" />
       </div>
       <Modal
         v-if="isDeleteModalOpen"
         :isOpen="isDeleteModalOpen"
         title="Delete Account"
         message="Are you sure you want to delete your account? This action cannot be undone."
-        @confirm="deleteAccount()"
+        @confirm="deleteAccount"
         @cancel="isDeleteModalOpen = false"
       />
     </main>
   </div>
 </template>
 
-<script setup lang="ts">
-import { supabaseConnection } from '~/composables/supabaseConnection';
-import Header from '~/components/Header.vue';
-import PencilIcon from '~/components/icons/PencilIcon.vue';
-import ProfilePicture from '~/components/ProfilePicture.vue';
-import Modal from '~/components/Modals/RemoveModal.vue';
+<script setup>
+import { ref, onMounted } from "vue";
 
-// Form input bindings for user profile updates
-let newSetName: string = '';
-let newSetSurname: string = '';
-let newSetEmail: string = '';
+// Handle data
+const currentName = ref("");
+const currentSurname = ref("");
+const currentEmail = ref("");
+const profileImage = ref("");
 
-/* DB CRUD */
-// read
-let userId = supabaseConnection().user.value?.id;
-let currentName: string;
-let currentSurname: string;
-let currentEmail: any = supabaseConnection().user.value?.email;
-// Fetch user name from DB
-if (userId) {
-  const { data: fetchName, error: fetchNameError } = await supabaseConnection()
-    .supabase.from('Profiles')
-    .select('name')
-    .eq('user_id', userId);
-  if (fetchName && fetchName !== null) {
-    currentName = fetchName[0].name;
-  } else {
-    currentName = '';
-    console.error(fetchNameError);
-  }
-}
+const newSetName = ref("");
+const newSetSurname = ref("");
+const newSetEmail = ref("");
 
-// Fetch user surname from DB
-if (userId) {
-  const { data: fetchSurname, error: fetchSurnameError } =
-    await supabaseConnection()
-      .supabase.from('Profiles')
-      .select('surname')
-      .eq('user_id', userId);
-  if (fetchSurname && fetchSurname !== null) {
-    currentSurname = fetchSurname[0].surname;
-  } else {
-    currentSurname = '';
-    console.error(fetchSurnameError);
-  }
-}
+const profileUpdated = ref("");
+const profileError = ref("");
 
-// update
-let updateImgInput: any = document?.querySelector('#update-img-input');
-let profileImgHolder = document?.querySelector('#profile-img');
-updateImgInput?.addEventListener('change', updateProfileImg);
-
-// Update profile picture
-async function updateProfileImg(event: Event) {
-  const selectedProfileImg = (event.target as HTMLInputElement).files?.[0];
-  if (selectedProfileImg) {
-    // Error if >200kb
-    if (selectedProfileImg.size > 200000) {
-      alert('File size should not exceed 200kb');
-      return;
-    }
-    // Replace spaces in filename with _
-    let selectedProfileImgRegexed = selectedProfileImg.name.replace(
-      /\s+/g /* Replace white space with _ */,
-      '_'
-    );
-    // Store file to user bucket if provided
-    const { data, error } = await supabaseConnection()
-      .supabase.storage.from('profile_img')
-      .upload(
-        supabaseConnection().user.value?.id + '/' + selectedProfileImgRegexed,
-        selectedProfileImg,
-        {
-          // Replace existing file
-          upsert: true,
-        }
-      );
-    // Update profile picture on settings page
-    const { data: getProfileImgUrl } = await supabaseConnection()
-      .supabase.storage.from('profile_img') /* Get file from bucket */
-      .getPublicUrl(
-        supabaseConnection().user.value?.id + '/' + selectedProfileImgRegexed
-      );
-    /* Replace profile picture */
-    profileImgHolder?.setAttribute('src', getProfileImgUrl?.publicUrl);
-  }
-}
-
-// Update user profile
-async function updateUserProfile(
-  newSetEmail: string,
-  newSetName: string,
-  newSetSurname: string
-) {
-  // Update profile in the 'Profiles' table if there are changes in name or surname
-  if (currentName !== newSetName || currentSurname !== newSetSurname) {
-    const { data: profileData, error: profileError } =
-      await supabaseConnection()
-        .supabase.from('Profiles')
-        .update({
-          email: currentEmail !== newSetEmail ? newSetEmail : currentEmail,
-          name: currentName !== newSetName ? newSetName : currentName,
-          surname:
-            currentSurname !== newSetSurname ? newSetSurname : currentSurname,
-        })
-        .eq('email', currentEmail);
-
-    if (profileError) {
-      console.error('Error updating profile:', profileError);
-      return;
-    }
-    console.log('Profile updated successfully:', profileData);
-  }
-
-  // Update user's email in Supabase Auth if the email has changed
-  if (currentEmail !== newSetEmail) {
-    const { data: authEmail, error: authEmailError } =
-      await supabaseConnection().supabase.auth.updateUser({
-        email: newSetEmail,
-      });
-
-    if (authEmailError) {
-      console.error('Error updating user email in auth:', authEmailError);
-      return;
-    }
-    console.log('User email updated successfully:', authEmail);
-  }
-}
-
-// delete
-async function deleteAccount() {
-  let userId = supabaseConnection().supabase.auth.users.id; /* TODO: Fix */
-  const { data, error } =
-    await supabaseConnection().supabase.auth.admin.deleteUser(userId);
-  if (error) {
-    console.error('Error deleting user:', error);
-    return;
-  }
-
-  console.log('Account deleted');
-
-  // Redirect to login page
-  navigateTo('/login');
-}
-
-/* Handle Modals */
+// Modal
 const isDeleteModalOpen = ref(false);
 function showDeleteModal() {
   isDeleteModalOpen.value = true;
 }
 
+// Fetch user details
+onMounted(async () => {
+  const { user } = supabaseConnection();
+  if (user.value) {
+    currentEmail.value = user.value.email;
+    const { data, error } = await supabaseConnection()
+      .supabase.from("Profiles")
+      .select("name, surname")
+      .eq("user_id", user.value.id)
+      .single();
+
+    if (data) {
+      currentName.value = data.name;
+      currentSurname.value = data.surname;
+    } else {
+      console.error(error);
+    }
+    // Fetch profile image
+    const { data: imgData } = await supabaseConnection()
+      .supabase.storage.from("profile_img")
+      .getPublicUrl(`${user.value.id}/profile.jpg`);
+    profileImage.value = imgData?.publicUrl || "";
+  }
+});
+
+// Update Profile
+async function updateUserProfile() {
+  profileUpdated.value = "";
+  profileError.value = "";
+
+  const { user } = supabaseConnection();
+  if (user.value) {
+    try {
+      const updates = {
+        name: newSetName.value || currentName.value,
+        surname: newSetSurname.value || currentSurname.value,
+      };
+      const { error } = await supabaseConnection()
+        .supabase.from("Profiles")
+        .update(updates)
+        .eq("user_id", user.value.id);
+
+      if (newSetEmail.value && newSetEmail.value !== currentEmail.value) {
+        const { error: authError } =
+          await supabaseConnection().supabase.auth.updateUser({
+            email: newSetEmail.value,
+            options: {
+              emailRedirectTo: "http://localhost:3000/settings",
+            },
+          });
+        if (authError) throw authError;
+      }
+
+      currentName.value = updates.name;
+      currentSurname.value = updates.surname;
+
+      // Change Message for Toast
+      profileUpdated.value = "Profile updated";
+
+      newSetName.value = "";
+      newSetSurname.value = "";
+      newSetEmail.value = "";
+
+      setTimeout(() => {
+        profileUpdated.value = "";
+      }, 3000);
+    } catch (err) {
+      console.error("Error updating profile:", err);
+
+      // Change Message for Toast
+      profileError.value = "Error updating profile";
+
+      setTimeout(() => {
+        profileError.value = "";
+      }, 3000);
+    }
+  }
+}
+
+// Delete Account
+async function deleteAccount() {
+  const { user } = supabaseConnection();
+  if (user.value) {
+    const { error } = await supabaseConnection().supabase.auth.admin.deleteUser(
+      user.value.id
+    );
+    if (!error) {
+      navigateTo("/login");
+    } else {
+      console.error(error);
+    }
+  }
+}
+
 // Page meta
 definePageMeta({
-  title: 'Settings',
-  description: '',
-  middleware: 'auth',
-  layout: 'default',
+  title: "Settings",
+  description: "",
+  middleware: "auth",
+  layout: "default",
 });
 useSeoMeta({
-  title: 'Opus - Settings',
-  ogTitle: 'Settings' /* Title of page without branding */,
-  ogSiteName: 'opus' /* Overall site name */,
-  ogType: 'website' /* 'website' | 'article' | 'book' | 'profile' */,
+  title: "Opus - Settings",
+  ogTitle: "Settings" /* Title of page without branding */,
+  ogSiteName: "opus" /* Overall site name */,
+  ogType: "website" /* 'website' | 'article' | 'book' | 'profile' */,
   description:
-    'Change your profile picture, update your email address, and more!',
+    "Change your profile picture, update your email address, and more!",
   ogDescription:
-    'Change your profile picture, update your email address, and more!',
-  creator: 'https://github.com/y-neck/ | https://github.com/kevinschaerer/' /* Creator of page */,
-  robots: 'noindex, nofollow' /* Robots meta tag */,
-  ogImage:
-    '' /* Image of page when sharing */,
+    "Change your profile picture, update your email address, and more!",
+  creator:
+    "https://github.com/y-neck/ | https://github.com/kevinschaerer/" /* Creator of page */,
+  robots: "noindex, nofollow" /* Robots meta tag */,
+  ogImage: "" /* Image of page when sharing */,
 });
 </script>
-
-<style scoped>
-.input-container {
-  @apply flex;
-  @apply flex-col;
-}
-
-.input-label {
-  @apply text-grey-500;
-  @apply text-sm;
-}
-
-.input-text {
-  @apply text-grey-700;
-  @apply placeholder:text-grey-500;
-  @apply border-2;
-  @apply border-grey-100;
-  @apply rounded-lg;
-  @apply px-3;
-  @apply py-2;
-}
-
-.profile-button {
-  @apply flex;
-  @apply px-3;
-  @apply py-2;
-  @apply rounded-lg;
-  @apply h-fit;
-  @apply w-fit;
-  @apply items-center;
-  @apply gap-1;
-}
-</style>
