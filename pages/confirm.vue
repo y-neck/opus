@@ -1,22 +1,25 @@
 <script setup>
-const router = useRouter()
+const router = useRouter();
 
 setTimeout(() => {
-  router.push('/login')
+  router.push("/login");
 }, 3000);
 
 definePageMeta({
-  title: 'Email confirmed',
-  description: '',
+  title: "Email confirmed",
+  description: "",
   layout: false,
 });
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-screen">
-    <p class="flex text-center text-grey-700">
-      Thank you for confirming your email.<br>
-      You will be redirected to the login page shortly.
-    </p>
+  <div class="flex flex-col items-center justify-center h-screen">
+    <div class="text-left">
+      <h2 class="text-2xl text-grey-700">Email Confirmed</h2>
+      <p class="text-grey-500 font-normal leading-[1.375rem] pt-0.5">
+        Thank you for confirming your email.<br />
+        You will be redirected to the login page shortly.
+      </p>
+    </div>
   </div>
 </template>
