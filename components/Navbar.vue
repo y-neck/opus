@@ -108,6 +108,7 @@ async function logout() {
   padding-left: 0.75rem;
   margin-left: -0.75rem;
   max-width: 15.5rem;
+  height: 2rem;
 }
 
 .nav-item-text {
