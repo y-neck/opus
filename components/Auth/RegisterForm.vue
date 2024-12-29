@@ -7,30 +7,18 @@
     <div class="flex flex-col">
       <h2 class="text-[24px] mb-6 text-grey-700">Create your account</h2>
       <div class="flex flex-col justify-center gap-2">
-        <AuthInput type="text" placeholder="Surname" v-model="surname" />
         <AuthInput type="text" placeholder="Name" v-model="name" />
+        <AuthInput type="text" placeholder="Surname" v-model="surname" />
         <AuthInput type="email" placeholder="your@email.com" v-model="email" />
         <AuthInput type="password" placeholder="Password" v-model="password" />
       </div>
       <div class="flex flex-col justify-center">
         <AuthButton
-          :disabled="!surname || !name || !email || !password || loading"
-          :title="loading ? 'Registering...' : 'Register'"
+          :loading="loading"
+          :disabled="!surname || !name || !email || !password"
+          label="Register"
         />
       </div>
-      <transition name="fade">
-        <p
-          v-if="errorMessage"
-          class="absolute top-1/2 mt-14 left-1/2 transform -translate-x-1/2 text-sm text-destructive-red text-center"
-          v-html="errorMessage"
-        ></p>
-        <p
-          v-else-if="successMessage"
-          class="absolute top-1/2 mt-16 left-1/2 transform -translate-x-1/2 text-sm text-grey-500 text-center"
-        >
-          Please check your inbox and confirm your email.
-        </p>
-      </transition>
       <div class="text-center mt-12 text-sm text-grey-500">
         <NuxtLink to="/login">
           <p class="hover:text-grey-700 transition">Already signed-up?</p>
@@ -38,6 +26,7 @@
       </div>
     </div>
   </form>
+  <Toast :message="errorMessage || successMessage" />
 </template>
 
 <!-- Supabase Register Process -->
@@ -45,12 +34,12 @@
 const supabase = useSupabaseClient();
 
 const loading = ref(false);
-const surname = ref("");
 const name = ref("");
+const surname = ref("");
 const email = ref("");
 const password = ref("");
 
-const successMessage = ref(false);
+const successMessage = ref("");
 const errorMessage = ref("");
 
 const handleRegister = async () => {
@@ -80,30 +69,27 @@ const handleRegister = async () => {
 
     if (insertError) throw insertError;
 
-    successMessage.value = true;
+    successMessage.value = "Confirm your email";
 
     setTimeout(() => {
-      successMessage.value = false;
+      successMessage.value = "";
     }, 3000);
 
     // Clear input fields
-    surname.value = "";
     name.value = "";
+    surname.value = "";
     email.value = "";
     password.value = "";
   } catch (error) {
-    console.log(error.status);
-    console.log(error.code);
-
     // Handle error codes
     if (error.status === 422) {
-      errorMessage.value = `Your password must be at least 8 characters and contain at least <br /> one number and have a mixture of uppercase and lowercase letters.`;
-    } else if (error.code === 409) {
-      errorMessage.value = "This email is already registered.";
+      errorMessage.value = `Password too weak`;
+    } else if (error.code === "23505") {
+      errorMessage.value = "Email already registered";
     } else if (error.status === 429) {
-      errorMessage.value = "Too many attempts. Please try again later.";
+      errorMessage.value = "Too many attempts, try again later";
     } else if (error.status === 500 || undefined) {
-      errorMessage.value = "An unexpected error occurred. Please try again.";
+      errorMessage.value = "Something went wrong, try again";
     }
     password.value = "";
     setTimeout(() => {
@@ -117,22 +103,7 @@ const handleRegister = async () => {
 
 <!-- Scoped Styling -->
 <style scoped>
-.btn-outline {
-  outline: 1px solid #f4f4f5;
-}
-
 input::-webkit-credentials-auto-fill-button {
   margin-left: 20px;
-}
-
-/* Transition classes */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.15s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

@@ -5,39 +5,19 @@
   >
     <div class="flex flex-col">
       <h2 class="text-[24px] mb-6 text-grey-700">Reset your password</h2>
-      <div class="flex flex-col justify-center mb-1">
+      <div class="flex flex-col justify-center">
         <AuthInput
           label="Email"
           type="email"
           placeholder="your@email.com"
           v-model="email"
-          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
         />
       </div>
-      <transition name="fade">
-        <p
-          v-if="errorMessage"
-          class="absolute top-1/2 mt-14 left-1/2 transform -translate-x-1/2 text-sm text-destructive-red text-center"
-        >
-          {{ errorMessage }}
-        </p>
-        <p
-          v-else-if="success"
-          class="absolute top-1/2 mt-6 left-1/2 transform -translate-x-1/2 text-sm text-grey-500 text-center"
-        >
-          Recovery link sent! Check your email.
-        </p>
-      </transition>
       <div class="flex flex-col justify-center">
         <AuthButton
-          :disabled="!email || loading || success"
-          :title="
-            loading
-              ? 'Sending...'
-              : success
-              ? 'Recovery link sent'
-              : 'Send recovery link'
-          "
+          :loading="loading"
+          :disabled="!email"
+          label="Send recovery link"
         />
       </div>
     </div>
@@ -47,21 +27,40 @@
       </NuxtLink>
     </div>
   </form>
+  <Toast :message="errorMessage || successMessage" />
 </template>
 
 <script setup>
 const supabase = useSupabaseClient();
 
 const loading = ref(false);
-const success = ref(false);
+const successMessage = ref("");
 const email = ref("");
-const errorMessage = ref(""); // State for error messages
+const errorMessage = ref("");
 
 const recoverPassword = async () => {
   try {
     loading.value = true;
-    success.value = false;
+    successMessage.value = "";
     errorMessage.value = "";
+
+    // Check if email exists in db
+    const { data: emails, error: queryError } = await supabase
+      .from("Profiles")
+      .select("email")
+      .eq("email", email.value)
+      .single();
+
+    console.log(emails);
+
+    if (emails === null) {
+      errorMessage.value = "Email not found";
+      email.value = "";
+      setTimeout(() => {
+        errorMessage.value = "";
+      }, 3000);
+      return;
+    }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
       redirectTo: "http://localhost:3000/update-password",
@@ -69,20 +68,18 @@ const recoverPassword = async () => {
 
     if (error) throw error;
 
-    success.value = true;
+    successMessage.value = "Recovery link sent";
     email.value = "";
     setTimeout(() => {
-      success.value = false;
+      successMessage.value = "";
     }, 3000);
   } catch (error) {
     console.log(error.status, error.message);
 
-    if (error.status === 400) {
-      errorMessage.value = "Invalid email address. Please try again.";
-    } else if (error.status === 429) {
-      errorMessage.value = "Too many requests. Please try again later.";
+    if (error.status === 429) {
+      errorMessage.value = "Too many attempts, try again later";
     } else {
-      errorMessage.value = "An unexpected error occurred. Please try again.";
+      errorMessage.value = "Something went wrong, try again";
     }
 
     email.value = "";
@@ -95,16 +92,3 @@ const recoverPassword = async () => {
   }
 };
 </script>
-
-<style scoped>
-/* Transition classes */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.15s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

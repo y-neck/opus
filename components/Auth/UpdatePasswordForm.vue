@@ -16,38 +16,33 @@
       </div>
       <div class="flex flex-col justify-center">
         <AuthButton
+          :loading="loading"
           :disabled="!newPassword || loading"
-          :title="loading ? 'Updating...' : 'Update Password'"
+          label="Update Password"
         />
       </div>
-      <transition name="fade">
-        <p
-          v-if="message"
-          class="text-center text-sm mt-4"
-          :class="messageClass"
-        >
-          {{ message }}
-        </p>
-      </transition>
+      <Toast :message="errorMessage || successMessage" />
     </div>
   </form>
 </template>
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const supabase = useSupabaseClient();
+const router = useRouter();
 
 const loading = ref(false);
 const newPassword = ref("");
-const message = ref("");
-const messageClass = ref("");
+const successMessage = ref("");
+const errorMessage = ref("");
 
 const updatePassword = async () => {
   try {
     loading.value = true;
-    message.value = "";
-    messageClass.value = "";
+    successMessage.value = "";
+    errorMessage.value = "";
 
     // Update the user's password
     const { error } = await supabase.auth.updateUser({
@@ -57,25 +52,36 @@ const updatePassword = async () => {
     if (error) throw error;
 
     // Success feedback
-    message.value = "Your password has been updated successfully.";
-    messageClass.value = "text-green-500";
-    newPassword.value = ""; // Clear the password input
+    successMessage.value = "Password updated successfully";
+    newPassword.value = "";
+
+    setTimeout(() => {
+      successMessage.value = "";
+      router.push("/inbox");
+    }, 3000);
   } catch (error) {
     console.error("Password update failed:", error);
 
     // Error handling
     if (error.status === 400) {
-      message.value =
-        "Invalid request. Please ensure your new password is strong.";
+      errorMessage.value = "Password update failed";
     } else if (error.status === 401) {
-      message.value = "You must be logged in to update your password.";
+      errorMessage.value = "Login required to update password";
+    } else if (error.status === 403) {
+      errorMessage.value = "User not found";
+    } else if (error.code === "same_password") {
+      errorMessage.value = "Password is unchanged";
+    } else if (error.code === "weak_password") {
+      errorMessage.value = "Password too weak";
     } else if (error.status === 429) {
-      message.value = "Too many attempts. Please try again later.";
+      errorMessage.value = "Too many attempts, try again later";
     } else {
-      message.value = "Failed to update password. Please try again.";
+      errorMessage.value = "Password update failed";
     }
-
-    messageClass.value = "text-red-500";
+    newPassword.value = "";
+    setTimeout(() => {
+      errorMessage.value = "";
+    }, 3000);
   } finally {
     loading.value = false;
   }

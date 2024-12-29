@@ -12,7 +12,6 @@
           placeholder="your@email.com"
           v-model="email"
           aria-label="Email address"
-          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
         />
         <AuthInput
           label="Password"
@@ -24,19 +23,13 @@
       </div>
       <div class="flex flex-col justify-center">
         <AuthButton
-          :disabled="!email || !password || loading"
-          :title="loading ? 'Logging in...' : 'Login'"
+          :loading="loading"
+          :disabled="!email || !password"
+          label="Login"
         />
       </div>
-      <transition name="fade">
-        <p
-          v-if="errorMessage"
-          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 text-sm text-destructive-red text-center"
-          v-html="errorMessage"
-        ></p>
-      </transition>
     </div>
-    <div class="text-center mt-12 text-sm text-grey-500">
+    <div class="flex flex-col gap-0.5 text-center mt-12 text-sm text-grey-500">
       <NuxtLink to="/password-recovery">
         <p class="hover:text-grey-700 transition">Forgotten your password?</p>
       </NuxtLink>
@@ -45,6 +38,7 @@
       </NuxtLink>
     </div>
   </form>
+  <Toast :message="errorMessage" />
 </template>
 
 <script setup>
@@ -89,19 +83,19 @@ const handleLogin = async () => {
         .update({ first_login: false })
         .eq("user_id", user.id);
 
-      router.push("/task-overview");
+      router.push("/welcome");
     } else {
-      router.push("/");
+      router.push("/inbox");
     }
   } catch (error) {
     console.error(error);
 
     if (error.status === 400 || error.code === "INVALID_LOGIN_CREDENTIALS") {
-      errorMessage.value = "Incorrect email or password.";
+      errorMessage.value = "Incorrect email or password";
     } else if (error.status === 429) {
-      errorMessage.value = "Too many attempts. Please try again later.";
+      errorMessage.value = "Too many attempts, try again later";
     } else {
-      errorMessage.value = "An unexpected error occurred. Please try again.";
+      errorMessage.value = "Something went wrong, try again";
     }
 
     password.value = "";
