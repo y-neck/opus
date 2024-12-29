@@ -77,7 +77,7 @@
         </button>
         <Toast :message="profileUpdated || profileError" />
       </div>
-      <Modal
+      <RemoveModal
         v-if="isDeleteModalOpen"
         :isOpen="isDeleteModalOpen"
         title="Delete Account"
@@ -91,8 +91,10 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import RemoveModal from "~/components/Modals/RemoveModal.vue";
 
 // Handle data
+
 const currentName = ref("");
 const currentSurname = ref("");
 const currentEmail = ref("");
