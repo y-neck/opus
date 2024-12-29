@@ -22,25 +22,21 @@
 </template>
 
 <script setup>
-const supabase = useSupabaseClient();
-const userSurname = ref("");
+import { supabaseConnection } from "~/composables/supabaseConnection";
+const { supabase, user } = supabaseConnection();
 
-// Get the current logged-in user
-const {
-  data: { user },
-} = await supabase.auth.getUser();
+const userSurname = ref("");
 
 // Fetch the user's surname from the Profiles table
 const { data: profileData, error } = await supabase
   .from("Profiles")
   .select("surname")
-  .eq("user_id", user?.id) // Ensure user.id is available
+  .eq("user_id", user?.id)
   .single();
 
 if (profileData) {
   userSurname.value = `Hey ${profileData.surname}!`;
 } else {
-  // Handle case if profileData is not found (e.g., user doesn't have a profile yet)
   userSurname.value = "Hey there!";
 }
 
