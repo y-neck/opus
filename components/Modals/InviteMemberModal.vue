@@ -37,6 +37,7 @@
 </template>
 
 <script setup>
+const { supabase } = supabaseConnection();
 import { ref } from "vue";
 
 const emit = defineEmits(["close"]);
@@ -56,12 +57,44 @@ const closeModal = () => {
   emit("close");
 };
 
+const generateInvitationToken = () => {
+  return Array.from({ length: 32 }, () =>
+    Math.floor(Math.random() * 16).toString(16)
+  ).join("");
+};
+
+const invitationToken = generateInvitationToken();
+
 const handleInvite = async () => {
   try {
     isLoading.value = true;
 
-    const SUPABASE_KEY = process.env.SUPABASE_KEY;
+    const { data: project, error: projectError } = await supabase
+      .from("Projects")
+      .select("project_name")
+      .eq("id", props.projectId);
 
+    if (projectError) {
+      throw new Error("Failed to fetch project data");
+    }
+
+    if (!project || project.length === 0) {
+      throw new Error("Project not found");
+    }
+
+    const projectName = project[0].project_name;
+
+    console.log(projectName);
+
+    if (projectError) {
+      console.error("Error fetching project:", projectError);
+    } else if (!project) {
+      console.warn("No project found for ID:", props.projectId);
+    } else {
+      console.log("Project data:", project);
+    }
+
+    const SUPABASE_KEY = process.env.SUPABASE_KEY;
     const response = await fetch(
       "https://zdrhwehycbxujrbltjlj.supabase.co/functions/v1/resend",
       {
@@ -74,9 +107,13 @@ const handleInvite = async () => {
           email: email.value,
           role: role.value,
           projectId: props.projectId,
+          projectName: projectName,
+          invitationToken: invitationToken,
         }),
       }
     );
+
+    console.log(projectName);
 
     const responseData = await response.json();
     if (!response.ok || responseData.error) {
@@ -84,6 +121,23 @@ const handleInvite = async () => {
         `Failed to send invitation: ${responseData.error || "Unknown error"}`
       );
     }
+
+    await supabase
+      .from("Invitations")
+      .insert([
+        {
+          project_id: props.projectId,
+          email: email.value,
+          role: role.value,
+          token: invitationToken,
+          status: "pending",
+          expires_at: new Date(
+            Date.now() + 7 * 24 * 60 * 60 * 1000
+          ).toISOString(),
+        },
+      ])
+      .select()
+      .single();
 
     closeModal();
   } catch (error) {
