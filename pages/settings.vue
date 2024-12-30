@@ -11,7 +11,7 @@
           alt="Profile Image"
           id="profile-img"
         />
-        <UploadProfilePicture label="Update Image" />
+        <UploadProfilePicture label="Edit" />
       </div>
       <div id="profile-information-container" class="pt-14">
         <form
@@ -62,7 +62,7 @@
       <hr class="border-grey-100 mt-12" />
       <div id="deleteAccount" class="pt-6">
         <h2 class="text-2xl">Delete Account</h2>
-        <p class="text-grey-500 font-normal leading-[1.375rem] pt-0.5">
+        <p class="text-grey-500 font-normal pt-0.5">
           Keep in mind that this action is irreversible and all your data will
           be permanently deleted. <br />
           If you have any concerns or feedback, we'd love to hear from you
@@ -94,7 +94,6 @@ import { ref, onMounted } from "vue";
 import RemoveModal from "~/components/Modals/RemoveModal.vue";
 
 // Handle data
-
 const currentName = ref("");
 const currentSurname = ref("");
 const currentEmail = ref("");
