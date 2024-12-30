@@ -119,6 +119,7 @@ async function fetchTeamMembers() {
         await supabaseConnection()
           .supabase.from("Members")
           .select("*")
+          .order("role", { ascending: true })
           .eq("project_id", project.value);
 
       if (membersError) {
@@ -132,7 +133,7 @@ async function fetchTeamMembers() {
         const { data: profilesData, error: profilesError } =
           await supabaseConnection()
             .supabase.from("Profiles")
-            .select("id, name, surname, email, profile_img, user_id")
+            .select("id, name, surname, profile_img, user_id")
             .in("id", userIds);
 
         if (profilesError) {
@@ -146,7 +147,6 @@ async function fetchTeamMembers() {
             id: member.user_id,
             name: profile?.name || "No name found",
             surname: profile?.surname || "No surname found",
-            email: profile?.email || "No email found",
             user_id: profile.user_id,
             profile_img: profile?.profile_img || null,
             role: member.role,
