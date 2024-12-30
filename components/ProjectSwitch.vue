@@ -7,7 +7,9 @@
     >
       <!-- TODO: Replace icon with variable. -->
       <span> <PlantIcon /></span>
-      <p v-if="activeProjectName">{{ activeProjectName }}</p>
+      <p v-if="activeProjectName">
+        {{ activeProjectName }}
+      </p>
       <span v-else="DropdownSkeleton"> <DropdownSkeleton /> </span>
       <span class="-ml-1"> <ChevronDownIcon /></span>
     </button>
@@ -22,7 +24,7 @@
         :key="project.projectId"
         role="menuitem"
         :class="[
-          'dropdown-menu-item px-1 truncate',
+          'dropdown-menu-item px-1 truncate cursor-pointer',
           { active: project.projectId === projectStore.activeProjectId },
         ]"
         @click="
@@ -108,7 +110,6 @@ import {
   isDropdownVisible,
   toggleDropdown,
 } from "~/src/functions/handleDropdown";
-import ChevronDoubleRightIcon from "./icons/ChevronDoubleRightIcon.vue";
 </script>
 
 <style scoped>
