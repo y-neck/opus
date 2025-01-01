@@ -82,7 +82,7 @@
 const { supabase, user } = useSupabaseConnection();
 
 import { ref, computed, onMounted, watchEffect } from "vue";
-import { useProjectStore } from "~/middleware/projectStore";
+import { useProjectStore } from "~/store/project";
 import Header from "~/components/Header.vue";
 import MemberSkeleton from "~/components/Skeleton/MemberSkeleton.vue";
 import InviteMemberModal from "~/components/Modals/InviteMemberModal.vue";
@@ -118,42 +118,43 @@ function getRoleName(roleId) {
 
 async function fetchUserRole() {
   try {
-    {
-      const { data: profileData, error: profileError } = await supabase
-        .from("Profiles")
-        .select("id")
-        .eq("user_id", user.id)
-        .single();
+    // Fetch profile ID
+    const { data: profileData, error: profileError } = await supabase
+      .from("Profiles")
+      .select("id")
+      .eq("user_id", user.id)
+      .single();
 
-      if (profileError || !profileData) {
-        console.error("Error fetching profile ID:", profileError);
-        return null;
-      }
-
-      console.log(profileData.id);
-      const profileId = profileData.id;
-
-      const { data: memberData, error: memberError } = await supabase
-        .from("Members")
-        .select("role")
-        .eq("user_id", profileId)
-        .eq("project_id", project.value)
-        .single();
-
-      console.log(memberData.role);
-
-      if (memberError || !memberData) {
-        console.error("Error fetching user role:", memberError);
-        return null;
-      }
-
-      if (memberData.role === 1) {
-        isOwner.value = true;
-      }
+    if (profileError || !profileData) {
+      console.error("Error fetching profile ID:", profileError);
+      return;
     }
+
+    const profileId = profileData.id;
+
+    // Fetch member role
+    const { data: memberData, error: memberError } = await supabase
+      .from("Members")
+      .select("role")
+      .eq("user_id", profileId)
+      .eq("project_id", project.value)
+      .single();
+
+    if (memberError) {
+      console.error("Error fetching user role:", memberError);
+      return;
+    }
+
+    if (!memberData) {
+      console.warn("No member data found for the given user and project.");
+      isOwner.value = false;
+      return;
+    }
+
+    // Check if the user is an owner
+    isOwner.value = memberData.role === 1;
   } catch (error) {
     console.error("Error in fetchUserRole:", error);
-    return null;
   }
 }
 
