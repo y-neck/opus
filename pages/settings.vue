@@ -94,7 +94,11 @@ import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
 const { supabase, user } = useSupabaseConnection();
 
 import { ref, onMounted } from "vue";
-import RemoveModal from "~/components/Modals/RemoveModal.vue";
+import RemoveModal from "~/components/project/RemoveModal.vue";
+import Header from "~/components/layout/Header.vue";
+import Toast from "~/components/common/Toast.vue";
+import ProfilePicture from "~/components/user/ProfilePicture.vue";
+import UploadProfilePicture from "~/components/user/UploadProfilePicture.vue";
 
 // Handle data
 const currentName = ref("");
@@ -148,7 +152,7 @@ async function updateUserProfile() {
       const { error } = await supabase
         .from("Profiles")
         .update(updates)
-        .eq("user_id", user.value.id);
+        .eq("user_id", user.id);
 
       if (newSetEmail.value && newSetEmail.value !== currentEmail.value) {
         const { error: authError } = await supabase.auth.updateUser({

@@ -27,6 +27,7 @@
 <script setup>
 // Supabase Connection
 const { supabase } = useSupabaseConnection();
+import Section from "./Section.vue";
 
 import { ref, onMounted, computed, watchEffect } from "vue";
 import { useProjectStore } from "~/store/project";

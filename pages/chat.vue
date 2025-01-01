@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col w-full">
-    <Header pageTitle="Index" pageIcon="LayoutGridIcon" />
+    <Header pageTitle="Chat" pageIcon="BubbleIcon" />
     <main class="p-16">
       <p>Coming soon</p>
     </main>
@@ -8,6 +8,8 @@
 </template>
 
 <script setup lang="ts">
+import Header from "~/components/layout/Header.vue";
+
 useSeoMeta({
   title: "" /* Page title */,
   ogTitle: "" /* Page title without branding */,

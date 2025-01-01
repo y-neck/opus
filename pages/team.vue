@@ -83,9 +83,9 @@ const { supabase, user } = useSupabaseConnection();
 
 import { ref, computed, onMounted, watchEffect } from "vue";
 import { useProjectStore } from "~/store/project";
-import Header from "~/components/Header.vue";
-import MemberSkeleton from "~/components/Skeleton/MemberSkeleton.vue";
-import InviteMemberModal from "~/components/Modals/InviteMemberModal.vue";
+import Header from "~/components/layout/Header.vue";
+import MemberSkeleton from "~/components/skeletons/MemberSkeleton.vue";
+import InviteMemberModal from "~/components/project/team/InviteMemberModal.vue";
 import PencilIcon from "~/components/icons/PencilIcon.vue";
 
 const teamMembers = ref([]);

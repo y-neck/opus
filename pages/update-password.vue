@@ -1,8 +1,10 @@
 <template>
-  <AuthUpdatePasswordForm />
+  <UpdatePasswordForm />
 </template>
 
 <script setup>
+import UpdatePasswordForm from "~/components/auth/forms/UpdatePasswordForm.vue";
+
 definePageMeta({
   title: "Password Recovery",
   description: "",

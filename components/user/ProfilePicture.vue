@@ -22,7 +22,7 @@ import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
 const { supabase, user } = useSupabaseConnection();
 
 import { ref, onMounted } from "vue";
-import ProfileImageSkeleton from "./Skeleton/ProfileImageSkeleton.vue";
+import ProfileImageSkeleton from "../skeletons/ProfileImageSkeleton.vue";
 
 const ImageSource = ref("");
 const isLoading = ref(true);

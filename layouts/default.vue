@@ -7,4 +7,6 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+import Navbar from "~/components/layout/Navbar";
+</script>

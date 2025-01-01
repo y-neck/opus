@@ -88,7 +88,8 @@ const { supabase } = useSupabaseConnection();
 
 /* Display current project */
 import { useProjectStore } from "~/store/project"; // Import pinia store
-import ActiveProjectSkeleton from "~/components/Skeleton/ActiveProjectSkeleton.vue";
+import ActiveProjectSkeleton from "~/components/skeletons/ActiveProjectSkeleton.vue";
+import ProjectSwitch from "./ProjectSwitch.vue";
 
 // Initialize pinia store
 const projectStore = useProjectStore();
@@ -109,8 +110,8 @@ async function logout() {
 }
 
 .nav-item.router-link-active {
-  @apply bg-grey-100;
-  @apply rounded-lg;
+  background: #f4f4f5;
+  border-radius: 0.5rem;
   padding-left: 0.75rem;
   margin-left: -0.75rem;
   max-width: 15.5rem;

@@ -6,6 +6,8 @@
 </template>
 
 <script setup lang="ts">
+import Header from "~/components/layout/Header.vue";
+
 useSeoMeta({
   title: "" /* Page title */,
   ogTitle: "" /* Page title without branding */,

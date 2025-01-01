@@ -39,7 +39,7 @@
 
 <script setup>
 import { defineProps } from "vue";
-import Task from "./Task.vue"; // Import the Task component
+import Task from "./Task.vue";
 
 defineProps({
   sectionId: String,

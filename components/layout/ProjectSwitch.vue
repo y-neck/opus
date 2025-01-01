@@ -2,7 +2,7 @@
   <div>
     <button
       id="project-dd"
-      class="dropdown-menu-button flex items-center justify-between gap-2 rounded-md"
+      class="flex items-center justify-between gap-2 rounded-md"
       @click="toggleDropdown('project-dd')"
     >
       <!-- TODO: Replace icon with variable. -->
@@ -17,7 +17,6 @@
     <DropdownMenu
       id="project-dd-container"
       v-show="isDropdownVisible['project-dd']"
-      class="dropdown-menu-options"
     >
       <p
         v-for="project in projectTasks"
@@ -53,9 +52,16 @@
 import { useProjectStore } from "~/store/project";
 import { getProjects } from "~/store/projectService";
 
-import { ref, onMounted, watch } from "vue";
-import DropdownMenu from "~/components/DropdownMenu.vue";
-import DropdownSkeleton from "~/components/Skeleton/DropdownSkeleton.vue";
+import { ref, onMounted } from "vue";
+import DropdownMenu from "~/components/common/DropdownMenu.vue";
+import DropdownSkeleton from "~/components/skeletons/DropdownSkeleton.vue";
+
+// Define Interface
+interface Project {
+  projectId: string | number;
+  projectName: string;
+  projectImage: string;
+}
 
 // Initialize pinia store
 const projectStore = useProjectStore();
@@ -102,14 +108,15 @@ import {
 </script>
 
 <style scoped>
-.dropdown-menu {
-  @apply border-grey-100 border-2 rounded-md;
-}
 .dropdown-menu-item :not(:first) {
-  @apply flex items-center;
+  display: flex;
+  align-items: center;
 }
 
 .active {
-  @apply bg-grey-100 py-1 px-2.5 -ml-2 rounded-lg; /* Highlight active project */
+  background-color: #f4f4f5;
+  padding: 0.25rem 0.625rem;
+  margin-left: -0.5rem;
+  border-radius: 0.5rem;
 }
 </style>

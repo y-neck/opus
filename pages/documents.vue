@@ -112,10 +112,10 @@ const { supabase } = useSupabaseConnection();
 
 import { ref, watchEffect } from "vue";
 import { useProjectStore } from "~/store/project";
-import Header from "~/components/Header.vue";
-import Modal from "~/components/Modals/RemoveModal.vue";
-import DocumentsModal from "~/components/Modals/DocumentsModal.vue";
-import DocumentsSkeleton from "~/components/Skeleton/DocumentsSkeleton.vue";
+import Header from "~/components/layout/Header.vue";
+import Modal from "~/components/project/RemoveModal.vue";
+import DocumentsModal from "~/components/project/documents/DocumentsModal.vue";
+import DocumentsSkeleton from "~/components/skeletons/DocumentsSkeleton.vue";
 import { format } from "date-fns";
 import CopyIcon from "~/components/icons/CopyIcon.vue";
 import TrashCanIcon from "~/components/icons/TrashCanIcon.vue";
