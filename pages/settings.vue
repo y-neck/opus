@@ -131,11 +131,6 @@ onMounted(async () => {
     } else {
       console.error(error);
     }
-    //   // Fetch profile image
-    //   const { data: imgData } = supabase.storage
-    //     .from("profile_img")
-    //     .getPublicUrl(`${user.value.id}/profile.jpg`);
-    //   profileImage.value = imgData?.publicUrl || "";
   }
 });
 
