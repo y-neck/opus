@@ -35,7 +35,7 @@
             </h3>
             <hr class="text-grey-100 mt-2" />
             <ul>
-              <li v-for="(link, index) in linksGroup" :key="index">
+              <div v-for="(link, index) in linksGroup" :key="index">
                 <div class="flex flex-row my-2">
                   <div class="mr-2 mt-1">
                     <img
@@ -80,7 +80,7 @@
                   </div>
                 </div>
                 <hr class="text-grey-100" />
-              </li>
+              </div>
             </ul>
           </div>
         </div>
