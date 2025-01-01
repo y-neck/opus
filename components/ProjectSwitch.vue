@@ -50,13 +50,12 @@
 </template>
 
 <script setup lang="ts">
+import { useProjectStore } from "~/store/project";
+import { getProjects } from "~/store/projectService";
+
 import { ref, onMounted, watch } from "vue";
 import DropdownMenu from "~/components/DropdownMenu.vue";
 import DropdownSkeleton from "~/components/Skeleton/DropdownSkeleton.vue";
-/* Import projects */
-import { useProjectStore } from "~/middleware/projectStore"; // Import pinia store
-import type { Project } from "~/middleware/models/projectsETL";
-import { getProjects } from "~/middleware/projectMiddleware";
 
 // Initialize pinia store
 const projectStore = useProjectStore();
@@ -66,23 +65,13 @@ const activeProjectName = computed(() => projectStore.activeProjectName);
 // Set active project in store
 const setActiveProject = (projectId: number, projectName: string) => {
   projectStore.setActiveProject(projectId, projectName);
-  // // DEBUG:
-  // console.log(`Set active project: ${activeProjectId}`);
+
   toggleDropdown("project-dd");
   // Redirect to tasks page if not already on tasks page
   if (window.location.pathname === "/task-overview") {
     navigateTo("/tasks");
   }
 };
-
-// Watch for changes in active project
-watch(
-  () => projectStore.activeProjectId,
-  (newValue) => {
-    // // DEBUG:
-    // console.log(`Watcher: Active project changed to: ${newValue}`);
-  }
-);
 
 // Reactive reference to active project
 const projectTasks = ref<Project[]>([]);

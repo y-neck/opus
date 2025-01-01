@@ -87,7 +87,7 @@
 const { supabase } = useSupabaseConnection();
 
 /* Display current project */
-import { useProjectStore } from "~/middleware/projectStore"; // Import pinia store
+import { useProjectStore } from "~/store/project"; // Import pinia store
 import ActiveProjectSkeleton from "~/components/Skeleton/ActiveProjectSkeleton.vue";
 
 // Initialize pinia store
