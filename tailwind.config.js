@@ -11,6 +11,7 @@ module.exports = {
   theme: {
     fontWeight: {
       normal: "360",
+      semiBold: "560",
     },
     colors: {
       // Colors
