@@ -29,9 +29,9 @@
   <Toast :message="errorMessage || successMessage" />
 </template>
 
-<!-- Supabase Register Process -->
 <script setup>
-const supabase = useSupabaseClient();
+import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
+const { supabase } = useSupabaseConnection();
 
 const loading = ref(false);
 const name = ref("");

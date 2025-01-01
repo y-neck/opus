@@ -18,16 +18,16 @@
 </template>
 
 <script setup>
-const { supabase, user } = supabaseConnection();
+// Supabase Connection
+const { supabase, user } = useSupabaseConnection();
 
 const userSurname = ref("");
-const uuid = user.value.id;
 
 // Fetch the user's surname from the Profiles table
 const { data: profileData, error } = await supabase
   .from("Profiles")
   .select("name")
-  .eq("user_id", uuid);
+  .eq("user_id", user.id);
 
 console.log(profileData);
 

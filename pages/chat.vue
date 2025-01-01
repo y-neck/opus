@@ -9,18 +9,16 @@
 
 <script setup lang="ts">
 useSeoMeta({
-  title: "", /* Page title */
-  ogTitle: "", /* Page title without branding */
-  ogSiteName: "", /* Overall site name */
-  ogType: "", /* 'website' | 'article' | 'book' | 'profile' */
+  title: "" /* Page title */,
+  ogTitle: "" /* Page title without branding */,
+  ogSiteName: "" /* Overall site name */,
+  ogType: "website" /* 'website' | 'article' | 'book' | 'profile' */,
   description: "",
   ogDescription: "",
   creator: "",
-  robots: "", /* 'index' | 'follow' | 'noindex' | 'nofollow' */
-  ogImage: "" /* Image for sharing */
-})
-
+  robots: "" /* 'index' | 'follow' | 'noindex' | 'nofollow' */,
+  ogImage: "" /* Image for sharing */,
+});
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

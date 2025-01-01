@@ -3,7 +3,7 @@
     <Header :pageTitle="'Documents'" :pageIcon="'FilesIcon'">
       <template #actions>
         <div class="flex flex-row gap-3">
-          <button class="flex flex-row">
+          <button @click="openModal" class="flex flex-row">
             <span class="mt-1 mr-1"><PlusIcon /></span>
             Add Link
           </button>
@@ -85,25 +85,36 @@
           </div>
         </div>
       </div>
+      <!-- Modals -->
+      <Modal
+        v-if="isDeleteModalOpen"
+        :isOpen="isDeleteModalOpen"
+        title="Remove Document"
+        message="Are you sure you want to remove this document?"
+        @confirm="deleteDocument"
+        @cancel="isDeleteModalOpen = false"
+      />
+      <!-- Create new link -->
+      <DocumentsModal
+        :isOpen="isModalOpen"
+        title="Add a new link"
+        label="Create"
+        @confirm="handleConfirm"
+        @cancel="isModalOpen = false"
+      />
     </main>
-    <!-- Modals -->
-    <Modal
-      v-if="isDeleteModalOpen"
-      :isOpen="isDeleteModalOpen"
-      title="Remove Document"
-      message="Are you sure you want to remove this document?"
-      @confirm="deleteDocument"
-      @cancel="isDeleteModalOpen = false"
-    />
   </div>
 </template>
 
 <script setup>
+// Supabase Connection
+const { supabase } = useSupabaseConnection();
+
 import { ref, watchEffect } from "vue";
-import { supabaseConnection } from "~/composables/supabaseConnection";
 import { useProjectStore } from "~/middleware/projectStore";
 import Header from "~/components/Header.vue";
 import Modal from "~/components/Modals/RemoveModal.vue";
+import DocumentsModal from "~/components/Modals/DocumentsModal.vue";
 import DocumentsSkeleton from "~/components/Skeleton/DocumentsSkeleton.vue";
 import { format } from "date-fns";
 import CopyIcon from "~/components/icons/CopyIcon.vue";
@@ -118,6 +129,7 @@ const projectStore = useProjectStore();
 const isDeleteModalOpen = ref(false);
 const documentToDelete = ref(null);
 const isLoading = ref(true);
+const isModalOpen = ref(false);
 
 // Function to format the link by removing protocol and path
 function formatLink(url) {
@@ -158,8 +170,8 @@ async function getLinks() {
   try {
     console.log("Fetching links for project:", projectStore.activeProjectId);
 
-    const { data, error } = await supabaseConnection()
-      .supabase.from("Links")
+    const { data, error } = await supabase
+      .from("Links")
       .select("*")
       .eq("project_id", projectStore.activeProjectId)
       .order("created_at", { ascending: false });
@@ -197,8 +209,8 @@ async function deleteDocument() {
   try {
     if (!documentToDelete.value) return;
 
-    const { error } = await supabaseConnection()
-      .supabase.from("Links")
+    const { error } = await supabase
+      .from("Links")
       .delete()
       .eq("id", documentToDelete.value.id);
 
@@ -221,6 +233,11 @@ watchEffect(() => {
     getLinks();
   }
 });
+
+// Function to open the modal
+function openModal() {
+  isModalOpen.value = true;
+}
 
 // Page meta
 definePageMeta({

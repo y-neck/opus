@@ -50,6 +50,9 @@
 </template>
 
 <script setup>
+// Supabase Connection
+const { user } = useSupabaseConnection();
+
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 
@@ -65,8 +68,6 @@ const projectId = ref(null);
 const needsAuth = ref(false);
 
 onMounted(async () => {
-  const { user } = supabaseConnection();
-
   // If the user is not authenticated, show an error
   if (!user) {
     hasError.value = true;

@@ -2,7 +2,7 @@
   <div class="flex flex-col w-full">
     <Header :pageTitle="'Team'" :pageIcon="'PeopleIcon'">
       <template #actions>
-        <div class="flex flex-row gap-3">
+        <div v-if="isOwner" class="flex flex-row gap-3">
           <button class="flex flex-row" @click="showInviteModal">
             <span class="mt-1 mr-1"><AddPeopleIcon /></span>
             Invite Member
@@ -48,6 +48,7 @@
               </div>
             </div>
             <div
+              v-if="isOwner"
               class="flex flex-row opacity-0 gap-1 mt-1 group-hover:opacity-100 transition"
             >
               <span
@@ -77,9 +78,11 @@
 </template>
 
 <script setup>
+// Supabase Connection
+const { supabase, user } = useSupabaseConnection();
+
 import { ref, computed, onMounted, watchEffect } from "vue";
 import { useProjectStore } from "~/middleware/projectStore";
-import { supabaseConnection } from "~/composables/supabaseConnection";
 import Header from "~/components/Header.vue";
 import MemberSkeleton from "~/components/Skeleton/MemberSkeleton.vue";
 import InviteMemberModal from "~/components/Modals/InviteMemberModal.vue";
@@ -89,6 +92,7 @@ const teamMembers = ref([]);
 const projectStore = useProjectStore();
 const isInviteModalOpen = ref(false);
 const isLoading = ref(true);
+const isOwner = ref(false);
 
 // Handle Modal
 const showInviteModal = () => {
@@ -112,15 +116,55 @@ function getRoleName(roleId) {
   return roles[roleId] || "Member";
 }
 
+async function fetchUserRole() {
+  try {
+    {
+      const { data: profileData, error: profileError } = await supabase
+        .from("Profiles")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (profileError || !profileData) {
+        console.error("Error fetching profile ID:", profileError);
+        return null;
+      }
+
+      console.log(profileData.id);
+      const profileId = profileData.id;
+
+      const { data: memberData, error: memberError } = await supabase
+        .from("Members")
+        .select("role")
+        .eq("user_id", profileId)
+        .eq("project_id", project.value)
+        .single();
+
+      console.log(memberData.role);
+
+      if (memberError || !memberData) {
+        console.error("Error fetching user role:", memberError);
+        return null;
+      }
+
+      if (memberData.role === 1) {
+        isOwner.value = true;
+      }
+    }
+  } catch (error) {
+    console.error("Error in fetchUserRole:", error);
+    return null;
+  }
+}
+
 async function fetchTeamMembers() {
   try {
     if (project.value) {
-      const { data: membersData, error: membersError } =
-        await supabaseConnection()
-          .supabase.from("Members")
-          .select("*")
-          .order("role", { ascending: true })
-          .eq("project_id", project.value);
+      const { data: membersData, error: membersError } = await supabase
+        .from("Members")
+        .select("*")
+        .order("role", { ascending: true })
+        .eq("project_id", project.value);
 
       if (membersError) {
         console.error("Members error:", membersError);
@@ -130,11 +174,10 @@ async function fetchTeamMembers() {
       if (membersData && membersData.length > 0) {
         const userIds = membersData.map((member) => member.user_id);
 
-        const { data: profilesData, error: profilesError } =
-          await supabaseConnection()
-            .supabase.from("Profiles")
-            .select("id, name, surname, profile_img, user_id")
-            .in("id", userIds);
+        const { data: profilesData, error: profilesError } = await supabase
+          .from("Profiles")
+          .select("id, name, surname, profile_img, user_id")
+          .in("id", userIds);
 
         if (profilesError) {
           console.error("Profiles error:", profilesError);
@@ -162,11 +205,13 @@ async function fetchTeamMembers() {
 }
 
 onMounted(async () => {
+  await fetchUserRole();
   await fetchTeamMembers();
 
   watchEffect(async () => {
     if (project.value) {
       await fetchTeamMembers();
+      await fetchUserRole();
     }
   });
 });

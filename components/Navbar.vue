@@ -83,6 +83,9 @@
 </template>
 
 <script setup lang="ts">
+// Supabase Connection
+const { supabase } = useSupabaseConnection();
+
 /* Display current project */
 import { useProjectStore } from "~/middleware/projectStore"; // Import pinia store
 import ActiveProjectSkeleton from "~/components/Skeleton/ActiveProjectSkeleton.vue";
@@ -94,9 +97,7 @@ const activeProjectName = computed(() => projectStore.activeProjectName);
 
 // Logout function
 async function logout() {
-  // Log out user
-  const { error } = await supabaseConnection().supabase.auth.signOut();
-  // Redirect to login page
+  await supabase.auth.signOut();
   navigateTo("/login");
 }
 </script>

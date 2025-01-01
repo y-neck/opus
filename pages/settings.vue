@@ -90,6 +90,9 @@
 </template>
 
 <script setup>
+import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
+const { supabase, user } = useSupabaseConnection();
+
 import { ref, onMounted } from "vue";
 import RemoveModal from "~/components/Modals/RemoveModal.vue";
 
@@ -114,13 +117,12 @@ function showDeleteModal() {
 
 // Fetch user details
 onMounted(async () => {
-  const { user } = supabaseConnection();
-  if (user.value) {
-    currentEmail.value = user.value.email;
-    const { data, error } = await supabaseConnection()
-      .supabase.from("Profiles")
+  if (user) {
+    currentEmail.value = user.email;
+    const { data, error } = await supabase
+      .from("Profiles")
       .select("name, surname")
-      .eq("user_id", user.value.id)
+      .eq("user_id", user.id)
       .single();
 
     if (data) {
@@ -129,11 +131,11 @@ onMounted(async () => {
     } else {
       console.error(error);
     }
-    // Fetch profile image
-    const { data: imgData } = await supabaseConnection()
-      .supabase.storage.from("profile_img")
-      .getPublicUrl(`${user.value.id}/profile.jpg`);
-    profileImage.value = imgData?.publicUrl || "";
+    //   // Fetch profile image
+    //   const { data: imgData } = supabase.storage
+    //     .from("profile_img")
+    //     .getPublicUrl(`${user.value.id}/profile.jpg`);
+    //   profileImage.value = imgData?.publicUrl || "";
   }
 });
 
@@ -142,26 +144,24 @@ async function updateUserProfile() {
   profileUpdated.value = "";
   profileError.value = "";
 
-  const { user } = supabaseConnection();
-  if (user.value) {
+  if (user) {
     try {
       const updates = {
         name: newSetName.value || currentName.value,
         surname: newSetSurname.value || currentSurname.value,
       };
-      const { error } = await supabaseConnection()
-        .supabase.from("Profiles")
+      const { error } = await supabase
+        .from("Profiles")
         .update(updates)
         .eq("user_id", user.value.id);
 
       if (newSetEmail.value && newSetEmail.value !== currentEmail.value) {
-        const { error: authError } =
-          await supabaseConnection().supabase.auth.updateUser({
-            email: newSetEmail.value,
-            options: {
-              emailRedirectTo: "http://localhost:3000/settings",
-            },
-          });
+        const { error: authError } = await supabase.auth.updateUser({
+          email: newSetEmail.value,
+          options: {
+            emailRedirectTo: "http://localhost:3000/settings",
+          },
+        });
         if (authError) throw authError;
       }
 
@@ -193,11 +193,8 @@ async function updateUserProfile() {
 
 // Delete Account
 async function deleteAccount() {
-  const { user } = supabaseConnection();
-  if (user.value) {
-    const { error } = await supabaseConnection().supabase.auth.admin.deleteUser(
-      user.value.id
-    );
+  if (user) {
+    const { error } = await supabase.auth.admin.deleteUser(user.id);
     if (!error) {
       navigateTo("/login");
     } else {

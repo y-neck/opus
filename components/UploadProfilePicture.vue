@@ -22,13 +22,14 @@
 </template>
 
 <script setup>
+// Supabase Connection
+const { supabase, user } = useSupabaseConnection();
+
 import { ref } from "vue";
 
 defineProps({
   label: String,
 });
-
-const { supabase, user } = supabaseConnection();
 
 const profileImageUrl = ref("");
 const loading = ref(false);
@@ -51,29 +52,32 @@ const handleFileUpload = async (event) => {
     return;
   }
   if (file.size > 1024 * 1024) {
-    alert("File size should be less than 1GB");
+    alert("File size should be less than 1MB");
     return;
   }
 
   try {
     loading.value = true;
 
-    if (!user.value?.id) {
+    if (!user?.id) {
       throw new Error("No authenticated user");
     }
 
     const { data: profile, error: getError } = await supabase
       .from("Profiles")
       .select("name")
-      .eq("user_id", user.value.id);
-
-    const username = profile[0].name.toLowerCase();
+      .eq("user_id", user.id);
 
     if (getError) throw getError;
 
+    if (!profile || profile.length === 0) {
+      throw new Error("Profile not found");
+    }
+
+    const username = profile[0].name.toLowerCase();
     const fileExt = file.name.split(".").pop();
     const fileName = `${username}.${fileExt}`;
-    const filePath = `${user.value.id}/${fileName}?v=${Date.now()}`;
+    const filePath = `${user.id}/${fileName}`;
 
     // Upload file to Supabase storage
     const { error: uploadError } = await supabase.storage
@@ -86,7 +90,7 @@ const handleFileUpload = async (event) => {
     const { error: updateError } = await supabase
       .from("Profiles")
       .update({ profile_img: fileName })
-      .eq("user_id", user.value.id);
+      .eq("user_id", user.id);
 
     if (updateError) throw updateError;
 

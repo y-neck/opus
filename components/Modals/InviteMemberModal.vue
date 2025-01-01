@@ -37,7 +37,10 @@
 </template>
 
 <script setup>
-const { supabase } = supabaseConnection();
+// Supabase Connection
+import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
+const { supabase } = useSupabaseConnection();
+
 import { ref } from "vue";
 
 const emit = defineEmits(["close"]);

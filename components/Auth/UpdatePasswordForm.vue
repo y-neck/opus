@@ -27,10 +27,13 @@
 </template>
 
 <script setup>
+// Supabase Connection
+import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
+const { supabase } = useSupabaseConnection();
+
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-const supabase = useSupabaseClient();
 const router = useRouter();
 
 const loading = ref(false);

@@ -42,7 +42,10 @@
 </template>
 
 <script setup>
-const supabase = useSupabaseClient();
+// Supabase Connection
+import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
+const { supabase } = useSupabaseConnection();
+
 const router = useRouter();
 
 const loading = ref(false);

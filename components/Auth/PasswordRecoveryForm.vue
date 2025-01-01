@@ -31,7 +31,9 @@
 </template>
 
 <script setup>
-const supabase = useSupabaseClient();
+// Supabase Connection
+import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
+const { supabase } = useSupabaseConnection();
 
 const loading = ref(false);
 const successMessage = ref("");

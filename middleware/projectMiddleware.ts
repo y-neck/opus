@@ -1,5 +1,5 @@
 // Fetch projects data from DB
-import { supabaseConnection } from '~/composables/supabaseConnection';
+import { useSupabaseConnection } from '~/composables/useSupabaseConnection';
 import type {
   Project,
   ProjectMember,
@@ -10,12 +10,12 @@ import type {
 // Fetch all projects from the database
 export async function getProjects(): Promise<Project[]> {
   // // DEBUG:
-  // console.log('Testing supabaseConnection ', supabaseConnection());
+  // console.log('Testing useSupabaseConnection ', useSupabaseConnection());
 
   try {
     // Fetch Projects
     const { data: projectsData, error: projectsError } =
-      await supabaseConnection()
+      await useSupabaseConnection()
         .supabase.from('Projects')
         .select('id, project_name, project_img')
         .order('project_name', { ascending: true });
@@ -25,7 +25,7 @@ export async function getProjects(): Promise<Project[]> {
 
     // Fetch Project Members
     const { data: membersData, error: membersError } =
-      await supabaseConnection()
+      await useSupabaseConnection()
         .supabase.from('Members')
         .select('id, project_id, user_id, role');
     // // DEBUG:
@@ -35,7 +35,7 @@ export async function getProjects(): Promise<Project[]> {
     // FIXME: Name not properly assigned to member
     // Fetch corresponding Profiles for Members
     const { data: memberNameData, error: memberNameError } =
-      await supabaseConnection()
+      await useSupabaseConnection()
         .supabase.from('Profiles')
         .select('id, name, surname')
         .in('id', membersData.map((member) => member.user_id).filter(Boolean));
@@ -48,7 +48,7 @@ export async function getProjects(): Promise<Project[]> {
 
     // Fetch Task Sections
     const { data: sectionsData, error: sectionsError } =
-      await supabaseConnection()
+      await useSupabaseConnection()
         .supabase.from('Tasks_Sections')
         .select('id, project_id, section_name')
         .order('section_name', { ascending: true });   
@@ -57,7 +57,7 @@ export async function getProjects(): Promise<Project[]> {
     if (sectionsError) throw sectionsError;
 
     // Fetch Tasks and Assigned Members
-    const { data: tasksData, error: tasksError } = await supabaseConnection()
+    const { data: tasksData, error: tasksError } = await useSupabaseConnection()
       .supabase.from('Tasks')
       .select(
         'id, name, start_date, due_date, status_id, projects_id, assigned_to, tasks_section'
@@ -115,7 +115,7 @@ export async function getProjects(): Promise<Project[]> {
                       assignedToIds.map(async (assignedId: number) => {
                         // Fetch the profile for the assigned member by user ID
                         const { data: profileData, error } =
-                          await supabaseConnection()
+                          await useSupabaseConnection()
                             .supabase.from('Profiles')
                             .select('id, name, surname')
                             .eq('id', assignedId)
