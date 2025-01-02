@@ -73,10 +73,6 @@ const setActiveProject = (projectId: number, projectName: string) => {
   projectStore.setActiveProject(projectId, projectName);
 
   toggleDropdown("project-dd");
-  // Redirect to tasks page if not already on tasks page
-  if (window.location.pathname === "/task-overview") {
-    navigateTo("/tasks");
-  }
 };
 
 // Reactive reference to active project
