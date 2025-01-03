@@ -15,16 +15,17 @@
           @openCreateTaskModal="openCreateTaskModal"
         />
       </div>
-
       <div v-else>
         <p>No sections available for this project.</p>
       </div>
     </div>
+
     <CreateSection
       :isModalOpen="isAddSectionModalOpen"
-      @create-section="createSection"
-      @close-modal="isAddSectionModalOpen = false"
+      @create-section="handleCreateSection"
+      @close-modal="handleCloseModal"
     />
+
     <CreateTask
       v-if="isModalOpen"
       :projectId="projectId"
@@ -40,11 +41,21 @@
 <script setup>
 const { supabase } = useSupabaseConnection();
 
-import { ref, computed, onMounted, watchEffect, watch } from "vue";
+import { ref, computed, onMounted, watchEffect } from "vue";
 import { useProjectStore } from "~/store/project";
 import Section from "./Section.vue";
 import CreateTask from "./CreateTask.vue";
 import CreateSection from "./CreateSection.vue";
+
+// Props and emits
+const props = defineProps({
+  isAddSectionModalOpen: {
+    type: Boolean,
+    required: true,
+  },
+});
+
+const emit = defineEmits(["closeAddSectionModal"]);
 
 const projectStore = useProjectStore();
 const projectId = computed(() => projectStore.activeProjectId);
@@ -56,10 +67,6 @@ const sectionNames = ref({});
 const projectMembers = ref([]);
 const currentSectionId = ref(null);
 const isModalOpen = ref(false);
-const closeCreateSectionModal = ref(false);
-const isAddSectionModalOpen = ref(false);
-
-const emit = defineEmits(["closeAddSectionModal"]);
 
 // Fetch Tasks, Assignments, and Profiles
 const fetchData = async () => {
@@ -68,7 +75,7 @@ const fetchData = async () => {
     return;
   }
 
-  // Fetch all tasks for the project (using the project ID)
+  // Fetch all tasks for the project
   const { data: tasksData, error: tasksError } = await supabase
     .from("Tasks")
     .select("*")
@@ -187,16 +194,13 @@ const handleSectionDeleted = (sectionId) => {
   delete groupedTasks.value[sectionId];
 };
 
-const openCreateTaskModal = (sectionId) => {
-  currentSectionId.value = sectionId;
-  isModalOpen.value = true;
+// Handle modal close from CreateSection component
+const handleCloseModal = () => {
+  emit("closeAddSectionModal");
 };
 
-const closeCreateTaskModal = () => {
-  isModalOpen.value = false;
-};
-
-const createSection = async ({ title, color }) => {
+// Handle section creation
+const handleCreateSection = async ({ title, color }) => {
   if (!title || !projectId.value) return;
 
   try {
@@ -211,12 +215,24 @@ const createSection = async ({ title, color }) => {
     if (error) throw error;
 
     await fetchSectionNames();
-    isAddSectionModalOpen.value = false;
+    emit("closeAddSectionModal");
   } catch (error) {
     console.error("Error creating section:", error);
   }
 };
 
+// Task modal handling
+const openCreateTaskModal = (sectionId) => {
+  currentSectionId.value = sectionId;
+  isModalOpen.value = true;
+};
+
+const closeCreateTaskModal = () => {
+  isModalOpen.value = false;
+  currentSectionId.value = null;
+};
+
+// Initialize data when component is mounted
 onMounted(async () => {
   if (projectId.value) {
     await fetchSectionNames();
@@ -225,6 +241,7 @@ onMounted(async () => {
   }
 });
 
+// Watch for project ID changes and refresh data
 watchEffect(() => {
   if (projectId.value) {
     fetchSectionNames();

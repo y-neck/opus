@@ -23,36 +23,19 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import Header from "~/components/layout/Header.vue";
 import TaskList from "~/components/project/tasks/TaskList.vue";
 
 const isAddSectionModalOpen = ref(false);
 
-watch(isAddSectionModalOpen, (newValue) => {
-  console.log("Tasks.vue - Modal state changed:", newValue);
-});
-
 const openAddSectionModal = () => {
-  console.log("Tasks.vue - Opening modal button clicked");
   isAddSectionModalOpen.value = true;
-  console.log(
-    "Tasks.vue - Modal state after opening:",
-    isAddSectionModalOpen.value
-  );
 };
 
 const closeAddSectionModal = () => {
-  console.log("Tasks.vue - Closing modal");
   isAddSectionModalOpen.value = false;
-  console.log(
-    "Tasks.vue - Modal state after closing:",
-    isAddSectionModalOpen.value
-  );
 };
-
-// Log initial state
-console.log("Tasks.vue - Initial modal state:", isAddSectionModalOpen.value);
 
 definePageMeta({
   middleware: "auth",

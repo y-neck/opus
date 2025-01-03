@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="isModalOpen"
+    v-show="isModalOpen"
     class="fixed inset-0 z-10 flex items-center justify-center bg-white bg-opacity-70 backdrop-blur-sm transition-all"
   >
     <div class="bg-white rounded-lg py-6 px-8 w-[656px] border border-grey-100">
@@ -26,7 +26,7 @@
               v-model="newSectionColor"
               id="color"
               type="color"
-              class="h-9 w-40 border border-grey-100 rounded-lg px-2.5 py-1 cursor-pointer"
+              class="h-9 w-40 border border-grey-100 rounded-lg px-2.5 py-1 cursor-pointer bg-white"
             />
           </div>
         </div>
@@ -39,7 +39,6 @@
             Cancel
           </button>
           <button
-            @click="openCreateSectionModal"
             type="submit"
             class="px-4 py-2 text-grey-50 rounded-lg bg-grey-700"
           >
@@ -63,22 +62,20 @@ const props = defineProps({
 
 const emit = defineEmits(["create-section", "close-modal"]);
 
+const newSectionTitle = ref("");
+const newSectionColor = ref("#3f3f46");
+
 watch(
   () => props.isModalOpen,
   (newValue) => {
-    console.log("CreateSection.vue - Modal open state changed:", newValue);
+    if (newValue) {
+      newSectionTitle.value = "";
+      newSectionColor.value = "#4f46e5";
+    }
   }
 );
 
-const newSectionTitle = ref("");
-const newSectionColor = ref("#4f46e5"); // Default color
-
 const handleSubmit = () => {
-  console.log("CreateSection.vue - Form submitted:", {
-    title: newSectionTitle.value,
-    color: newSectionColor.value,
-  });
-
   if (!newSectionTitle.value.trim()) return;
 
   emit("create-section", {
@@ -86,15 +83,20 @@ const handleSubmit = () => {
     color: newSectionColor.value,
   });
 
+  // Reset form
   newSectionTitle.value = "";
   newSectionColor.value = "#4f46e5";
-  closeModal();
 };
 
 const closeModal = () => {
-  console.log("CreateSection.vue - Closing modal");
   emit("close-modal");
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#color::-webkit-color-swatch {
+  border: none;
+  border-radius: 4px;
+  padding: 0;
+}
+</style>
