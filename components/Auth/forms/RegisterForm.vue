@@ -33,6 +33,8 @@
 import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
 const { supabase } = useSupabaseConnection();
 
+import Toast from "~/components/common/Toast.vue";
+
 const loading = ref(false);
 const name = ref("");
 const surname = ref("");

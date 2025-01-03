@@ -31,6 +31,8 @@
 import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
 const { supabase } = useSupabaseConnection();
 
+import Toast from "~/components/common/Toast.vue";
+
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 

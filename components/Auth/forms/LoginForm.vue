@@ -46,6 +46,8 @@
 import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
 const { supabase } = useSupabaseConnection();
 
+import Toast from "~/components/common/Toast.vue";
+
 const router = useRouter();
 
 const loading = ref(false);
