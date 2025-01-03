@@ -114,6 +114,7 @@ async function logout() {
   margin-left: -0.75rem;
   max-width: 15.5rem;
   height: 2rem;
+  color: #27272a;
 }
 
 .nav-item-text {
