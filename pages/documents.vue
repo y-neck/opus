@@ -117,11 +117,6 @@ import Modal from "~/components/project/RemoveModal.vue";
 import DocumentsModal from "~/components/project/documents/DocumentsModal.vue";
 import DocumentsSkeleton from "~/components/skeletons/DocumentsSkeleton.vue";
 import { format } from "date-fns";
-import CopyIcon from "~/components/icons/CopyIcon.vue";
-import TrashCanIcon from "~/components/icons/TrashCanIcon.vue";
-import PencilIcon from "~/components/icons/PencilIcon.vue";
-import PlusIcon from "~/components/icons/PlusIcon.vue";
-import DotsIcon from "~/components/icons/DotsIcon.vue";
 
 const links = ref([]);
 const groupedLinks = ref({});
@@ -241,8 +236,6 @@ function openModal() {
 
 // Page meta
 definePageMeta({
-  title: "Documents",
-  description: "",
   middleware: "auth",
   layout: "default",
 });
