@@ -1,55 +1,78 @@
 <template>
   <div class="task-list">
     <div v-if="isLoading" class="loading-indicator">
-      <p>
-        <!-- Switch to Skeleton Loading -->
-        Loading tasks...
-      </p>
+      <p>Loading tasks...</p>
     </div>
     <div v-else>
-      <div v-if="Object.keys(groupedTasks).length > 0">
+      <div v-if="Object.keys(sectionNames).length > 0">
         <Section
-          v-for="(tasksInSection, sectionId) in groupedTasks"
+          v-for="(section, sectionId) in sectionNames"
           :key="sectionId"
           :sectionId="sectionId"
-          :tasks="tasksInSection"
+          :tasks="groupedTasks[sectionId] || []"
           :sectionNames="sectionNames"
+          @sectionDeleted="handleSectionDeleted"
+          @openCreateTaskModal="openCreateTaskModal"
         />
       </div>
 
       <div v-else>
-        <p>No tasks available for this project.</p>
+        <p>No sections available for this project.</p>
       </div>
     </div>
+    <CreateSection
+      :isModalOpen="isAddSectionModalOpen"
+      @create-section="createSection"
+      @close-modal="isAddSectionModalOpen = false"
+    />
+    <CreateTask
+      v-if="isModalOpen"
+      :projectId="projectId"
+      :sectionId="currentSectionId"
+      :sectionNames="sectionNames"
+      :projectMembers="projectMembers"
+      @taskCreated="fetchData"
+      @closeModal="closeCreateTaskModal"
+    />
   </div>
 </template>
 
 <script setup>
-// Supabase Connection
 const { supabase } = useSupabaseConnection();
-import Section from "./Section.vue";
 
-import { ref, onMounted, computed, watchEffect } from "vue";
+import { ref, computed, onMounted, watchEffect, watch } from "vue";
 import { useProjectStore } from "~/store/project";
+import Section from "./Section.vue";
+import CreateTask from "./CreateTask.vue";
+import CreateSection from "./CreateSection.vue";
 
 const projectStore = useProjectStore();
+const projectId = computed(() => projectStore.activeProjectId);
+
 const tasks = ref([]);
 const isLoading = ref(true);
 const groupedTasks = ref({});
 const sectionNames = ref({});
+const projectMembers = ref([]);
+const currentSectionId = ref(null);
+const isModalOpen = ref(false);
+const closeCreateSectionModal = ref(false);
+const isAddSectionModalOpen = ref(false);
 
-const projectId = computed(() => projectStore.activeProjectId);
+const emit = defineEmits(["closeAddSectionModal"]);
 
 // Fetch Tasks, Assignments, and Profiles
 const fetchData = async () => {
   if (!projectId.value) {
+    console.error("Project ID is not set.");
     return;
   }
 
-  // Fetch all tasks for the current project
+  // Fetch all tasks for the project (using the project ID)
   const { data: tasksData, error: tasksError } = await supabase
     .from("Tasks")
     .select("*")
+    .order("due_date", { ascending: true })
     .eq("projects_id", projectId.value);
 
   if (tasksError) {
@@ -92,45 +115,121 @@ const fetchData = async () => {
   isLoading.value = false;
 };
 
-// Group Tasks by Section
+// Group tasks by section
 const groupTasksBySection = () => {
-  groupedTasks.value = {};
-  tasks.value.forEach((task) => {
+  groupedTasks.value = tasks.value.reduce((acc, task) => {
     const sectionId = task.section;
-    if (!groupedTasks.value[sectionId]) {
-      groupedTasks.value[sectionId] = [];
+    if (!acc[sectionId]) {
+      acc[sectionId] = [];
     }
-    groupedTasks.value[sectionId].push(task);
-  });
+    acc[sectionId].push(task);
+    return acc;
+  }, {});
 };
 
-// Fetch Section Names
-const fetchSectionNames = async () => {
+// Fetch project members
+const fetchProjectMembers = async () => {
+  if (!projectId.value) return;
+
   const { data, error } = await supabase
-    .from("Sections")
-    .select("id, title, color");
+    .from("Members")
+    .select(
+      `
+      id,
+      Profiles (
+        id,
+        name
+      )
+    `
+    )
+    .eq("project_id", projectId.value);
 
   if (error) {
-    console.error("Error fetching section names:", error);
-  } else {
+    console.error("Error fetching project members:", error);
+    return;
+  }
+
+  projectMembers.value = data.map((member) => ({
+    id: member.Profiles.id,
+    name: member.Profiles.name,
+  }));
+};
+
+// Fetch section names
+const fetchSectionNames = async () => {
+  if (!projectId.value) {
+    console.error(
+      "Project ID is null or undefined. Cannot fetch section names."
+    );
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("Sections")
+      .select("id, title, color")
+      .eq("project_id", projectId.value);
+
+    if (error) throw error;
+
     sectionNames.value = data.reduce((acc, section) => {
-      acc[section.id] = {
-        title: section.title,
-        color: section.color,
-      };
+      acc[section.id] = { title: section.title, color: section.color };
       return acc;
     }, {});
+  } catch (error) {
+    console.error("Error fetching sections:", error);
+  }
+};
+
+// Handle section deletion
+const handleSectionDeleted = (sectionId) => {
+  delete sectionNames.value[sectionId];
+  delete groupedTasks.value[sectionId];
+};
+
+const openCreateTaskModal = (sectionId) => {
+  currentSectionId.value = sectionId;
+  isModalOpen.value = true;
+};
+
+const closeCreateTaskModal = () => {
+  isModalOpen.value = false;
+};
+
+const createSection = async ({ title, color }) => {
+  if (!title || !projectId.value) return;
+
+  try {
+    const { error } = await supabase.from("Sections").insert([
+      {
+        title,
+        color,
+        project_id: projectId.value,
+      },
+    ]);
+
+    if (error) throw error;
+
+    await fetchSectionNames();
+    isAddSectionModalOpen.value = false;
+  } catch (error) {
+    console.error("Error creating section:", error);
   }
 };
 
 onMounted(async () => {
-  await fetchSectionNames();
-  await fetchData();
+  if (projectId.value) {
+    await fetchSectionNames();
+    await fetchData();
+    await fetchProjectMembers();
+  }
 });
 
 watchEffect(() => {
   if (projectId.value) {
+    fetchSectionNames();
     fetchData();
+    fetchProjectMembers();
   }
 });
 </script>
