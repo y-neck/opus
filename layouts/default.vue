@@ -1,7 +1,6 @@
 <template>
-  <div
-    class="bg-white text-grey-700 px-7 min-h-screen w-full md:flex md:flex-row"
-  >
+  <div class="bg-white text-grey-700 px-7 min-h-screen w-full md:flex md:flex-row">
+    <VitePwaManifest />
     <Navbar />
     <slot />
   </div>
