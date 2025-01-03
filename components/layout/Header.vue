@@ -1,5 +1,5 @@
 <template>
-  <header class="mb-16">
+  <header class="mb-16 z-10">
     <div
       id="page-description"
       class="px-6 h-[3.75rem] border-b border-l border-grey-100 text-grey-500 flex items-center justify-between -mr-7 fixed header-width bg-white"
