@@ -53,7 +53,7 @@ const handleRegister = async () => {
       email: email.value,
       password: password.value,
       options: {
-        emailRedirectTo: "http://localhost:3000/confirm",
+        emailRedirectTo: `${window.location.origin}/confirm`,
       },
     });
 

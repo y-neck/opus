@@ -67,7 +67,7 @@ const recoverPassword = async () => {
     }
 
     const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
-      redirectTo: "http://localhost:3000/update-password",
+      redirectTo: `${window.location.origin}/update-password`,
     });
 
     if (error) throw error;

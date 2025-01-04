@@ -90,7 +90,6 @@
 </template>
 
 <script setup>
-import { useSupabaseConnection } from "~/composables/useSupabaseConnection";
 const { supabase, user } = useSupabaseConnection();
 
 import { ref, onMounted } from "vue";
@@ -158,7 +157,7 @@ async function updateUserProfile() {
         const { error: authError } = await supabase.auth.updateUser({
           email: newSetEmail.value,
           options: {
-            emailRedirectTo: "http://localhost:3000/settings",
+            emailRedirectTo: `${window.location.origin}/settings`,
           },
         });
         if (authError) throw authError;
