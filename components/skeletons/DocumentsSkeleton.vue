@@ -1,8 +1,8 @@
 <template>
-  <div role="status" class="flex flex-col max-w-sm animate-pulse mt-6 mb-4">
+  <div role="status" class="flex flex-col animate-pulse mt-6 mb-4">
     <div class="h-2 bg-grey-200 rounded-full w-32 mb-3"></div>
     <hr class="border-grey-100" />
-    <div class="flex items-center gap-3 h-14">
+    <div class="flex items-center gap-3 h-[64px]">
       <div>
         <div class="w-4 h-4 rounded bg-grey-200 -mt-3"></div>
       </div>
@@ -13,7 +13,7 @@
       </div>
     </div>
     <hr class="border-grey-100" />
-    <div class="flex items-center gap-3 h-14">
+    <div class="flex items-center gap-3 h-[64px]">
       <div>
         <div class="w-4 h-4 rounded bg-grey-200 -mt-3"></div>
       </div>
@@ -24,7 +24,7 @@
       </div>
     </div>
     <hr class="border-grey-100" />
-    <div class="flex items-center gap-3 h-14">
+    <div class="flex items-center gap-3 h-[64px]">
       <div>
         <div class="w-4 h-4 rounded bg-grey-200 -mt-3"></div>
       </div>
