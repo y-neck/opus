@@ -8,13 +8,15 @@ Software: Nuxt3 + Supabase
 
 ## Features
 
-- [ ] Manage your different projects and team members
-- [ ] Manage tasks and assign them to members
-- [x] Get an overview over all your tasks in the different projects
+- [x] Manage your different projects and team members
+- [x] Create and assign tasks to team members
 - [x] Set deadlines for tasks
+- [x] Get an overview of all your tasks across projects
 - [x] Manage links to all your files on different platforms
+- [x] Install as web application on your device
 - [ ] Chat with your team members
-- [ ] Install as web application on your device
+- [ ] Receive project updates and invites directly in your inbox
+- [ ] Track project progress with a timeline
 
 ## Installation
 
@@ -24,9 +26,7 @@ You are welcome to contribute to this project. Please clone the repository and s
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ### Known Issues
+
 Information: This project is still in development and might still have some issues. Please report any issues you encounter.
-Tasks:
-- [ ] Assigning tasks to a (different) specific member currently does not work
-- [ ] The reactive update of the task list sometimes does not update the date correctly; -> Reload the page if needed
-Project Switch:
-- [ ] Project image is not yet implemented
+
+- [ ] Updating the profile image does not reflect visually, although the database is updated
