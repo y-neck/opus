@@ -3,10 +3,10 @@
     class="fixed inset-0 z-10 flex items-center justify-center bg-white bg-opacity-70 backdrop-blur-sm transition-all"
   >
     <div class="bg-white rounded-lg py-6 px-8 w-[656px] border border-grey-100">
-      <h2 class="text-2xl">Add a new task</h2>
+      <h2 class="text-2xl mb-7 tracking-[0.005em]">Add a new task</h2>
       <form @submit.prevent="createTask">
-        <div class="flex flex-col">
-          <label class="text-sm" for="taskName">Task</label>
+        <div class="flex flex-col gap-1">
+          <label class="text-grey-500 text-sm" for="taskName">Task</label>
           <input
             v-model="taskName"
             id="taskName"
@@ -16,15 +16,19 @@
             required
           />
         </div>
-        <div class="flex flex-row">
-          <div
-            class="h-9 bg-grey-100 px-3 flex items-center rounded-lg text-grey-500"
-          >
-            <p>
-              {{ sectionNames[sectionId]?.title || "Unknown" }}
-            </p>
+        <div class="flex flex-row mt-4 gap-2">
+          <div class="flex flex-col gap-1">
+            <label class="text-grey-500 text-sm" for="taskName">Section</label>
+            <div
+              class="h-9 bg-grey-100 px-3 flex items-center rounded-lg text-grey-500"
+            >
+              <p>
+                {{ sectionNames[sectionId]?.title || "Unknown" }}
+              </p>
+            </div>
           </div>
-          <div>
+          <div class="flex flex-col gap-1">
+            <label class="text-grey-500 text-sm" for="taskName">Due Date</label>
             <input
               v-model="dueDate"
               id="dueDate"
@@ -37,22 +41,43 @@
           </div>
         </div>
         <div>
-          <div class="flex gap-2">
-            <button
-              v-for="member in projectMembers"
-              :key="member.id"
-              :class="{ selected: selectedMembers.includes(member.id) }"
-              class="rounded-full border border-grey-100 h-9 px-3 focus:bg-grey-100"
-              @click="toggleMemberSelection(member.id)"
-              type="button"
+          <div class="flex flex-col gap-2 mt-4">
+            <label class="text-grey-500 text-sm" for="taskName"
+              >Assign to</label
             >
-              {{ member.name }}
-            </button>
+            <div class="flex flex-row gap-1.5">
+              <button
+                v-for="member in projectMembers"
+                :key="member.id"
+                :class="
+                  selectedMembers.includes(member.id)
+                    ? 'bg-grey-100'
+                    : 'bg-white'
+                "
+                class="rounded-full border border-grey-100 h-9 px-3 focus:bg-grey-100"
+                @click="toggleMemberSelection(member.id)"
+                type="button"
+              >
+                {{ member.name }}
+              </button>
+            </div>
           </div>
         </div>
-        <button type="submit">Create Task</button>
+        <div class="flex gap-2 justify-end mt-[4.5rem]">
+          <button
+            @click="closeModal"
+            class="px-4 py-2 text-grey-500 rounded-lg"
+          >
+            Close
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 text-grey-50 rounded-lg bg-grey-700"
+          >
+            Create
+          </button>
+        </div>
       </form>
-      <button @click="closeModal">Close</button>
     </div>
   </div>
 </template>
@@ -86,12 +111,13 @@ const emit = defineEmits(["taskCreated", "closeModal"]);
 // Reactive state for form fields
 const taskName = ref("");
 const dueDate = ref("");
-const selectedMembers = ref([]); // Store selected member IDs
+const selectedMembers = ref([]);
 
 // Supabase connection
 const { supabase } = useSupabaseConnection();
 
 // Toggle member selection
+
 const toggleMemberSelection = (memberId) => {
   if (selectedMembers.value.includes(memberId)) {
     selectedMembers.value = selectedMembers.value.filter(
