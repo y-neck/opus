@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-[41rem] h-[17.25rem] border border-grey-100 absolute bg-white px-8 py-6 right-6 mt-12 rounded-lg"
+    class="w-[41rem] h-[17.25rem] border border-grey-100 absolute bg-white px-8 py-6 right-6 mt-12 rounded-lg z-20"
     :isOpen="isOpen"
     @close="closeModal"
   >
