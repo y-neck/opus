@@ -216,4 +216,23 @@ onMounted(async () => {
     }
   });
 });
+
+definePageMeta({
+  middleware: "auth",
+  layout: "default",
+});
+
+useSeoMeta({
+  title: "Opus · Team",
+  ogTitle: "Team",
+  ogSiteName: "opus",
+  ogType: "website",
+  description:
+    "Change your profile picture, update your email address, and more!",
+  ogDescription:
+    "Change your profile picture, update your email address, and more!",
+  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
+  robots: "noindex, nofollow",
+  ogImage: "",
+});
 </script>

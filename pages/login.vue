@@ -6,10 +6,20 @@
 import LoginForm from "~/components/auth/forms/LoginForm.vue";
 
 definePageMeta({
-  title: "Login",
-  description: "",
   layout: false,
 });
-</script>
 
-<style scoped></style>
+useSeoMeta({
+  title: "Opus · Login",
+  ogTitle: "Login",
+  ogSiteName: "opus",
+  ogType: "website",
+  description:
+    "Welcome to Opus – your project management solution for team projects!",
+  ogDescription:
+    "Welcome to Opus – your project management solution for team projects!",
+  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
+  robots: "noindex, nofollow",
+  ogImage: "",
+});
+</script>

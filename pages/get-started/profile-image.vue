@@ -12,8 +12,21 @@ import ProfilePicture from "~/components/user/ProfilePicture.vue";
 import UploadProfilePicture from "~/components/user/UploadProfilePicture.vue";
 
 definePageMeta({
-  title: "Profile Image",
-  description: "",
   layout: false,
+  middleware: "auth",
+});
+
+useSeoMeta({
+  title: "Opus · Get Started",
+  ogTitle: "Get Started",
+  ogSiteName: "opus",
+  ogType: "website",
+  description:
+    "Welcome to Opus – your project management solution for team projects!",
+  ogDescription:
+    "Welcome to Opus – your project management solution for team projects!",
+  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
+  robots: "noindex, nofollow",
+  ogImage: "",
 });
 </script>

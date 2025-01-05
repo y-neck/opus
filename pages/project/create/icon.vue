@@ -64,11 +64,6 @@ const projectName = ref(route.query.projectName);
 
 console.log(projectName.value);
 
-definePageMeta({
-  middleware: "auth",
-  layout: false,
-});
-
 // Icon data
 const icons = [
   { name: "ThreeDSphere", component: ThreeDSphere },
@@ -136,4 +131,23 @@ async function saveProject() {
     navigateTo("/inbox");
   }
 }
+
+definePageMeta({
+  layout: false,
+  middleware: "auth",
+});
+
+useSeoMeta({
+  title: "Opus · Create Project",
+  ogTitle: "Create Project",
+  ogSiteName: "opus",
+  ogType: "website",
+  description:
+    "Welcome to Opus – your project management solution for team projects!",
+  ogDescription:
+    "Welcome to Opus – your project management solution for team projects!",
+  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
+  robots: "noindex, nofollow",
+  ogImage: "",
+});
 </script>

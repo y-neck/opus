@@ -101,4 +101,18 @@ onMounted(async () => {
     pending.value = false;
   }
 });
+
+useSeoMeta({
+  title: "Opus · Invitation",
+  ogTitle: "Invitation",
+  ogSiteName: "opus",
+  ogType: "website",
+  description:
+    "Welcome to Opus – your project management solution for team projects!",
+  ogDescription:
+    "Welcome to Opus – your project management solution for team projects!",
+  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
+  robots: "noindex, nofollow",
+  ogImage: "",
+});
 </script>

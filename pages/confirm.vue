@@ -6,9 +6,21 @@ setTimeout(() => {
 }, 3000);
 
 definePageMeta({
-  title: "Email confirmed",
-  description: "",
   layout: false,
+});
+
+useSeoMeta({
+  title: "Opus · Email Confirmed",
+  ogTitle: "Email Confirmed",
+  ogSiteName: "opus",
+  ogType: "website",
+  description:
+    "Welcome to Opus – your project management solution for team projects!",
+  ogDescription:
+    "Welcome to Opus – your project management solution for team projects!",
+  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
+  robots: "noindex, nofollow",
+  ogImage: "",
 });
 </script>
 

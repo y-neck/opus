@@ -205,4 +205,23 @@ watchEffect(() => {
 function openModal() {
   isModalOpen.value = true;
 }
+
+definePageMeta({
+  middleware: "auth",
+  layout: "default",
+});
+
+useSeoMeta({
+  title: "Opus · Documents",
+  ogTitle: "Documents",
+  ogSiteName: "opus",
+  ogType: "website",
+  description:
+    "Welcome to Opus – your project management solution for team projects!",
+  ogDescription:
+    "Welcome to Opus – your project management solution for team projects!",
+  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
+  robots: "noindex, nofollow",
+  ogImage: "",
+});
 </script>
