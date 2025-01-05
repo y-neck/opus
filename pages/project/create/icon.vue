@@ -5,7 +5,7 @@
         <h2 class="text-2xl text-grey-700">Choose an icon</h2>
       </div>
       <div>
-        <ul class="grid grid-cols-6 gap-3 text-grey-700">
+        <ul class="grid grid-cols-11 gap-3 text-grey-700">
           <li
             v-for="icon in icons"
             :key="icon.name"
@@ -19,12 +19,12 @@
           </li>
         </ul>
       </div>
-      <div v-if="selectedIcon" class="mt-4">
+      <div v-if="selectedIcon" class="mt-32 absolute transition">
         <button
           @click="saveProject"
-          class="px-4 py-2 bg-grey-400 text-black rounded"
+          class="flex flex-row items-center justify-center px-3 h-9 rounded-lg bg-grey-100 hover:bg-grey-200 text-grey-700 transition cursor-pointer w-[380px]"
         >
-          Save
+          Create Project
         </button>
       </div>
     </div>
@@ -48,6 +48,16 @@ import Atom from "@/components/icons/Atom.vue";
 import Audio from "@/components/icons/Audio.vue";
 import Backpack from "@/components/icons/Backpack.vue";
 import Basketball from "@/components/icons/Basketball.vue";
+import Bean from "@/components/icons/Bean.vue";
+import Blossom from "@/components/icons/Blossom.vue";
+import Books from "@/components/icons/Books.vue";
+import Brush from "@/components/icons/Brush.vue";
+import Cmd from "@/components/icons/Cmd.vue";
+import ColorPalette from "@/components/icons/ColorPalette.vue";
+import Direction from "@/components/icons/Direction.vue";
+import Emoji from "@/components/icons/Emoji.vue";
+import Ghost from "@/components/icons/Ghost.vue";
+import Pencil from "@/components/icons/Pencil.vue";
 
 const route = useRoute();
 const projectName = ref(route.query.projectName);
@@ -73,6 +83,16 @@ const icons = [
   { name: "Audio", component: Audio },
   { name: "Backpack", component: Backpack },
   { name: "Basketball", component: Basketball },
+  { name: "Bean", component: Bean },
+  { name: "Blossom", component: Blossom },
+  { name: "Books", component: Books },
+  { name: "Brush", component: Brush },
+  { name: "Cmd", component: Cmd },
+  { name: "ColorPalette", component: ColorPalette },
+  { name: "Direction", component: Direction },
+  { name: "Emoji", component: Emoji },
+  { name: "Ghost", component: Ghost },
+  { name: "Pencil", component: Pencil },
 ];
 
 const selectedIcon = ref(null);
