@@ -10,14 +10,13 @@
 <script setup>
 import Header from "~/components/layout/Header.vue";
 
-//Page meta
 // Page meta
 definePageMeta({
   title: "Home",
   description: "",
-  middleware: "auth",
   layout: "default",
 });
+
 useSeoMeta({
   title: "Opus - Home",
   ogTitle: "Home" /* Title of page without branding */,

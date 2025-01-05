@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col w-full">
-    <Header pageTitle="Index" pageIcon="LayoutGridIcon" />
+    <Header pageTitle="Inbox" pageIcon="InboxIcon" />
     <main class="p-16"></main>
   </div>
 </template>
