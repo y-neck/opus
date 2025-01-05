@@ -2,7 +2,7 @@
 interface Project {
     projectId: string | number;
     projectName: string;
-    projectImage: string;
+    projectIcon: string;
   }
   
   // Fetch projects from the database
@@ -12,7 +12,7 @@ interface Project {
   
       const { data: projectsData, error: projectsError } = await supabase
         .from('Projects')
-        .select('id, project_name, project_img')
+        .select('id, project_name, icon')
         .order('project_name', { ascending: true });
   
       if (projectsError) throw projectsError;
@@ -20,7 +20,7 @@ interface Project {
       return projectsData.map((project: any) => ({
         projectId: project.id,
         projectName: project.project_name,
-        projectImage: project.project_img,
+        projectIcon: project.icon,
       })) as Project[];
     } catch (error) {
       console.error('Error fetching projects:', error);

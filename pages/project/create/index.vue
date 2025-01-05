@@ -10,11 +10,13 @@
       <form
         id="profile-information"
         class="flex flex-col items-start mt-6"
-        @submit.prevent="createProject"
+        @submit.prevent="saveProjectName"
       >
         <div class="flex flex-col gap-2">
           <input
             type="text"
+            minlength="3"
+            maxlength="16"
             v-model="setProjectName"
             id="name-field"
             class="border border-grey-100 h-9 w-[380px] placeholder:text-grey-400 pl-3 rounded-lg"
@@ -34,40 +36,12 @@
 
 <script setup>
 // Supabase Connection
-const { supabase, user } = useSupabaseConnection();
 
 import { ref } from "vue";
-
 const setProjectName = ref("");
 
-console.log(user.id);
-
-async function createProject() {
-  const { data: profile, error: profileError } = await supabase
-    .from("Profiles")
-    .select("id")
-    .eq("user_id", user.id)
-    .single();
-
-  console.log(profile);
-
-  await supabase.from("Projects").insert({
-    project_name: setProjectName.value,
-    created_by: profile.id,
-  });
-
-  const { data: project, error: projectError } = await supabase
-    .from("Projects")
-    .select("id, created_by")
-    .order("id", { ascending: false })
-    .eq("created_by", profile.id);
-
-  await supabase.from("Members").insert({
-    project_id: project[0].id,
-    user_id: profile.id,
-    role: 1,
-  });
-
+function saveProjectName() {
+  navigateTo(`/project/create/icon?projectName=${setProjectName.value}`);
   setProjectName.value = "";
 }
 
