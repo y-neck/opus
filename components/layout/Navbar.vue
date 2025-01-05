@@ -15,15 +15,15 @@
           </div>
         </div>
         <div id="main-nav" class="hidden md:flex flex-col mt-4">
-          <NuxtLink to="/inbox" class="nav-item hover:text-grey-800">
+          <NuxtLink to="/inbox" class="nav-item hover:text-grey-900">
             <InboxIcon />
             <p class="nav-item-text">Inbox</p></NuxtLink
           >
-          <NuxtLink to="/task-overview" class="nav-item hover:text-grey-800">
+          <NuxtLink to="/task-overview" class="nav-item hover:text-grey-900">
             <NotepadIcon />
             <p class="nav-item-text">Task Overview</p></NuxtLink
           >
-          <NuxtLink to="/settings" class="nav-item hover:text-grey-800">
+          <NuxtLink to="/settings" class="nav-item hover:text-grey-900">
             <SettingsIcon />
             <p class="nav-item-text">Settings</p></NuxtLink
           >
@@ -41,23 +41,23 @@
           id="team-nav"
           class="flex md:flex-col justify-between max-sm:gap-8 mt-1"
         >
-          <NuxtLink to="/tasks" class="nav-item hover:text-grey-800">
+          <NuxtLink to="/tasks" class="nav-item hover:text-grey-900">
             <NoteIcon />
             <p class="nav-item-text">Tasks</p></NuxtLink
           >
-          <NuxtLink to="/timeline" class="nav-item hover:text-grey-800">
+          <NuxtLink to="/timeline" class="nav-item hover:text-grey-900">
             <TimelineIcon />
             <p class="nav-item-text">Timeline</p></NuxtLink
           >
-          <NuxtLink to="/documents" class="nav-item hover:text-grey-800">
+          <NuxtLink to="/documents" class="nav-item hover:text-grey-900">
             <FilesIcon />
             <p class="nav-item-text">Documents</p></NuxtLink
           >
-          <NuxtLink to="/chat" class="nav-item hover:text-grey-800">
+          <NuxtLink to="/chat" class="nav-item hover:text-grey-900">
             <BubbleIcon />
             <p class="nav-item-text">Chat</p></NuxtLink
           >
-          <NuxtLink to="/team" class="nav-item hover:text-grey-800">
+          <NuxtLink to="/team" class="nav-item hover:text-grey-900">
             <PeopleIcon />
             <p class="nav-item-text">Team</p></NuxtLink
           >
@@ -70,7 +70,7 @@
             @click="logout()"
           >
             <LogoutIcon class="group-hover:text-grey-800" />
-            <p class="nav-item-text hidden md:block group-hover:text-grey-800">
+            <p class="nav-item-text hidden md:block group-hover:text-grey-900">
               Logout
             </p>
           </button>
@@ -114,7 +114,10 @@ async function logout() {
   margin-left: -0.75rem;
   max-width: 15.5rem;
   height: 2rem;
-  color: #27272a;
+}
+
+.router-link-active:hover {
+  color: #3f3f46;
 }
 
 .nav-item-text {
