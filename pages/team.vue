@@ -82,7 +82,7 @@
 const { supabase, user } = useSupabaseConnection();
 
 import { ref, computed, onMounted, watchEffect } from "vue";
-import { useProjectStore } from "~/store/project";
+import { useProjectStore } from "~/middleware/store/project";
 import Header from "~/components/layout/Header.vue";
 import MemberSkeleton from "~/components/skeletons/MemberSkeleton.vue";
 import InviteMemberModal from "~/components/project/team/InviteMemberModal.vue";

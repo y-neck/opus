@@ -42,7 +42,7 @@
 const { supabase } = useSupabaseConnection();
 
 import { ref, computed, onMounted, watchEffect } from "vue";
-import { useProjectStore } from "~/store/project";
+import { useProjectStore } from "~/middleware/store/project";
 import Section from "./Section.vue";
 import CreateTask from "./CreateTask.vue";
 import CreateSection from "./CreateSection.vue";

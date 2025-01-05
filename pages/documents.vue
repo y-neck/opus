@@ -111,7 +111,7 @@
 const { supabase } = useSupabaseConnection();
 
 import { ref, watchEffect } from "vue";
-import { useProjectStore } from "~/store/project";
+import { useProjectStore } from "~/middleware/store/project";
 import Header from "~/components/layout/Header.vue";
 import Modal from "~/components/project/RemoveModal.vue";
 import DocumentsModal from "~/components/project/documents/DocumentsModal.vue";
