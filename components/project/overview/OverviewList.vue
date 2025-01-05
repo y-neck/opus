@@ -1,7 +1,8 @@
 <template>
   <div class="p-16">
     <div v-if="isLoading">
-      <p>Loading tasks...</p>
+      <TaskOverviewSkeleton />
+      <TaskOverviewSkeleton class="mt-20" />
     </div>
     <div v-else-if="error" class="text-red-600">
       <p>{{ error }}</p>
@@ -45,6 +46,8 @@
 </template>
 
 <script setup>
+import TaskOverviewSkeleton from "~/components/skeletons/TaskOverviewSkeleton.vue";
+
 import { ref, onMounted } from "vue";
 const { supabase, user } = useSupabaseConnection();
 

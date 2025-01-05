@@ -1,7 +1,8 @@
 <template>
   <div class="task-list">
     <div v-if="isLoading" class="loading-indicator">
-      <p>Loading tasks...</p>
+      <TasksSkeleton />
+      <TasksSkeleton class="mt-[104px]" />
     </div>
     <div v-else>
       <div v-if="Object.keys(sectionNames).length > 0">
@@ -46,6 +47,7 @@ import { useProjectStore } from "~/middleware/store/project";
 import Section from "./Section.vue";
 import CreateTask from "./CreateTask.vue";
 import CreateSection from "./CreateSection.vue";
+import TasksSkeleton from "~/components/skeletons/TasksSkeleton.vue";
 
 // Props and emits
 const props = defineProps({
