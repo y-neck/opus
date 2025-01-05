@@ -15,10 +15,17 @@
           </div>
         </div>
         <div id="main-nav" class="hidden md:flex flex-col mt-4">
-          <NuxtLink to="/inbox" class="nav-item hover:text-grey-900">
-            <InboxIcon />
-            <p class="nav-item-text">Inbox</p></NuxtLink
+          <div
+            class="flex justify-between cursor-default"
+            @mouseover="showLabelInbox = true"
+            @mouseleave="showLabelInbox = false"
           >
+            <div class="flex flex-row items-center">
+              <InboxIcon />
+              <p class="nav-item-text">Inbox</p>
+            </div>
+            <Label v-show="showLabelInbox"></Label>
+          </div>
           <NuxtLink to="/task-overview" class="nav-item hover:text-grey-900">
             <NotepadIcon />
             <p class="nav-item-text">Task Overview</p></NuxtLink
@@ -45,18 +52,32 @@
             <NoteIcon />
             <p class="nav-item-text">Tasks</p></NuxtLink
           >
-          <NuxtLink to="/timeline" class="nav-item hover:text-grey-900">
-            <TimelineIcon />
-            <p class="nav-item-text">Timeline</p></NuxtLink
+          <div
+            class="flex justify-between cursor-default"
+            @mouseover="showLabelTimeline = true"
+            @mouseleave="showLabelTimeline = false"
           >
+            <div class="flex flex-row items-center">
+              <TimelineIcon />
+              <p class="nav-item-text">Timeline</p>
+            </div>
+            <Label v-show="showLabelTimeline"></Label>
+          </div>
           <NuxtLink to="/documents" class="nav-item hover:text-grey-900">
             <FilesIcon />
             <p class="nav-item-text">Documents</p></NuxtLink
           >
-          <NuxtLink to="/chat" class="nav-item hover:text-grey-900">
-            <BubbleIcon />
-            <p class="nav-item-text">Chat</p></NuxtLink
+          <div
+            class="flex justify-between cursor-default"
+            @mouseover="showLabelChat = true"
+            @mouseleave="showLabelChat = false"
           >
+            <div class="flex flex-row items-center">
+              <BubbleIcon />
+              <p class="nav-item-text">Chat</p>
+            </div>
+            <Label v-show="showLabelChat"></Label>
+          </div>
           <NuxtLink to="/team" class="nav-item hover:text-grey-900">
             <PeopleIcon />
             <p class="nav-item-text">Team</p></NuxtLink
@@ -83,11 +104,17 @@
 <script setup lang="ts">
 // Supabase Connection
 const { supabase } = useSupabaseConnection();
+import { ref } from "vue";
+
+const showLabelInbox = ref(false);
+const showLabelTimeline = ref(false);
+const showLabelChat = ref(false);
 
 /* Display current project */
 import { useProjectStore } from "~/middleware/store/project"; // Import pinia store
 import ActiveProjectSkeleton from "~/components/skeletons/ActiveProjectSkeleton.vue";
 import ProjectSwitch from "./ProjectSwitch.vue";
+import Label from "~/components/common/Label.vue";
 
 // Initialize pinia store
 const projectStore = useProjectStore();
