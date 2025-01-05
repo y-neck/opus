@@ -4,7 +4,7 @@ import { serve } from "https://deno.land/std@0.202.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const APP_URL = "http://localhost:3000";
+const APP_URL = "https://opus-gilt.vercel.app";
 
 
 const corsHeaders = {
