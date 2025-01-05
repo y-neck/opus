@@ -16,7 +16,7 @@
           <input
             type="text"
             minlength="3"
-            maxlength="16"
+            maxlength="18"
             v-model="setProjectName"
             id="name-field"
             class="border border-grey-100 h-9 w-[380px] placeholder:text-grey-400 pl-3 rounded-lg"
@@ -42,7 +42,6 @@ const setProjectName = ref("");
 
 function saveProjectName() {
   navigateTo(`/project/create/icon?projectName=${setProjectName.value}`);
-  setProjectName.value = "";
 }
 
 definePageMeta({
