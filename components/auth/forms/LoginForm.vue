@@ -88,7 +88,7 @@ const handleLogin = async () => {
 
       navigateTo("/get-started");
     } else {
-      navigateTo("/inbox");
+      navigateTo("/task-overview");
     }
   } catch (error) {
     console.error(error);

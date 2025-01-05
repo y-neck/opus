@@ -128,7 +128,7 @@ async function saveProject() {
   if (profileError || projectError) {
     console.error("Failed to save icon:", error.message);
   } else {
-    navigateTo("/inbox");
+    navigateTo("/task-overview");
   }
 }
 

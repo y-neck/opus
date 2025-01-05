@@ -34,9 +34,6 @@ const { supabase } = useSupabaseConnection();
 import Toast from "~/components/common/Toast.vue";
 
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
 
 const loading = ref(false);
 const newPassword = ref("");
@@ -62,7 +59,7 @@ const updatePassword = async () => {
 
     setTimeout(() => {
       successMessage.value = "";
-      router.push("/inbox");
+      navigateTo("/task-overview");
     }, 3000);
   } catch (error) {
     console.error("Password update failed:", error);
