@@ -1,48 +1,51 @@
 <template>
-  <div class="flex min-h-screen items-center justify-center">
-    <div class="max-w-md w-full p-6 bg-white rounded-lg shadow-lg">
-      <!-- Loading State -->
-      <div v-if="pending" class="text-center">
-        <p>Verifying invitation...</p>
+  <div class="flex flex-col items-center justify-center h-screen">
+    <!-- Loading State -->
+    <div v-if="pending" class="text-center">
+      <p>Verifying invitation...</p>
+    </div>
+
+    <!-- Error State -->
+    <div v-else-if="hasError" class="text-center">
+      <div class="mb-4">
+        <p class="mb-2">{{ errorMessage }}</p>
+        <p v-if="errorDetails" class="text-sm mt-2">
+          {{ errorDetails }}
+        </p>
       </div>
 
-      <!-- Error State -->
-      <div v-else-if="hasError" class="text-center">
-        <div class="text-red-600 mb-4">
-          <p class="font-bold mb-2">{{ errorMessage }}</p>
-          <p v-if="errorDetails" class="text-sm mt-2">
-            {{ errorDetails }}
-          </p>
-        </div>
-
-        <div class="space-y-3 mt-4">
-          <NuxtLink
-            v-if="needsAuth"
-            to="/login"
-            class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Log In to Accept Invitation
-          </NuxtLink>
-
-          <NuxtLink
-            v-else
-            to="/"
-            class="inline-block bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
-          >
-            Return Home
-          </NuxtLink>
-        </div>
-      </div>
-
-      <!-- Success State -->
-      <div v-else class="text-center text-green-600">
-        <h2 class="text-2xl font-bold mb-4">Invitation Accepted!</h2>
-        <p class="mb-4">You have successfully joined the project.</p>
+      <div class="space-y-3 mt-4">
         <NuxtLink
-          :to="`/projects/${projectId}`"
-          class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          v-if="needsAuth"
+          to="/login"
+          class="py-2 px-3 bg-grey-700 active:hover:bg-grey-800 text-grey-50 rounded-lg"
         >
-          Go to Project
+          Log In to Accept Invitation
+        </NuxtLink>
+
+        <NuxtLink
+          v-else
+          to="/"
+          class="py-2 px-3 bg-grey-700 active:hover:bg-grey-800 text-grey-50 rounded-lg"
+        >
+          Return Home
+        </NuxtLink>
+      </div>
+    </div>
+
+    <!-- Success State -->
+
+    <div v-else class="text-center">
+      <div class="text-left">
+        <h2 class="text-2xl text-grey-700">Invitation Accepted!</h2>
+        <p class="text-grey-500 font-normal pt-0.5 mb-5 max-w-1/3">
+          You have successfully joined the project.
+        </p>
+        <NuxtLink
+          class="py-2 px-3 bg-grey-700 active:hover:bg-grey-800 text-grey-50 rounded-lg"
+          to="/task-overview"
+        >
+          Continue
         </NuxtLink>
       </div>
     </div>
@@ -100,6 +103,10 @@ onMounted(async () => {
   } finally {
     pending.value = false;
   }
+});
+
+definePageMeta({
+  layout: false,
 });
 
 useSeoMeta({
