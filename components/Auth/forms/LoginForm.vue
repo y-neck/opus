@@ -48,8 +48,6 @@ const { supabase } = useSupabaseConnection();
 
 import Toast from "~/components/common/Toast.vue";
 
-const router = useRouter();
-
 const loading = ref(false);
 const email = ref("");
 const password = ref("");
@@ -88,9 +86,9 @@ const handleLogin = async () => {
         .update({ first_login: false })
         .eq("user_id", user.id);
 
-      router.push("/welcome");
+      navigateTo("/get-started");
     } else {
-      router.push("/inbox");
+      navigateTo("/inbox");
     }
   } catch (error) {
     console.error(error);
