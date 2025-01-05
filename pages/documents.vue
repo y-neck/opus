@@ -19,23 +19,20 @@
     <main class="p-16">
       <div>
         <h2 class="text-2xl mb-1.5">Documents</h2>
-        <!-- Skeleton before page is fully loaded -->
         <div v-if="isLoading">
           <DocumentsSkeleton />
           <DocumentsSkeleton />
         </div>
         <div v-if="Object.keys(groupedLinks).length">
           <div
-            class="my-4 mb-9"
             v-for="(linksGroup, date) in groupedLinks"
             :key="date"
+            class="my-4 mb-9"
           >
-            <h3 class="text-sm text-grey-500 tracking-[0.01em]">
-              {{ date }}
-            </h3>
+            <h3 class="text-sm text-grey-500 tracking-[0.01em]">{{ date }}</h3>
             <hr class="text-grey-100 mt-2" />
             <ul>
-              <div v-for="(link, index) in linksGroup" :key="index">
+              <li v-for="(link, index) in linksGroup" :key="link.id">
                 <div class="flex flex-row my-2">
                   <div class="mr-2 mt-1">
                     <img
@@ -61,12 +58,12 @@
                     >
                       <span
                         @click="copyDocument(link.link)"
-                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
+                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 transition"
                       >
                         <CopyIcon />
                       </span>
                       <span
-                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 active:text-grey-950 transition"
+                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 transition"
                       >
                         <PencilIcon />
                       </span>
@@ -80,12 +77,11 @@
                   </div>
                 </div>
                 <hr class="text-grey-100" />
-              </div>
+              </li>
             </ul>
           </div>
         </div>
       </div>
-      <!-- Modals -->
       <Modal
         v-if="isDeleteModalOpen"
         :isOpen="isDeleteModalOpen"
@@ -94,7 +90,6 @@
         @confirm="deleteDocument"
         @cancel="isDeleteModalOpen = false"
       />
-      <!-- Create new link -->
       <DocumentsModal
         :isOpen="isModalOpen"
         title="Add a new link"
@@ -107,9 +102,7 @@
 </template>
 
 <script setup>
-// Supabase Connection
 const { supabase } = useSupabaseConnection();
-
 import { ref, watchEffect } from "vue";
 import { useProjectStore } from "~/middleware/store/project";
 import Header from "~/components/layout/Header.vue";
@@ -118,26 +111,24 @@ import DocumentsModal from "~/components/project/documents/DocumentsModal.vue";
 import DocumentsSkeleton from "~/components/skeletons/DocumentsSkeleton.vue";
 import { format } from "date-fns";
 
+const projectStore = useProjectStore();
 const links = ref([]);
 const groupedLinks = ref({});
-const projectStore = useProjectStore();
-const isDeleteModalOpen = ref(false);
-const documentToDelete = ref(null);
 const isLoading = ref(true);
 const isModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
+const documentToDelete = ref(null);
 
-// Function to format the link by removing protocol and path
 function formatLink(url) {
   try {
     const hostname = new URL(url).hostname;
-    return hostname.replace("www.", ""); // Remove 'www.' if present
+    return hostname.replace("www.", "");
   } catch (error) {
     console.error("Invalid URL:", url);
-    return url; // Return the original URL if it can't be parsed
+    return url;
   }
 }
 
-// Function to generate favicon URL
 function getFaviconUrl(url, size = 64) {
   try {
     const hostname = new URL(url).hostname;
@@ -148,14 +139,11 @@ function getFaviconUrl(url, size = 64) {
   }
 }
 
-// Function to group links by their created_at date
 function groupLinksByDate(data) {
   const grouped = {};
   data.forEach((link) => {
     const date = format(new Date(link.created_at), "EEEE, dd MMM yyyy");
-    if (!grouped[date]) {
-      grouped[date] = [];
-    }
+    grouped[date] = grouped[date] || [];
     grouped[date].push(link);
   });
   return grouped;
@@ -163,34 +151,23 @@ function groupLinksByDate(data) {
 
 async function getLinks() {
   try {
-    console.log("Fetching links for project:", projectStore.activeProjectId);
-
     const { data, error } = await supabase
       .from("Links")
       .select("*")
       .eq("project_id", projectStore.activeProjectId)
       .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching links:", error);
-      return;
-    }
-
-    console.log("Fetched links:", data);
-
+    if (error) throw error;
     if (data) {
       links.value = data;
       groupedLinks.value = groupLinksByDate(data);
-      console.log("Grouped links:", groupedLinks.value);
     }
   } catch (error) {
-    console.error("Error in getLinks:", error);
+    console.error("Error fetching links:", error);
   } finally {
     isLoading.value = false;
   }
 }
 
-// Function to copy the document link to clipboard
 function copyDocument(link) {
   navigator.clipboard.writeText(link);
 }
@@ -202,53 +179,30 @@ function showDeleteModal(link) {
 
 async function deleteDocument() {
   try {
-    if (!documentToDelete.value) return;
-
     const { error } = await supabase
       .from("Links")
       .delete()
       .eq("id", documentToDelete.value.id);
-
     if (error) throw error;
-
-    // Refresh the links list
     await getLinks();
-
-    // Close the modal
     isDeleteModalOpen.value = false;
-    documentToDelete.value = null;
   } catch (error) {
     console.error("Error deleting document:", error);
   }
 }
 
-// Watch for project changes and fetch links
+function handleConfirm() {
+  isModalOpen.value = false;
+  getLinks();
+}
+
 watchEffect(() => {
   if (projectStore.activeProjectId) {
     getLinks();
   }
 });
 
-// Function to open the modal
 function openModal() {
   isModalOpen.value = true;
 }
-
-// Page meta
-definePageMeta({
-  middleware: "auth",
-  layout: "default",
-});
-
-useSeoMeta({
-  title: "Opus - Documents",
-  ogTitle: "Documents",
-  ogSiteName: "opus",
-  ogType: "website",
-  description: "Manage the links to the relevant documents of your projects",
-  ogDescription: "Manage the links to the relevant documents of your projects",
-  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
-  robots: "noindex, nofollow",
-  ogImage: "",
-});
 </script>

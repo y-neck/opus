@@ -1,7 +1,7 @@
 <template>
   <div
-    class="fixed inset-0 z-10 flex items-center justify-center bg-white bg-opacity-70 backdrop-blur-sm transition-all"
     v-if="isOpen"
+    class="fixed inset-0 z-10 flex items-center justify-center bg-white bg-opacity-70 backdrop-blur-sm transition-all"
   >
     <div class="bg-white rounded-lg p-6 w-[656px] border border-grey-100">
       <h2 class="text-2xl font-medium mb-7 tracking-[0.005em]">{{ title }}</h2>
@@ -31,13 +31,13 @@
       </div>
       <div class="flex justify-end gap-3 mt-[4.5rem]">
         <button
-          @click="cancel"
+          @click="onCancel"
           class="px-4 py-2 text-grey-500 rounded-lg hover:bg-gray-300"
         >
           Cancel
         </button>
         <button
-          @click="confirm"
+          @click="onConfirm"
           class="px-4 py-2 text-grey-50 rounded-lg bg-grey-700"
         >
           {{ label }}
@@ -48,9 +48,12 @@
 </template>
 
 <script setup>
+const { supabase } = useSupabaseConnection();
+import { useProjectStore } from "~/middleware/store/project";
+const projectStore = useProjectStore();
+
 import { ref } from "vue";
 
-// Props
 const props = defineProps({
   isOpen: Boolean,
   title: String,
@@ -58,19 +61,25 @@ const props = defineProps({
   label: String,
 });
 
-// Emit events
 const emit = defineEmits(["confirm", "cancel"]);
 
-// Local state for input fields
 const link = ref("");
 const description = ref("");
 
-// Functions
-function confirm() {
-  emit("confirm", { link: link.value, description: description.value });
+async function onConfirm() {
+  try {
+    await supabase.from("Links").insert({
+      link: link.value,
+      description: description.value,
+      project_id: projectStore.activeProjectId,
+    });
+    emit("confirm"); // Emit the confirm event to notify parent
+  } catch (error) {
+    console.error("Error inserting link:", error);
+  }
 }
 
-function cancel() {
-  emit("cancel");
+function onCancel() {
+  emit("cancel"); // Emit the cancel event to notify parent
 }
 </script>
