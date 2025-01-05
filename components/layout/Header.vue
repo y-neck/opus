@@ -2,7 +2,7 @@
   <header class="mb-16 z-10">
     <div
       id="page-description"
-      class="px-6 h-[3.75rem] border-b border-l border-grey-100 text-grey-500 flex items-center justify-between -mr-7 fixed header-width bg-white"
+      class="px-6 h-[3.75rem] border-b border-l border-grey-100 text-grey-500 flex justify-between items-center -mr-7 fixed header-width bg-white"
     >
       <div class="flex items-center gap-1">
         <component :is="pageIcon" class="inline" />
@@ -25,6 +25,6 @@ const props = defineProps<{ pageTitle: string; pageIcon: string }>();
 
 <style scoped>
 .header-width {
-  width: 85.42%;
+  width: calc(100% - 280px);
 }
 </style>
