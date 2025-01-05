@@ -33,20 +33,20 @@
           )
         "
       >
-        <component :is="project.projectIcon" />
+        <component class="-mt-0.5" :is="project.projectIcon" />
         {{ project.projectName }}
       </p>
       <hr class="border-grey-100" />
       <NuxtLink
         to="/project/create"
-        class="flex flex-row items-center gap-2 cursor-pointer"
+        class="flex flex-row items-center gap-2 cursor-pointer pl-1 hover:text-grey-900"
       >
-        <span><PlusIcon /></span> Create Project
+        <span class="-mt-0.5"><PlusIcon /></span> Create Project
       </NuxtLink>
       <p
-        class="flex flex-row items-center gap-2 cursor-pointer text-destructive-red"
+        class="flex flex-row items-center gap-2 cursor-pointer pl-1 text-destructive-red hover:text-destructive-darkRed"
       >
-        <span><TrashCanIcon /></span> Delete Project
+        <span class="-mt-0.5"><TrashCanIcon /></span> Delete Project
       </p>
     </DropdownMenu>
   </div>
