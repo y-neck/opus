@@ -31,6 +31,7 @@
               type="date"
               class="h-9 border border-grey-100 rounded-lg"
               placeholder="Due Date"
+              :min="today"
               required
             />
           </div>
@@ -150,6 +151,15 @@ const createTask = async () => {
     console.error("Unexpected error:", err);
   }
 };
+
+const date = new Date();
+const year = date.getFullYear();
+const month = String(date.getMonth() + 1).padStart(2, "0");
+const day = String(date.getDate()).padStart(2, "0");
+
+const today = `${year}-${month}-${day}`;
+
+console.log(today);
 
 // Close modal function
 const closeModal = () => {
