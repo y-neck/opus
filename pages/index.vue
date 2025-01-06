@@ -6,9 +6,9 @@
 
 <script setup>
 definePageMeta({
-  layout: false,
+  middleware: "auth",
+  layout: "default",
 });
-
 useSeoMeta({
   title: "Opus · Home",
   ogTitle: "Home",
