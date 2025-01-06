@@ -2,6 +2,8 @@
 
 As a student, you have to work on many projects as a team. Normally, many different tools are used to manage projects, and it can be difficult to keep track of all the tasks and deadlines. Opus is a project management tool that helps you keep track of your projects and tasks in that it tries to unite as many tools as possible in one place.
 
+When you create a new project, you can add team members and invite them to the project. You can also assign tasks to team members and set deadlines for them. Opus will then display all the tasks assigned to you and the team members in a clear and organized way. Add links to important documents and files hosted on different platforms. Supabase will take care of the database and you can access it via the web application.
+
 Developed 2024ff. by [Kevin Schärer](https://github.com/kevinschaerer) and [Yannick Spriessler](https://github.com/y-neck) as term project for the course "Major Media Applications" at the University of Applied Sciences of the Grisons, Switzerland.
 
 Software: Nuxt3 + Supabase
@@ -40,3 +42,13 @@ Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introdu
 Information: This project is still in development and might still have some issues. Please report any issues you encounter.
 
 - [ ] Updating the profile image does not reflect visually, although the database is updated
+
+## Learnings
+
+- Calculate enough time for production testings
+- The Project was too big for the assigned project scope
+- Structure: The potential of a component-based architecture was not fully used
++ First project in vue/Nuxt
++ Supabase could be used to implement all required database functionalities
++ TailwindCSS: faster development and easier styling than with plain CSS
++ Database structure: was created beforehand and only needed small adjustments
