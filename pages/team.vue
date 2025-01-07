@@ -47,22 +47,6 @@
                 </p>
               </div>
             </div>
-            <div
-              v-if="isOwner"
-              class="flex flex-row opacity-0 gap-1 mt-1 group-hover:opacity-100 transition"
-            >
-              <span
-                class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 active:text-grey-950 transition"
-              >
-                <PencilIcon />
-              </span>
-              <span
-                @click="showDeleteModal(link)"
-                class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 hover:text-destructive-red transition"
-              >
-                <RemovePeopleIcon />
-              </span>
-            </div>
           </div>
           <hr class="border-grey-100" />
         </div>
