@@ -20,7 +20,7 @@ Software: Nuxt3 + Supabase
 - [ ] Receive project updates and invites directly in your inbox
 - [ ] Track project progress with a timeline
 
-### Known Issues
+## Known Issues
 
 Information: This project is still in development and might have some issues. Please report any issues you encounter.
 
@@ -28,11 +28,6 @@ Information: This project is still in development and might have some issues. Pl
 - [ ] There are currently no options for the user to edit sections, tasks and documents
 - [ ] If the owner of a project deletes the project, the project members also no longer have access to it
 - [ ] It is currently not possible to remove members from the project
-
-## Contribution
-
-You are welcome to contribute to this project. Please clone the repository and submit your changes as pull requests. If you have any problems or questions, please open an issue.
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Learnings
 
@@ -51,13 +46,19 @@ Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introdu
 
 ## Specifications
 
-|---|---|---|
-| Authentication | Only logged-in users can access the tool and the respective projects | Critical |
-| Document management | Users can link important documents hosted on different platforms for the project | Critical |
-| Task management | Users can create new tasks and assign them to different team members | Critical |
-| Project member management | Each team has the option of inviting new team members invite or remove team members | Critical |
-| Evaluation regarding equal distribution of work among group members | A graphic can be used to display the proportion of the total amount of tasks assigned to each team member | Nice-To-Have |
-| Countdown display | A countdown displays the leftover days for the assignment's due date | Nice-To-Have |
-| Sitemap for documents overview | The documents can be displayed via a sitemap for a clearer presentation | Nice-To-Have |
-| Chat | The team can communicate with each other via a chat function | Nice-To-Have / Out-Of-Focus |
-| PWA | The platform can be installed as a browser app on devices | Nice-To-Have / Out-Of-Focus |
+| Function                                                            | Description                                                                                               |                             | Category |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------- | -------- |
+| Authentication                                                      | Only logged-in users can access the tool and the respective projects                                      | Critical                    |
+| Document management                                                 | Users can link important documents hosted on different platforms for the project                          | Critical                    |
+| Task management                                                     | Users can create new tasks and assign them to different team members                                      | Critical                    |
+| Project member management                                           | Each team has the option of inviting new team members invite or remove team members                       | Critical                    |
+| Evaluation regarding equal distribution of work among group members | A graphic can be used to display the proportion of the total amount of tasks assigned to each team member | Nice-To-Have                |
+| Countdown display                                                   | A countdown displays the leftover days for the assignment's due date                                      | Nice-To-Have                |
+| Sitemap for documents overview                                      | The documents can be displayed via a sitemap for a clearer presentation                                   | Nice-To-Have                |
+| Chat                                                                | The team can communicate with each other via a chat function                                              | Nice-To-Have / Out-Of-Focus |
+| PWA                                                                 | The platform can be installed as a browser app on devices                                                 | Nice-To-Have / Out-Of-Focus |
+
+## Contribution
+
+You are welcome to contribute to this project. Please clone the repository and submit your changes as pull requests. If you have any problems or questions, please open an issue.
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
