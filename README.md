@@ -46,8 +46,8 @@ Information: This project is still in development and might have some issues. Pl
 
 ## Specifications
 
-| Function                                                            | Description                                                                                               |                             | Category |
-| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------- | -------- |
+| Function                                                            | Description                                                                                               | Category                    |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------- |
 | Authentication                                                      | Only logged-in users can access the tool and the respective projects                                      | Critical                    |
 | Document management                                                 | Users can link important documents hosted on different platforms for the project                          | Critical                    |
 | Task management                                                     | Users can create new tasks and assign them to different team members                                      | Critical                    |
