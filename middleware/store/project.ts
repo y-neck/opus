@@ -5,8 +5,8 @@ import { getProjects } from './projectService';
 interface Project {
   projectId: string | number;
   projectName: string;
-  projectImage: string;
-  projectIcon: string
+  projectIcon: string;
+  createdBy?: string | number;
 }
 
 export const useProjectStore = defineStore('projectStore', {
@@ -14,15 +14,16 @@ export const useProjectStore = defineStore('projectStore', {
     activeProjectId: null as number | null,
     activeProjectName: '' as string,
     activeProjectIcon: '' as string,
+    activeProjectCreatedBy: '' as string | number, 
     projects: [] as Project[],
   }),
   actions: {
     // Set the currently active project
-    setActiveProject(projectId: number, projectName: string, projectIcon: string) {
+    setActiveProject(projectId: number, projectName: string, projectIcon: string, createdBy: string | number) {
       this.activeProjectId = projectId;
       this.activeProjectName = projectName;
       this.activeProjectIcon = projectIcon;
-      // Add a console log to check the active project
+      this.activeProjectCreatedBy = createdBy;
       console.log(`Active Project is ${projectName} [${projectId}]`);
     },
 

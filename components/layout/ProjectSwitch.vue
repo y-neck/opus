@@ -27,9 +27,10 @@
         ]"
         @click="
           setActiveProject(
-            project.projectId as number,
-            project.projectName as string,
-            project.projectIcon as string
+            project.projectId,
+            project.projectName,
+            project.projectIcon,
+            project.createdBy
           )
         "
       >
@@ -44,7 +45,9 @@
         <span class="-mt-0.5"><PlusIcon /></span> Create Project
       </NuxtLink>
       <p
+        v-if="isOwner"
         class="flex flex-row items-center gap-2 cursor-pointer pl-1 text-destructive-red hover:text-destructive-darkRed"
+        @click="deleteProject"
       >
         <span class="-mt-0.5"><TrashCanIcon /></span> Delete Project
       </p>
@@ -57,63 +60,121 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
+import { ref, computed, onMounted, watch } from "vue";
 import { useProjectStore } from "~/middleware/store/project";
 import { getProjects } from "~/middleware/store/projectService";
-
-import { ref, computed, onMounted } from "vue";
 import DropdownMenu from "~/components/common/DropdownMenu.vue";
 import DropdownSkeleton from "~/components/skeletons/DropdownSkeleton.vue";
+const { supabase, user } = useSupabaseConnection();
 
-// Define Interface
-interface Project {
-  projectId: string | number;
-  projectName: string;
-  projectIcon: string;
-}
-
-// Initialize pinia store
 const projectStore = useProjectStore();
-
-// Use pinia store state and actions, destructure reactive properties from store
 const activeProjectName = computed(() => projectStore.activeProjectName);
 const activeProjectIcon = computed(() => projectStore.activeProjectIcon);
 
-// Set active project in store
-const setActiveProject = (
-  projectId: number,
-  projectName: string,
-  projectIcon: string
+const projectTasks = ref([]);
+const isOwner = ref(false);
+
+const setActiveProject = async (
+  projectId,
+  projectName,
+  projectIcon,
+  createdBy
 ) => {
-  projectStore.setActiveProject(projectId, projectName, projectIcon);
+  projectStore.setActiveProject(projectId, projectName, projectIcon, createdBy);
   toggleDropdown("project-dd");
 };
 
-// Reactive reference to active project
-const projectTasks = ref<Project[]>([]);
+const checkOwnership = async () => {
+  if (user?.id && projectStore.activeProjectCreatedBy) {
+    try {
+      const { data, error } = await supabase
+        .from("Profiles")
+        .select("user_id")
+        .eq("id", projectStore.activeProjectCreatedBy)
+        .single();
+
+      if (error) {
+        console.error("Error fetching project owner:", error);
+      } else if (data && data.user_id === user.id) {
+        isOwner.value = true;
+      } else {
+        isOwner.value = false;
+      }
+    } catch (error) {
+      console.error("Error checking ownership:", error);
+    }
+  }
+};
+
+// Function to delete a project
+const deleteProject = async () => {
+  if (projectStore.activeProjectId) {
+    try {
+      const { error } = await supabase
+        .from("Projects")
+        .delete()
+        .eq("id", projectStore.activeProjectId);
+
+      if (error) {
+        console.error("Error deleting project:", error);
+      } else {
+        // After deletion, reset the active project and refetch project list
+        projectStore.setActiveProject(null, null, null, null);
+
+        // Refetch the list of projects
+        projectTasks.value = await getProjects();
+
+        // If there are any remaining projects, set the first one as the new active project
+        if (projectTasks.value.length > 0) {
+          const firstProject = projectTasks.value[0];
+          await setActiveProject(
+            firstProject.projectId,
+            firstProject.projectName,
+            firstProject.projectIcon,
+            firstProject.createdBy
+          );
+        }
+
+        toggleDropdown("project-dd");
+      }
+    } catch (error) {
+      console.error("Error deleting project:", error);
+    }
+  }
+};
 
 onMounted(async () => {
   try {
-    // Fetch projects data from DB
+    // Fetch initial list of projects
     projectTasks.value = await getProjects();
 
+    // If no active project, set the first one as active
     if (projectTasks.value.length > 0 && !projectStore.activeProjectId) {
-      // Set the first project as active if there's no active project
       const firstProject = projectTasks.value[0];
-      setActiveProject(
-        firstProject.projectId as number,
+      await setActiveProject(
+        firstProject.projectId,
         firstProject.projectName,
-        firstProject.projectIcon
+        firstProject.projectIcon,
+        firstProject.createdBy
       );
-
-      isDropdownVisible.value["project-dd"] = false;
     }
+
+    // Check if the current user is the owner of the project
+    await checkOwnership();
   } catch (error) {
     console.error("Error fetching projects:", error);
   }
 });
 
-/* Handle dropdown */
+watch(
+  () => projectStore.activeProjectCreatedBy,
+  async () => {
+    await checkOwnership();
+    projectTasks.value = await getProjects();
+  }
+);
+
 import {
   isDropdownVisible,
   toggleDropdown,
