@@ -20,7 +20,37 @@ Software: Nuxt3 + Supabase
 - [ ] Receive project updates and invites directly in your inbox
 - [ ] Track project progress with a timeline
 
-|   |   |   |
+### Known Issues
+
+Information: This project is still in development and might have some issues. Please report any issues you encounter.
+
+- [ ] Updating the profile image does not reflect visually, although the database is updated
+- [ ] There are currently no options for the user to edit sections, tasks and documents
+- [ ] If the owner of a project deletes the project, the project members also no longer have access to it
+- [ ] It is currently not possible to remove members from the project
+
+## Contribution
+
+You are welcome to contribute to this project. Please clone the repository and submit your changes as pull requests. If you have any problems or questions, please open an issue.
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+
+## Learnings
+
+### Areas for Improvement
+
+- Ensure adequate time is planned and reserved for testing in the production environment
+- Evaluate the project size and complexity to ensure it aligns with the assigned scope
+- Fully leverage the benefits of a component-based architecture to improve flexibility and scalability
+
+### Success Stories
+
+- Successfully completed the initial project utilizing Vue and Nuxt frameworks
+- Effortlessly integrated Supabase to handle all necessary database functionalities and authentication processes
+- Experienced faster development and simplified styling with the use of Tailwind CSS
+- Database structure was efficiently pre-planned and only needed minor adjustments
+
+## Specifications
+
 |---|---|---|
 | Authentication | Only logged-in users can access the tool and the respective projects | Critical |
 | Document management | Users can link important documents hosted on different platforms for the project | Critical |
@@ -31,24 +61,3 @@ Software: Nuxt3 + Supabase
 | Sitemap for documents overview | The documents can be displayed via a sitemap for a clearer presentation | Nice-To-Have |
 | Chat | The team can communicate with each other via a chat function | Nice-To-Have / Out-Of-Focus |
 | PWA | The platform can be installed as a browser app on devices | Nice-To-Have / Out-Of-Focus |
-
-## Contribution
-
-You are welcome to contribute to this project. Please clone the repository and submit your changes as pull requests. If you have any problems or questions, please open an issue.
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
-
-### Known Issues
-
-Information: This project is still in development and might still have some issues. Please report any issues you encounter.
-
-- [ ] Updating the profile image does not reflect visually, although the database is updated
-
-## Learnings
-
-- Calculate enough time for production testings
-- The Project was too big for the assigned project scope
-- Structure: The potential of a component-based architecture was not fully used
-+ First project in vue/Nuxt
-+ Supabase could be used to implement all required database functionalities
-+ TailwindCSS: faster development and easier styling than with plain CSS
-+ Database structure: was created beforehand and only needed small adjustments
