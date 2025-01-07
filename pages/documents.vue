@@ -7,12 +7,6 @@
             <span class="mt-1 mr-1"><PlusIcon /></span>
             Add Link
           </button>
-          <span class="border-r h-5 border-grey-100 mt-0.5"></span>
-          <span
-            class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
-          >
-            <DotsIcon />
-          </span>
         </div>
       </template>
     </Header>
@@ -62,11 +56,7 @@
                       >
                         <CopyIcon />
                       </span>
-                      <span
-                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 transition"
-                      >
-                        <PencilIcon />
-                      </span>
+
                       <span
                         @click="showDeleteModal(link)"
                         class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 hover:text-destructive-red transition"
