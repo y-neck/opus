@@ -91,6 +91,7 @@ const project = computed(() => {
   return projectStore.activeProjectId;
 });
 
+// Define roles
 function getRoleName(roleId) {
   const roles = {
     1: "Owner",
@@ -100,6 +101,7 @@ function getRoleName(roleId) {
   return roles[roleId] || "Member";
 }
 
+// Fetch user role from database
 async function fetchUserRole() {
   try {
     // Fetch profile ID
@@ -142,6 +144,7 @@ async function fetchUserRole() {
   }
 }
 
+// Fetch team members
 async function fetchTeamMembers() {
   try {
     if (project.value) {
@@ -168,8 +171,9 @@ async function fetchTeamMembers() {
           console.error("Profiles error:", profilesError);
           return;
         }
-
+        // Extract team members
         teamMembers.value = membersData.map((member) => {
+          // Find the profile for the member
           const profile = profilesData?.find((p) => p.id === member.user_id);
           return {
             id: member.user_id,

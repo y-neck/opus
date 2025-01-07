@@ -62,7 +62,7 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 const token = route.query.token;
 
-// Reactive variables
+// References
 const pending = ref(true);
 const hasError = ref(false);
 const errorMessage = ref("");

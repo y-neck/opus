@@ -34,6 +34,7 @@ defineProps({
 const profileImageUrl = ref("");
 const loading = ref(false);
 
+// Handle file upload of profile picture
 const handleFileUpload = async (event) => {
   const input = event.target;
   const file = input?.files?.[0];

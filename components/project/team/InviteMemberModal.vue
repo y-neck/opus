@@ -50,16 +50,19 @@ const props = defineProps({
   projectId: String,
 });
 
+// References
 const email = ref("");
 const role = ref("3");
 const isLoading = ref(false);
 
+// Handle modal close
 const closeModal = () => {
   email.value = "";
   role.value = "3";
   emit("close");
 };
 
+// Generate invitation token
 const generateInvitationToken = () => {
   return Array.from({ length: 32 }, () =>
     Math.floor(Math.random() * 16).toString(16)
@@ -68,6 +71,7 @@ const generateInvitationToken = () => {
 
 const invitationToken = generateInvitationToken();
 
+// Handle invite
 const handleInvite = async () => {
   try {
     isLoading.value = true;
@@ -97,6 +101,7 @@ const handleInvite = async () => {
       console.log("Project data:", project);
     }
 
+    // Send invitation w/ Resend
     const SUPABASE_KEY = process.env.SUPABASE_KEY;
     const response = await fetch(
       "https://zdrhwehycbxujrbltjlj.supabase.co/functions/v1/resend",
@@ -125,6 +130,7 @@ const handleInvite = async () => {
       );
     }
 
+    // Store invitation to Supabase
     await supabase
       .from("Invitations")
       .insert([
@@ -135,6 +141,7 @@ const handleInvite = async () => {
           token: invitationToken,
           status: "pending",
           expires_at: new Date(
+            // Expires in 7 days
             Date.now() + 7 * 24 * 60 * 60 * 1000
           ).toISOString(),
         },

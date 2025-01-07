@@ -47,20 +47,22 @@
 
 <script setup>
 import TaskOverviewSkeleton from "~/components/skeletons/TaskOverviewSkeleton.vue";
-
 import { ref, onMounted } from "vue";
+
 const { supabase, user } = useSupabaseConnection();
 
+// References
 const tasks = ref([]);
 const groupedTasks = ref({});
 const isLoading = ref(true);
 const error = ref(null);
 
+// Fetch tasks for the user
 const fetchTasks = async () => {
   try {
     isLoading.value = true;
     error.value = null;
-
+    // Fetch profile ID of logged-in user
     const { data: profilesId, error: profileError } = await supabase
       .from("Profiles")
       .select("id")
@@ -73,9 +75,7 @@ const fetchTasks = async () => {
     if (!profilesId || profilesId.length === 0) {
       throw new Error("No profile found for user");
     }
-
-    console.log(profilesId[0].id);
-
+    // Fetch tasks
     const { data: userTasks, error: tasksError } = await supabase
       .from("Tasks")
       .select(
@@ -100,6 +100,7 @@ const fetchTasks = async () => {
       throw new Error("Error fetching tasks: " + tasksError.message);
     }
 
+    // Filter tasks based on project membership
     tasks.value = userTasks.filter((task) =>
       task.Projects?.Members?.some(
         (member) => member.user_id === profilesId[0].id
@@ -108,6 +109,7 @@ const fetchTasks = async () => {
 
     console.log(tasks.value);
 
+    // Map task properties to tasks.value
     tasks.value = tasks.value.map((task) => ({
       id: task.id,
       title: task.task,
@@ -115,6 +117,7 @@ const fetchTasks = async () => {
       projectName: task.Projects?.project_name,
     }));
 
+    // Group tasks by project§
     groupedTasks.value = tasks.value.reduce((acc, task) => {
       if (!acc[task.projectName]) {
         acc[task.projectName] = [];
@@ -130,6 +133,7 @@ const fetchTasks = async () => {
   }
 };
 
+// Format date
 const formatDate = (date) => {
   if (!date) return "No due date";
   return new Date(date).toLocaleDateString(undefined, {

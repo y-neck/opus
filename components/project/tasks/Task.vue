@@ -53,6 +53,7 @@ const props = defineProps({
   },
 });
 
+// Toggle task status
 const toggleTaskStatus = async () => {
   try {
     const newStatus = props.task.status_id === 1 ? 3 : 1;

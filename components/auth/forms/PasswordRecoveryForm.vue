@@ -37,6 +37,7 @@ const { supabase } = useSupabaseConnection();
 
 import Toast from "~/components/common/Toast.vue";
 
+// References
 const loading = ref(false);
 const successMessage = ref("");
 const email = ref("");
@@ -57,6 +58,7 @@ const recoverPassword = async () => {
 
     console.log(emails);
 
+    // If email not found
     if (emails === null) {
       errorMessage.value = "Email not found";
       email.value = "";
@@ -65,7 +67,7 @@ const recoverPassword = async () => {
       }, 3000);
       return;
     }
-
+    // If email found
     const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
       redirectTo: `${window.location.origin}/update-password`,
     });

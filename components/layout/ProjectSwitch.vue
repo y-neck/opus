@@ -68,6 +68,7 @@ import DropdownMenu from "~/components/common/DropdownMenu.vue";
 import DropdownSkeleton from "~/components/skeletons/DropdownSkeleton.vue";
 const { supabase, user } = useSupabaseConnection();
 
+// Initialize pinia store
 const projectStore = useProjectStore();
 const activeProjectName = computed(() => projectStore.activeProjectName);
 const activeProjectIcon = computed(() => projectStore.activeProjectIcon);
@@ -85,6 +86,7 @@ const setActiveProject = async (
   toggleDropdown("project-dd");
 };
 
+// Check if the user is the owner of the project
 const checkOwnership = async () => {
   if (user?.id && projectStore.activeProjectCreatedBy) {
     try {
@@ -110,6 +112,7 @@ const checkOwnership = async () => {
 // Function to delete a project
 const deleteProject = async () => {
   if (projectStore.activeProjectId) {
+    // Delete the project
     try {
       const { error } = await supabase
         .from("Projects")
@@ -168,6 +171,7 @@ onMounted(async () => {
 });
 
 watch(
+  // Watch for changes in the active project's createdBy field
   () => projectStore.activeProjectCreatedBy,
   async () => {
     await checkOwnership();

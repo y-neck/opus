@@ -20,7 +20,9 @@
 
 <script setup lang="ts">
 //Page meta
-const props = defineProps<{ pageTitle: string; pageIcon: string }>();
+const props = defineProps<{ 
+  pageTitle: string; 
+  pageIcon: string }>();
 </script>
 
 <style scoped>

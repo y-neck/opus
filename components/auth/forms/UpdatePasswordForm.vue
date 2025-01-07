@@ -35,11 +35,13 @@ import Toast from "~/components/common/Toast.vue";
 
 import { ref } from "vue";
 
+// References
 const loading = ref(false);
 const newPassword = ref("");
 const successMessage = ref("");
 const errorMessage = ref("");
 
+/* Update the user's password */
 const updatePassword = async () => {
   try {
     loading.value = true;

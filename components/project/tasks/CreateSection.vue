@@ -60,8 +60,10 @@ const props = defineProps({
   },
 });
 
+// Emit events
 const emit = defineEmits(["create-section", "close-modal"]);
 
+// References
 const newSectionTitle = ref("");
 const newSectionColor = ref("#3f3f46");
 
@@ -75,9 +77,11 @@ watch(
   }
 );
 
+// Handle create-section submit
 const handleSubmit = () => {
   if (!newSectionTitle.value.trim()) return;
 
+  // Emit create-section event
   emit("create-section", {
     title: newSectionTitle.value,
     color: newSectionColor.value,

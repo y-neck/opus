@@ -92,10 +92,12 @@ const icons = [
 
 const selectedIcon = ref(null);
 
+// Toggle icon
 function toggleIcon(name) {
   selectedIcon.value = selectedIcon.value === name ? null : name;
 }
 
+// 
 async function saveProject() {
   if (!selectedIcon.value || !user) return;
 
@@ -107,11 +109,14 @@ async function saveProject() {
 
   console.log(profile);
 
-  await supabase.from("Projects").insert({
-    project_name: projectName.value,
-    icon: selectedIcon.value,
-    created_by: profile.id,
-  });
+  // Save project's details
+  await supabase
+    .from("Projects")
+    .insert({
+      project_name: projectName.value,
+      icon: selectedIcon.value,
+      created_by: profile.id,
+    });
 
   const { data: project, error: projectError } = await supabase
     .from("Projects")
@@ -119,6 +124,7 @@ async function saveProject() {
     .order("id", { ascending: false })
     .eq("created_by", profile.id);
 
+    // Insert the project member
   await supabase.from("Members").insert({
     project_id: project[0].id,
     user_id: profile.id,

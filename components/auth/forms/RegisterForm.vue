@@ -35,6 +35,7 @@ const { supabase } = useSupabaseConnection();
 
 import Toast from "~/components/common/Toast.vue";
 
+// References
 const loading = ref(false);
 const name = ref("");
 const surname = ref("");
@@ -44,6 +45,7 @@ const password = ref("");
 const successMessage = ref("");
 const errorMessage = ref("");
 
+/* Register the user */
 const handleRegister = async () => {
   try {
     loading.value = true;

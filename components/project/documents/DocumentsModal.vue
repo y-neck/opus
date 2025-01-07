@@ -61,13 +61,16 @@ const props = defineProps({
   label: String,
 });
 
+// Emit events to parent
 const emit = defineEmits(["confirm", "cancel"]);
 
+// References
 const link = ref("");
 const description = ref("");
 
 async function onConfirm() {
   try {
+    // Insert the link into the database
     await supabase.from("Links").insert({
       link: link.value,
       description: description.value,

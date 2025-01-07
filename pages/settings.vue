@@ -99,7 +99,7 @@ import Toast from "~/components/common/Toast.vue";
 import ProfilePicture from "~/components/user/ProfilePicture.vue";
 import UploadProfilePicture from "~/components/user/UploadProfilePicture.vue";
 
-// Handle data
+// References
 const currentName = ref("");
 const currentSurname = ref("");
 const currentEmail = ref("");

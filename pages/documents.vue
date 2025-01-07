@@ -102,6 +102,8 @@ import DocumentsSkeleton from "~/components/skeletons/DocumentsSkeleton.vue";
 import { format } from "date-fns";
 
 const projectStore = useProjectStore();
+
+// References
 const links = ref([]);
 const groupedLinks = ref({});
 const isLoading = ref(true);
@@ -109,6 +111,7 @@ const isModalOpen = ref(false);
 const isDeleteModalOpen = ref(false);
 const documentToDelete = ref(null);
 
+// Format link to remove www.
 function formatLink(url) {
   try {
     const hostname = new URL(url).hostname;
@@ -119,6 +122,7 @@ function formatLink(url) {
   }
 }
 
+// Fetch favicon of hosting platform
 function getFaviconUrl(url, size = 64) {
   try {
     const hostname = new URL(url).hostname;
@@ -129,6 +133,7 @@ function getFaviconUrl(url, size = 64) {
   }
 }
 
+// Group links by date
 function groupLinksByDate(data) {
   const grouped = {};
   data.forEach((link) => {
@@ -139,6 +144,7 @@ function groupLinksByDate(data) {
   return grouped;
 }
 
+// Fetch all links
 async function getLinks() {
   try {
     const { data, error } = await supabase
@@ -158,6 +164,7 @@ async function getLinks() {
   }
 }
 
+// Copy link
 function copyDocument(link) {
   navigator.clipboard.writeText(link);
 }
@@ -167,6 +174,7 @@ function showDeleteModal(link) {
   isDeleteModalOpen.value = true;
 }
 
+// Delete link from database
 async function deleteDocument() {
   try {
     const { error } = await supabase

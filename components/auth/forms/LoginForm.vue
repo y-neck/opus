@@ -48,16 +48,18 @@ const { supabase } = useSupabaseConnection();
 
 import Toast from "~/components/common/Toast.vue";
 
+// References
 const loading = ref(false);
 const email = ref("");
 const password = ref("");
 const errorMessage = ref("");
 
+/* Handle login */
 const handleLogin = async () => {
   errorMessage.value = "";
   try {
     loading.value = true;
-
+    // Sign in the user via supabase auth
     const {
       data: { user },
       error: signInError,
@@ -71,7 +73,7 @@ const handleLogin = async () => {
     if (!user) {
       throw new Error("No user found");
     }
-
+    // Return user upon successful login
     const { data: profileData, error: profileError } = await supabase
       .from("Profiles")
       .select("first_login")
@@ -80,12 +82,12 @@ const handleLogin = async () => {
 
     if (profileError) throw profileError;
 
+    // Redirect user
     if (profileData && profileData.first_login === true) {
       await supabase
         .from("Profiles")
         .update({ first_login: false })
         .eq("user_id", user.id);
-
       navigateTo("/get-started");
     } else {
       navigateTo("/task-overview");

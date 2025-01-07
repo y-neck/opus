@@ -60,9 +60,11 @@ const props = defineProps({
 
 const emit = defineEmits(["closeAddSectionModal"]);
 
+// Initialize pinia store
 const projectStore = useProjectStore();
 const projectId = computed(() => projectStore.activeProjectId);
 
+// References
 const tasks = ref([]);
 const isLoading = ref(true);
 const groupedTasks = ref({});
@@ -136,8 +138,10 @@ const handleTaskCompleted = async (taskId) => {
     tasks.value.splice(taskIndex, 1);
   }
 
+  // Update grouped tasks
   groupedTasks.value = Object.assign(
     {},
+    // Spread existing grouped tasks
     tasks.value.reduce((acc, task) => {
       const sectionId = task.section;
       if (!acc[sectionId]) {
@@ -183,6 +187,7 @@ const fetchProjectMembers = async () => {
     return;
   }
 
+  // Extract project members
   projectMembers.value = data.map((member) => ({
     id: member.Profiles.id,
     name: member.Profiles.name,
@@ -206,6 +211,7 @@ const fetchSectionNames = async () => {
 
     if (error) throw error;
 
+    // Extract section names
     sectionNames.value = data.reduce((acc, section) => {
       acc[section.id] = { title: section.title, color: section.color };
       return acc;

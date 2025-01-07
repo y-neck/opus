@@ -117,7 +117,6 @@ const selectedMembers = ref([]);
 const { supabase } = useSupabaseConnection();
 
 // Toggle member selection
-
 const toggleMemberSelection = (memberId) => {
   if (selectedMembers.value.includes(memberId)) {
     selectedMembers.value = selectedMembers.value.filter(
@@ -153,6 +152,7 @@ const createTask = async () => {
 
     const taskId = taskData[0]?.id;
 
+    // Assign members
     if (selectedMembers.value.length > 0 && taskId) {
       const assignments = selectedMembers.value.map((memberId) => ({
         task_id: taskId,
