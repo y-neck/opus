@@ -40,7 +40,12 @@
     <hr class="border-grey-100" />
     <div>
       <div v-if="tasks.length > 0">
-        <Task v-for="task in tasks" :key="task.id" :task="task" />
+        <Task
+          v-for="task in tasks"
+          :key="task.id"
+          :task="task"
+          @taskCompleted="handleTaskCompleted"
+        />
       </div>
       <div
         class="flex flex-row gap-2 items-center text-grey-500 pt-2 cursor-pointer max-w-24"
@@ -84,11 +89,13 @@ const deleteSection = async (sectionId) => {
     throw error;
   }
 
-  // Emit event to parent to update the sections list
   emit("sectionDeleted", sectionId);
 };
 
-// Open Create Task modal
+const handleTaskCompleted = (taskId) => {
+  emit("taskCompleted", taskId);
+};
+
 const openCreateTaskModal = () => {
   emit("openCreateTaskModal", props.sectionId);
 };

@@ -14,6 +14,7 @@
           :sectionNames="sectionNames"
           @sectionDeleted="handleSectionDeleted"
           @openCreateTaskModal="openCreateTaskModal"
+          @taskCompleted="handleTaskCompleted"
         />
       </div>
       <div v-else>
@@ -77,22 +78,25 @@ const fetchData = async () => {
     return;
   }
 
-  // Fetch all tasks for the project
+  // Fetch only active tasks (status_id !== 3) for the project
   const { data: tasksData, error: tasksError } = await supabase
     .from("Tasks")
     .select("*")
-    .order("due_date", { ascending: true })
-    .eq("projects_id", projectId.value);
+    .eq("projects_id", projectId.value)
+    .neq("status_id", 3) // Only fetch non-completed tasks
+    .order("due_date", { ascending: true });
 
   if (tasksError) {
     console.error("Error fetching tasks:", tasksError);
     return;
   }
 
-  // Fetch all assignments for the project
+  // Fetch all assignments for the active tasks
+  const taskIds = tasksData.map((task) => task.id);
   const { data: assignments, error: assignmentsError } = await supabase
     .from("Assignments")
-    .select("task_id, profile_id");
+    .select("task_id, profile_id")
+    .in("task_id", taskIds);
 
   if (assignmentsError) {
     console.error("Error fetching assignments:", assignmentsError);
@@ -122,6 +126,27 @@ const fetchData = async () => {
   tasks.value = tasksData;
   groupTasksBySection();
   isLoading.value = false;
+};
+
+// Handle task completion
+const handleTaskCompleted = async (taskId) => {
+  // Update local state immediately for UI responsiveness
+  const taskIndex = tasks.value.findIndex((task) => task.id === taskId);
+  if (taskIndex !== -1) {
+    tasks.value.splice(taskIndex, 1);
+  }
+
+  groupedTasks.value = Object.assign(
+    {},
+    tasks.value.reduce((acc, task) => {
+      const sectionId = task.section;
+      if (!acc[sectionId]) {
+        acc[sectionId] = [];
+      }
+      acc[sectionId].push(task);
+      return acc;
+    }, {})
+  );
 };
 
 // Group tasks by section
