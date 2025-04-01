@@ -3,33 +3,30 @@
     <Header :pageTitle="'Documents'" :pageIcon="'FilesIcon'">
       <template #actions>
         <div class="flex flex-row gap-3">
-          <button class="flex flex-row">
+          <button @click="openModal" class="flex flex-row">
             <span class="mt-1 mr-1"><PlusIcon /></span>
             Add Link
           </button>
-          <span class="border-r h-5 border-grey-100 mt-0.5"></span>
-          <span
-            class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
-          >
-            <DotsIcon />
-          </span>
         </div>
       </template>
     </Header>
     <main class="p-16">
       <div>
+        <h2 class="text-2xl mb-1.5">Documents</h2>
+        <div v-if="isLoading">
+          <DocumentsSkeleton />
+          <DocumentsSkeleton />
+        </div>
         <div v-if="Object.keys(groupedLinks).length">
           <div
-            class="my-4 mb-9"
             v-for="(linksGroup, date) in groupedLinks"
             :key="date"
+            class="my-4 mb-9"
           >
-            <h3 class="font-normal text-sm text-grey-500 tracking-[0.01em]">
-              {{ date }}
-            </h3>
+            <h3 class="text-sm text-grey-500 tracking-[0.01em]">{{ date }}</h3>
             <hr class="text-grey-100 mt-2" />
             <ul>
-              <li v-for="(link, index) in linksGroup" :key="index">
+              <li v-for="(link, index) in linksGroup" :key="link.id">
                 <div class="flex flex-row my-2">
                   <div class="mr-2 mt-1">
                     <img
@@ -55,18 +52,14 @@
                     >
                       <span
                         @click="copyDocument(link.link)"
-                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 active:text-grey-950 text-grey-500 transition"
+                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 transition"
                       >
                         <CopyIcon />
                       </span>
-                      <span
-                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 active:text-grey-950 transition"
-                      >
-                        <PencilIcon />
-                      </span>
+
                       <span
                         @click="showDeleteModal(link)"
-                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 active:text-destructive-red transition"
+                        class="w-5 h-5 flex justify-center items-center rounded cursor-pointer hover:bg-grey-100 text-grey-500 hover:text-destructive-red transition"
                       >
                         <TrashCanIcon />
                       </span>
@@ -78,126 +71,155 @@
             </ul>
           </div>
         </div>
-        <!-- TODO: Rework text if no documents in DB -->
-        <p v-else>No documents found</p>
       </div>
+      <Modal
+        v-if="isDeleteModalOpen"
+        :isOpen="isDeleteModalOpen"
+        title="Remove Document"
+        message="Are you sure you want to remove this document?"
+        @confirm="deleteDocument"
+        @cancel="isDeleteModalOpen = false"
+      />
+      <DocumentsModal
+        :isOpen="isModalOpen"
+        title="Add a new link"
+        label="Create"
+        @confirm="handleConfirm"
+        @cancel="isModalOpen = false"
+      />
     </main>
-    <!-- Modals -->
-    <Modal
-      v-if="isDeleteModalOpen"
-      :isOpen="isDeleteModalOpen"
-      title="Remove Document"
-      message="Are you sure you want to remove this document?"
-      @confirm="deleteDocument"
-      @cancel="isDeleteModalOpen = false"
-    />
   </div>
 </template>
-<script setup>
-import { supabaseConnection } from '~/composables/supabaseConnection';
-import Header from '~/components/Header.vue';
-import Modal from '~/components/Modals/RemoveModal.vue';
-import { ref } from 'vue';
-import { format } from 'date-fns';
-import CopyIcon from '~/components/icons/CopyIcon.vue';
-import TrashCanIcon from '~/components/icons/TrashCanIcon.vue';
 
+<script setup>
+const { supabase } = useSupabaseConnection();
+import { ref, watchEffect } from "vue";
+import { useProjectStore } from "~/middleware/store/project";
+import Header from "~/components/layout/Header.vue";
+import Modal from "~/components/project/RemoveModal.vue";
+import DocumentsModal from "~/components/project/documents/DocumentsModal.vue";
+import DocumentsSkeleton from "~/components/skeletons/DocumentsSkeleton.vue";
+import { format } from "date-fns";
+
+const projectStore = useProjectStore();
+
+// References
 const links = ref([]);
 const groupedLinks = ref({});
-// Function to format the link by removing protocol and path
+const isLoading = ref(true);
+const isModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
+const documentToDelete = ref(null);
+
+// Format link to remove www.
 function formatLink(url) {
   try {
     const hostname = new URL(url).hostname;
-    return hostname.replace('www.', ''); // Remove 'www.' if present
+    return hostname.replace("www.", "");
   } catch (error) {
-    console.error('Invalid URL:', url);
-    return url; // Return the original URL if it can't be parsed
+    console.error("Invalid URL:", url);
+    return url;
   }
 }
-// Function to generate favicon URL
+
+// Fetch favicon of hosting platform
 function getFaviconUrl(url, size = 64) {
   try {
     const hostname = new URL(url).hostname;
     return `https://www.google.com/s2/favicons?sz=${size}&domain=${hostname}`;
   } catch (error) {
-    console.error('Invalid URL:', url);
-    return '';
+    console.error("Invalid URL:", url);
+    return "";
   }
 }
-// Function to group links by their created_at date
+
+// Group links by date
 function groupLinksByDate(data) {
   const grouped = {};
   data.forEach((link) => {
-    const date = format(link.created_at, 'EEEE, dd MMM yyyy');
-    if (!grouped[date]) {
-      grouped[date] = [];
-    }
+    const date = format(new Date(link.created_at), "EEEE, dd MMM yyyy");
+    grouped[date] = grouped[date] || [];
     grouped[date].push(link);
   });
   return grouped;
 }
+
+// Fetch all links
 async function getLinks() {
   try {
-    const { data, error, status } = await supabase
-      .from('Links')
-      .select('id, link, description, created_at')
-      .order('created_at', { ascending: false });
-    if (error && status !== 406) throw error;
-
+    const { data, error } = await supabase
+      .from("Links")
+      .select("*")
+      .eq("project_id", projectStore.activeProjectId)
+      .order("created_at", { ascending: false });
+    if (error) throw error;
     if (data) {
       links.value = data;
       groupedLinks.value = groupLinksByDate(data);
     }
   } catch (error) {
-    console.error(error.message);
+    console.error("Error fetching links:", error);
+  } finally {
+    isLoading.value = false;
   }
 }
-getLinks();
-// Function to copy the document link to clipboard
+
+// Copy link
 function copyDocument(link) {
   navigator.clipboard.writeText(link);
 }
-const isDeleteModalOpen = ref(false);
-const documentToDelete = ref(null);
+
 function showDeleteModal(link) {
   documentToDelete.value = link;
   isDeleteModalOpen.value = true;
 }
+
+// Delete link from database
 async function deleteDocument() {
   try {
-    console.log('Deleting document:', documentToDelete.value.id);
-    // Delete document from the database using its ID
-    const { error, status } = await supabase
-      .from('Links')
+    const { error } = await supabase
+      .from("Links")
       .delete()
-      .eq('id', documentToDelete.value.id);
-    if (error && status !== 406) throw error;
-
-    // After successful deletion, fetch the updated links list
-    const { data: updatedLinks, error: fetchError } = await supabase
-      .from('Links')
-      .select('link, description, created_at')
-      .order('created_at', { ascending: false });
-    if (fetchError) throw fetchError;
-
-    // Update your links and grouped links state after deletion
-    if (updatedLinks) {
-      links.value = updatedLinks;
-      groupedLinks.value = groupLinksByDate(updatedLinks);
-    }
-    console.log('Deleting document:', documentToDelete.value);
-    console.log('Links after deletion:', links.value);
-    // Close the modal after deletion
+      .eq("id", documentToDelete.value.id);
+    if (error) throw error;
+    await getLinks();
     isDeleteModalOpen.value = false;
   } catch (error) {
-    console.error('Error deleting document:', error.message);
+    console.error("Error deleting document:", error);
   }
 }
-// Page meta
+
+function handleConfirm() {
+  isModalOpen.value = false;
+  getLinks();
+}
+
+watchEffect(() => {
+  if (projectStore.activeProjectId) {
+    getLinks();
+  }
+});
+
+function openModal() {
+  isModalOpen.value = true;
+}
+
 definePageMeta({
-  title: 'Documents',
-  description: '',
-  layout: 'default',
-  middleware: 'auth',
+  middleware: "auth",
+  layout: "default",
+});
+
+useSeoMeta({
+  title: "Opus · Documents",
+  ogTitle: "Documents",
+  ogSiteName: "opus",
+  ogType: "website",
+  description:
+    "Welcome to Opus – your project management solution for team projects!",
+  ogDescription:
+    "Welcome to Opus – your project management solution for team projects!",
+  creator: "https://github.com/y-neck/ | https://github.com/kevinschaerer/",
+  robots: "noindex, nofollow",
+  ogImage: "",
 });
 </script>
