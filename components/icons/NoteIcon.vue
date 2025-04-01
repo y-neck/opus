@@ -1,16 +1,25 @@
 <template>
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path
-            d="M9 14H13M9 10H15M6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20Z"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-    </svg>
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M13.499 10.1667H11.5C10.7636 10.1667 10.1667 10.7636 10.1667 11.5V13.499M13.499 10.1667C13.4997 10.1493 13.5 10.1319 13.5 10.1144V3.83333C13.5 3.09695 12.9031 2.5 12.1667 2.5H3.83333C3.09695 2.5 2.5 3.09695 2.5 3.83333V12.1667C2.5 12.9031 3.09695 13.5 3.83333 13.5H10.1144C10.1319 13.5 10.1493 13.4997 10.1667 13.499M13.499 10.1667C13.4859 10.5013 13.3472 10.8195 13.1095 11.0572L11.0572 13.1095C10.8195 13.3472 10.5013 13.4859 10.1667 13.499M5.83333 5.83333H10.1667M5.83333 8.5H7.5"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
 </template>
-  
+
 <script>
 export default {
-    name: 'NoteIcon'
-}
+  name: "NoteIcon",
+};
 </script>
 
-  
 <style scoped></style>

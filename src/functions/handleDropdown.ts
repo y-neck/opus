@@ -18,6 +18,3 @@ export function toggleDropdown(dropdownId: string) {
     [dropdownId]: !isDropdownVisible.value[dropdownId], // Invert the visibility of the dropdown being toggled
   };
 }
-
-
-

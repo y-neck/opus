@@ -6,7 +6,14 @@ export default defineNuxtConfig({
   },
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/supabase', '@nuxt/image'],
+  modules: [
+    '@nuxtjs/tailwindcss', 
+    '@nuxtjs/supabase', 
+    '@nuxt/image', 
+    '@pinia/nuxt',
+    '@vite-pwa/nuxt'
+  ],
+  plugins: ['~/plugins/preamble.client.ts'],
   supabase: {
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,
@@ -22,19 +29,36 @@ export default defineNuxtConfig({
       cookieRedirect: false,
     },
   },
+  pwa:{
+    manifest:{
+      name: 'Opus',
+      short_name: 'Opus',
+      description: 'Opus is a web-based application for managing tasks and group projects.',
+      theme_color: '#000000',
+      background_color: '#ffffff',
+      icons: [{
+              'src': './public/favicon.ico',
+            }],
+    },
+    workbox: {
+      navigateFallback: '/'
+    },
+    devOptions:{
+      enabled: true,
+      type: 'module',
+    },
+  },
   app: {
     head: {
-      meta: [
-        {
-          name: 'viewport',
-          content: 'width=device-width,initial-scale=1',
-        },
-        { charset: 'utf-8' },
-      ],
+      charset: 'utf-8',
+      viewport: 'width=device-width, initial-scale=1',
       link: [
         { rel: 'icon', type: 'image/x-icon', href: './public/favicon.ico' },
-        { rel: 'stylesheet', href: './src/styles.css' },
+        { rel: "stylesheet", href: "/styles.css" },
       ],
+      htmlAttrs: {
+        lang: 'en',
+      },
     },
   },
 });
