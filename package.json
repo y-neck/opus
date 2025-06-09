@@ -19,7 +19,7 @@
     "nuxt": "^3.13.2",
     "pinia": "^3.0.1",
     "resend": "^4.0.1",
-    "tailwindcss": "^3.4.6",
+    "tailwindcss": "^4.1.8",
     "vue": "latest",
     "vue3-spinners": "^1.2.2"
   },
