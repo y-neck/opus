@@ -16,7 +16,7 @@
     "@supabase/supabase-js": "^2.47.10",
     "date-fns": "^4.1.0",
     "deno": "^2.1.4",
-    "nuxt": "^3.13.2",
+    "nuxt": "^4.0.1",
     "pinia": "^3.0.1",
     "resend": "^4.0.1",
     "tailwindcss": "^3.4.6",
