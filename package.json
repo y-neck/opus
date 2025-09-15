@@ -18,7 +18,7 @@
     "deno": "^2.1.4",
     "nuxt": "^4.0.1",
     "pinia": "^3.0.1",
-    "resend": "^4.0.1",
+    "resend": "^6.0.3",
     "tailwindcss": "^3.4.6",
     "vue": "latest",
     "vue3-spinners": "^1.2.2"
